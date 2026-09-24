@@ -66,6 +66,31 @@
       display: inline-block;
       vertical-align: middle;
     }
+
+    /* Independent Column / Masonry Flow: prevents row height coupling */
+    .masonry-grid {
+      column-count: 1;
+      column-gap: 0.875rem;
+    }
+    @media (min-width: 768px) {
+      .masonry-grid {
+        column-count: 2;
+      }
+    }
+    @media (min-width: 1024px) {
+      .masonry-grid {
+        column-count: 3;
+      }
+    }
+    @media (min-width: 1440px) {
+      .masonry-grid {
+        column-count: 4;
+      }
+    }
+    .masonry-item {
+      break-inside: avoid;
+      margin-bottom: 0.875rem;
+    }
   </style>
 </head>
 
@@ -1600,62 +1625,64 @@
       const isOverflowOpen = overflowSectionsOpen[cat.id] || searchQuery.length > 0;
 
       return `
-        <section class="bg-hub-surface border border-hub-border rounded-xl overflow-hidden flex flex-col shadow-sm transition-all">
-          <!-- Accordion Header -->
-          <div 
-            onclick="toggleCategoryAccordion('${cat.id}')"
-            class="px-3.5 py-2.5 bg-hub-surface border-b border-hub-border flex items-center justify-between cursor-pointer select-none hover:bg-hub-card transition"
-          >
-            <div class="flex items-center gap-2 min-w-0">
-              <div class="w-5 h-5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center icon-container shrink-0">
-                ${getSvgIcon(cat.iconType, "w-3 h-3")}
-              </div>
-              <h2 class="font-bold text-white text-xs tracking-wide truncate">${cat.title}</h2>
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-hub-base text-slate-400 border border-hub-border shrink-0 hidden sm:inline">
-                ${cat.badge}
-              </span>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <span class="text-[10px] font-mono text-slate-500">
-                ${items.length} sites
-              </span>
-              <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isCatOpen ? 'rotate-180 text-sky-400' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
-            </div>
-          </div>
-
-          <!-- Top 7 Items & Overflow Dropdown Drawer -->
-          ${isCatOpen ? `
-            <div class="divide-y divide-hub-border flex-1">
-              ${top7.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
-            </div>
-
-            <!-- Drawer for Rank 8+ -->
-            ${overflow.length > 0 ? `
-              <div class="border-t border-hub-border bg-hub-base/60 p-2">
-                <button 
-                  onclick="toggleOverflow('${cat.id}')"
-                  class="w-full py-1.5 px-2.5 rounded-lg bg-hub-surface hover:bg-slate-800 text-slate-400 hover:text-white border border-hub-border text-[11px] font-mono flex items-center justify-between transition"
-                >
-                  <span class="flex items-center gap-1.5">
-                    <svg class="w-3 h-3 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                    </svg>
-                    <span>${isOverflowOpen ? 'Hide Alternates' : `+ ${overflow.length} More Mirrors & Alternates`}</span>
-                  </span>
-                  <span class="text-[9px] px-1 py-0.2 rounded bg-hub-base border border-hub-border">
-                    ${isOverflowOpen ? 'Collapse' : 'Expand'}
-                  </span>
-                </button>
-
-                <div class="${isOverflowOpen ? 'block divide-y divide-hub-border mt-1.5 border-t border-hub-border' : 'hidden'}">
-                  ${overflow.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
+        <div class="masonry-item">
+          <section class="bg-hub-surface border border-hub-border rounded-xl overflow-hidden flex flex-col shadow-sm transition-all">
+            <!-- Accordion Header -->
+            <div 
+              onclick="toggleCategoryAccordion('${cat.id}')"
+              class="px-3.5 py-2.5 bg-hub-surface border-b border-hub-border flex items-center justify-between cursor-pointer select-none hover:bg-hub-card transition"
+            >
+              <div class="flex items-center gap-2 min-w-0">
+                <div class="w-5 h-5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center icon-container shrink-0">
+                  ${getSvgIcon(cat.iconType, "w-3 h-3")}
                 </div>
+                <h2 class="font-bold text-white text-xs tracking-wide truncate">${cat.title}</h2>
+                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-hub-base text-slate-400 border border-hub-border shrink-0 hidden sm:inline">
+                  ${cat.badge}
+                </span>
               </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-[10px] font-mono text-slate-500">
+                  ${items.length} sites
+                </span>
+                <svg class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isCatOpen ? 'rotate-180 text-sky-400' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Top 7 Items & Overflow Dropdown Drawer -->
+            ${isCatOpen ? `
+              <div class="divide-y divide-hub-border flex-1">
+                ${top7.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
+              </div>
+
+              <!-- Drawer for Rank 8+ -->
+              ${overflow.length > 0 ? `
+                <div class="border-t border-hub-border bg-hub-base/60 p-2">
+                  <button 
+                    onclick="toggleOverflow('${cat.id}')"
+                    class="w-full py-1.5 px-2.5 rounded-lg bg-hub-surface hover:bg-slate-800 text-slate-400 hover:text-white border border-hub-border text-[11px] font-mono flex items-center justify-between transition"
+                  >
+                    <span class="flex items-center gap-1.5">
+                      <svg class="w-3 h-3 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                      </svg>
+                      <span>${isOverflowOpen ? 'Hide Alternates' : `+ ${overflow.length} More Mirrors & Alternates`}</span>
+                    </span>
+                    <span class="text-[9px] px-1 py-0.2 rounded bg-hub-base border border-hub-border">
+                      ${isOverflowOpen ? 'Collapse' : 'Expand'}
+                    </span>
+                  </button>
+
+                  <div class="${isOverflowOpen ? 'block divide-y divide-hub-border mt-1.5 border-t border-hub-border' : 'hidden'}">
+                    ${overflow.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
+                  </div>
+                </div>
+              ` : ''}
             ` : ''}
-          ` : ''}
-        </section>
+          </section>
+        </div>
       `;
     }
 
@@ -1686,9 +1713,9 @@
         return;
       }
 
-      // Compact 3 to 4 Column Grid to efficiently fill wide displays
+      // Independent CSS Column / Masonry container: prevents height-coupling across rows
       container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 items-start">
+        <div class="masonry-grid w-full">
           ${visibleCategories.map(cat => buildCategoryCard(cat, bookmarks)).join('')}
         </div>
       `;
