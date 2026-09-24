@@ -8,11 +8,10 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts: Inter & JetBrains Mono + Material Symbols -->
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <script>
     tailwind.config = {
@@ -58,17 +57,15 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #2e3447;
     }
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
-      line-height: 1;
-    }
-    .material-symbols-outlined.fill-1 {
-      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 20;
-    }
-    /* Subtle highlight for active accordion rows */
     .row-expanded {
       background-color: #171b26 !important;
       border-color: #38bdf8 !important;
+    }
+    /* Prevent text bleed and layout collapse */
+    .icon-container svg {
+      flex-shrink: 0;
+      display: inline-block;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -76,12 +73,12 @@
 <body class="bg-hub-base text-slate-200 min-h-screen flex flex-col font-sans antialiased text-sm">
 
   <!-- TOP HEADER -->
-  <header class="sticky top-0 z-30 bg-hub-surface/95 backdrop-blur-md border-b border-hub-border px-4 py-3">
+  <header class="sticky top-0 z-40 bg-hub-surface/95 backdrop-blur-md border-b border-hub-border px-4 py-3">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
       
-      <!-- Logo & Navigation Tabs -->
+      <!-- Brand & Navigation Controls -->
       <div class="flex items-center justify-between w-full sm:w-auto gap-4">
-        <div class="flex items-center gap-2.5 select-none">
+        <div class="flex items-center gap-2.5 select-none cursor-pointer" onclick="switchTab('index')">
           <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30 flex items-center justify-center font-bold font-mono text-xs shadow-sm">
             SI
           </div>
@@ -90,25 +87,67 @@
           </div>
         </div>
 
-        <!-- Main Switcher: Index vs Graveyard vs Bookmarks -->
-        <nav class="flex items-center gap-1 bg-hub-base p-1 rounded-lg border border-hub-border">
+        <!-- Navigation Switcher with Dropdown for Saved links -->
+        <nav class="flex items-center gap-1 bg-hub-base p-1 rounded-lg border border-hub-border relative">
           <button id="nav-btn-index" onclick="switchTab('index')" class="px-3 py-1 rounded text-xs font-medium text-white bg-hub-card border border-slate-700/60 shadow-sm transition">
             Directory
           </button>
+
           <button id="nav-btn-graveyard" onclick="switchTab('graveyard')" class="px-3 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5">
             <span>Graveyard</span>
             <span class="text-[10px] font-mono bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded border border-slate-700">10</span>
           </button>
-          <button id="nav-btn-saved" onclick="switchTab('saved')" class="px-3 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5">
-            <span>Saved</span>
-            <span id="nav-saved-badge" class="text-[10px] font-mono bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">0</span>
-          </button>
+
+          <!-- Saved Dropdown Trigger Button -->
+          <div class="relative">
+            <button 
+              id="nav-btn-saved" 
+              onclick="toggleBookmarkDropdown(event)" 
+              class="px-3 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5"
+            >
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+              </svg>
+              <span>Saved</span>
+              <span id="nav-saved-badge" class="text-[10px] font-mono bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30">0</span>
+              <svg class="w-3 h-3 text-slate-400 transition-transform duration-200" id="saved-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+
+            <!-- Bookmark Dropdown Popover Menu -->
+            <div 
+              id="saved-dropdown" 
+              class="hidden absolute right-0 sm:left-0 sm:right-auto mt-2 w-80 sm:w-96 bg-hub-surface border border-hub-border rounded-xl shadow-2xl z-50 overflow-hidden"
+              onclick="event.stopPropagation()"
+            >
+              <div class="px-3.5 py-2.5 bg-hub-card border-b border-hub-border flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                  <span class="font-bold text-xs text-white">Bookmarked Services</span>
+                </div>
+                <button onclick="clearAllBookmarks()" class="text-[11px] font-mono text-slate-400 hover:text-rose-400 transition">
+                  Clear All
+                </button>
+              </div>
+
+              <!-- List container -->
+              <div id="saved-dropdown-list" class="max-h-80 overflow-y-auto divide-y divide-hub-border/70 p-1">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
         </nav>
       </div>
 
       <!-- Search Input -->
       <div class="w-full sm:max-w-xs relative flex items-center">
-        <span class="material-symbols-outlined absolute left-2.5 text-slate-500 text-[18px]">search</span>
+        <svg class="w-4 h-4 absolute left-2.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
         <input 
           id="search-input"
           type="text" 
@@ -122,9 +161,10 @@
     </div>
   </header>
 
+  <!-- MAIN BODY CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-5 space-y-4">
 
-    <!-- Community Tip Banner -->
+    <!-- Community Announcement & Toggle Banner -->
     <div class="bg-hub-surface border border-hub-border rounded-xl p-3.5 text-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm">
       <div class="flex items-center gap-2.5 text-slate-300">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0 animate-pulse"></span>
@@ -136,7 +176,10 @@
         <button onclick="toggleAllCategoryAccordions(false)" class="text-slate-400 hover:text-white underline">Collapse All</button>
         <span class="text-slate-600">&bull;</span>
         <button onclick="toggleSafetyGuide()" class="text-sky-400 hover:text-sky-300 flex items-center gap-1">
-          <span class="material-symbols-outlined text-[15px]">verified_user</span> Adblock Setup
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+          <span>Adblock Setup</span>
         </button>
       </div>
     </div>
@@ -145,7 +188,9 @@
     <div id="safety-box" class="hidden bg-hub-surface border border-hub-border rounded-xl p-4 text-xs space-y-3 shadow-lg">
       <div class="flex items-center justify-between border-b border-hub-border pb-2.5">
         <span class="font-bold text-white flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-emerald-400 text-base">verified_user</span>
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
           Basic Streaming Checklist (Do this once)
         </span>
         <button onclick="toggleSafetyGuide()" class="text-slate-400 hover:text-white text-xs px-2 py-1 rounded bg-hub-base border border-hub-border">Close</button>
@@ -155,24 +200,24 @@
           <span class="text-white font-semibold flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> 1. uBlock Origin
           </span>
-          <p class="leading-relaxed">Mandatory extension. Blocks popup tabs, redirect loops, and malicious hidden overlay clickers.</p>
+          <p class="leading-relaxed">Mandatory extension. Blocks popup tabs, redirect loops, and hidden video overlays.</p>
         </div>
         <div class="p-3 bg-hub-base rounded-lg border border-hub-border/70 space-y-1">
           <span class="text-white font-semibold flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span> 2. Cloudflare DNS (1.1.1.1)
           </span>
-          <p class="leading-relaxed">If any site fails to load, your ISP is blocking the domain. Set your device DNS to 1.1.1.1 or 8.8.8.8.</p>
+          <p class="leading-relaxed">If any site fails to load, your ISP is blocking it. Set device DNS to 1.1.1.1 or 8.8.8.8 to unblock.</p>
         </div>
         <div class="p-3 bg-hub-base rounded-lg border border-hub-border/70 space-y-1">
           <span class="text-white font-semibold flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> 3. Brave or Firefox
           </span>
-          <p class="leading-relaxed">Chromium browsers are depreciating adblock features. Firefox provides unhindered script protection.</p>
+          <p class="leading-relaxed">Chromium browsers restrict adblock extensions. Firefox and Brave provide unrestricted filtering.</p>
         </div>
       </div>
     </div>
 
-    <!-- Category Filter Bar (Directory Mode) -->
+    <!-- Category Pills Switcher -->
     <div id="category-pills" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
       <button onclick="filterCategory('all', this)" class="cat-pill px-3 py-1.5 rounded-lg bg-slate-800 text-white border border-slate-700 font-medium transition">All Sections</button>
       <button onclick="filterCategory('anime', this)" class="cat-pill px-3 py-1.5 rounded-lg bg-hub-surface text-slate-400 border border-hub-border hover:text-white font-medium transition">Anime Streaming</button>
@@ -180,19 +225,14 @@
       <button onclick="filterCategory('manga', this)" class="cat-pill px-3 py-1.5 rounded-lg bg-hub-surface text-slate-400 border border-hub-border hover:text-white font-medium transition">Manga & Comics</button>
     </div>
 
-    <!-- MAIN DIRECTORY VIEW (Dual-column layout filling empty space) -->
+    <!-- DIRECTORY CONTAINER -->
     <div id="view-index" class="w-full">
-      <!-- Injected by JavaScript -->
+      <!-- Generated by JavaScript -->
     </div>
 
-    <!-- GRAVEYARD MEMORIAL VIEW -->
+    <!-- MEMORIAL GRAVEYARD CONTAINER -->
     <div id="view-graveyard" class="hidden space-y-4">
-      <!-- Injected by JavaScript -->
-    </div>
-
-    <!-- SAVED BOOKMARKS VIEW -->
-    <div id="view-saved" class="hidden space-y-4">
-      <!-- Injected by JavaScript -->
+      <!-- Generated by JavaScript -->
     </div>
 
   </main>
@@ -204,16 +244,24 @@
 
   <!-- TOAST NOTIFICATION -->
   <div id="toast" class="fixed bottom-4 right-4 z-50 bg-hub-card border border-hub-border text-white text-xs px-4 py-2.5 rounded-lg shadow-xl flex items-center gap-2.5 transform translate-y-16 opacity-0 transition-all duration-200 pointer-events-none">
-    <span class="material-symbols-outlined text-sm text-sky-400" id="toast-icon">check</span>
+    <svg id="toast-icon-check" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+    </svg>
+    <svg id="toast-icon-trash" class="w-4 h-4 text-rose-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+    </svg>
     <span id="toast-text">Notification</span>
   </div>
 
   <script>
+    /* =========================================================
+       DATA DEFINITIONS
+       ========================================================= */
     const DIRECTORY = [
       {
         id: "anime",
         title: "Anime Streaming",
-        icon: "play_arrow",
+        iconType: "play",
         badge: "Sub & Dub",
         items: [
           {
@@ -247,8 +295,8 @@
             rank: 3,
             name: "AnimePahe",
             tags: ["Low Data", "Mobile Friendly", "Direct DDL"],
-            pros: ["Extreme video compression makes it work on even 2G/3G connections", "One-click direct episode download buttons", "Lightweight layout"],
-            cons: ["Video bitrate is capped at 720p/1080p optimized (not pristine remux)"],
+            pros: ["Extreme video compression makes it work on slow connections", "One-click direct episode download buttons", "Lightweight clean layout"],
+            cons: ["Video bitrate is capped at optimized 720p/1080p (not raw remux)"],
             note: "The undisputed champion for watching on mobile data or slow home internet.",
             mirrors: [
               { name: "animepahe.ru", url: "https://animepahe.ru" },
@@ -350,7 +398,7 @@
       {
         id: "movies",
         title: "Movies & TV Shows",
-        icon: "movie",
+        iconType: "film",
         badge: "Cinema & Series",
         items: [
           {
@@ -477,7 +525,7 @@
       {
         id: "manga",
         title: "Manga, Manhwa & Comics",
-        icon: "auto_stories",
+        iconType: "book",
         badge: "Scanlations & Readers",
         items: [
           {
@@ -682,13 +730,38 @@
       }
     ];
 
-    let expandedCardId = null; // Currently open accordion row ID
+    /* =========================================================
+       STATE VARIABLES
+       ========================================================= */
+    let expandedCardId = null; 
     let openCategorySections = { anime: true, movies: true, manga: true };
     let overflowSectionsOpen = { anime: false, movies: false, manga: false };
     let currentCategoryFilter = "all";
-    let activeTab = "index"; // 'index' | 'graveyard' | 'saved'
+    let activeTab = "index"; // 'index' | 'graveyard'
     let searchQuery = "";
+    let isSavedDropdownOpen = false;
 
+    /* SVG Icon Helper to guarantee no font-ligature leaks */
+    function getSvgIcon(name, cls = "w-4 h-4") {
+      switch (name) {
+        case "play":
+          return `<svg class="${cls}" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+        case "film":
+          return `<svg class="${cls}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>`;
+        case "book":
+          return `<svg class="${cls}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>`;
+        case "tombstone":
+          return `<svg class="${cls}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 20h14M6 20V9a6 6 0 1112 0v11M10 9h4m-2-2v4"/></svg>`;
+        case "external":
+          return `<svg class="${cls}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>`;
+        default:
+          return `<svg class="${cls}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>`;
+      }
+    }
+
+    /* =========================================================
+       BOOKMARKS (LOCALSTORAGE)
+       ========================================================= */
     function getBookmarks() {
       try {
         return JSON.parse(localStorage.getItem("streamindex_bookmarks")) || [];
@@ -702,19 +775,15 @@
       const idx = marks.indexOf(id);
       if (idx > -1) {
         marks.splice(idx, 1);
-        showToast("Removed from saved links", "bookmark_remove");
+        showToast("Removed from saved links", false);
       } else {
         marks.push(id);
-        showToast("Added to saved links", "bookmark_added");
+        showToast("Added to saved links", true);
       }
       localStorage.setItem("streamindex_bookmarks", JSON.stringify(marks));
       updateBookmarkBadge();
-      
-      if (activeTab === "saved") {
-        renderSaved();
-      } else {
-        renderDirectory();
-      }
+      renderSavedDropdown();
+      renderDirectory();
     }
 
     function updateBookmarkBadge() {
@@ -723,6 +792,154 @@
       if (badge) {
         badge.textContent = marks.length;
       }
+    }
+
+    function toggleBookmarkDropdown(e) {
+      if (e) e.stopPropagation();
+      isSavedDropdownOpen = !isSavedDropdownOpen;
+      const dropdown = document.getElementById("saved-dropdown");
+      const arrow = document.getElementById("saved-arrow");
+
+      if (isSavedDropdownOpen) {
+        renderSavedDropdown();
+        dropdown.classList.remove("hidden");
+        arrow.classList.add("rotate-180");
+      } else {
+        dropdown.classList.add("hidden");
+        arrow.classList.remove("rotate-180");
+      }
+    }
+
+    function closeSavedDropdown() {
+      isSavedDropdownOpen = false;
+      const dropdown = document.getElementById("saved-dropdown");
+      const arrow = document.getElementById("saved-arrow");
+      if (dropdown) dropdown.classList.add("hidden");
+      if (arrow) arrow.classList.remove("rotate-180");
+    }
+
+    // Close bookmark dropdown when clicking outside
+    document.addEventListener("click", () => {
+      if (isSavedDropdownOpen) {
+        closeSavedDropdown();
+      }
+    });
+
+    function renderSavedDropdown() {
+      const listContainer = document.getElementById("saved-dropdown-list");
+      const marks = getBookmarks();
+
+      let allItems = [];
+      DIRECTORY.forEach(cat => {
+        allItems = allItems.concat(cat.items);
+      });
+
+      const savedItems = allItems.filter(i => marks.includes(i.id));
+
+      if (savedItems.length === 0) {
+        listContainer.innerHTML = `
+          <div class="p-6 text-center text-slate-500 space-y-1">
+            <svg class="w-8 h-8 text-slate-600 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+            </svg>
+            <p class="text-xs text-slate-400">No saved links yet.</p>
+            <p class="text-[11px] text-slate-500">Click the bookmark icon on any card to save it here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = savedItems.map(item => {
+        const primary = item.mirrors && item.mirrors[0] ? item.mirrors[0].url : "#";
+        return `
+          <div class="p-2.5 flex items-center justify-between gap-3 hover:bg-hub-card transition rounded-lg">
+            <div class="min-w-0">
+              <div class="text-xs font-semibold text-white truncate">${item.name}</div>
+              <div class="text-[10px] font-mono text-slate-500 truncate">${item.mirrors[0] ? item.mirrors[0].name : 'Direct'}</div>
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <a 
+                href="${primary}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="px-2 py-1 bg-sky-500/20 hover:bg-sky-500 hover:text-black text-sky-400 font-mono text-[11px] rounded border border-sky-500/30 flex items-center gap-1 transition"
+              >
+                <span>Open</span>
+                ${getSvgIcon("external", "w-3 h-3")}
+              </a>
+              <button 
+                onclick="toggleBookmark('${item.id}')" 
+                title="Remove from saved"
+                class="p-1 text-slate-500 hover:text-rose-400 rounded transition"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearAllBookmarks() {
+      localStorage.removeItem("streamindex_bookmarks");
+      updateBookmarkBadge();
+      renderSavedDropdown();
+      renderDirectory();
+      showToast("Cleared all saved links", false);
+    }
+
+    /* =========================================================
+       VIEW TOGGLES & SEARCH
+       ========================================================= */
+    function switchTab(tab) {
+      activeTab = tab;
+      const vIndex = document.getElementById('view-index');
+      const vGrave = document.getElementById('view-graveyard');
+      const pills = document.getElementById('category-pills');
+
+      const bIndex = document.getElementById('nav-btn-index');
+      const bGrave = document.getElementById('nav-btn-graveyard');
+
+      [bIndex, bGrave].forEach(b => {
+        b.className = "px-3 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
+      });
+
+      if (tab === "index") {
+        vIndex.classList.remove('hidden');
+        pills.classList.remove('hidden');
+        vGrave.classList.add('hidden');
+        bIndex.className = "px-3 py-1 rounded text-xs font-medium text-white bg-hub-card border border-slate-700/60 shadow-sm transition";
+        renderDirectory();
+      } else if (tab === "graveyard") {
+        vGrave.classList.remove('hidden');
+        vIndex.classList.add('hidden');
+        pills.classList.add('hidden');
+        bGrave.className = "px-3 py-1 rounded text-xs font-medium text-white bg-hub-card border border-slate-700/60 shadow-sm transition flex items-center gap-1.5";
+        renderGraveyard();
+      }
+    }
+
+    function filterCategory(catId, btnEl) {
+      currentCategoryFilter = catId;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        btn.classList.remove('bg-slate-800', 'text-white', 'border-slate-700');
+        btn.classList.add('bg-hub-surface', 'text-slate-400', 'border-hub-border');
+      });
+      if (btnEl) {
+        btnEl.classList.remove('bg-hub-surface', 'text-slate-400', 'border-hub-border');
+        btnEl.classList.add('bg-slate-800', 'text-white', 'border-slate-700');
+      }
+      renderDirectory();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      if (activeTab !== "index") {
+        switchTab("index");
+      }
+      renderDirectory();
     }
 
     function toggleCategoryAccordion(catId) {
@@ -750,72 +967,16 @@
       el.classList.toggle('hidden');
     }
 
-    function filterCategory(catId, btnEl) {
-      currentCategoryFilter = catId;
-      document.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.classList.remove('bg-slate-800', 'text-white', 'border-slate-700');
-        btn.classList.add('bg-hub-surface', 'text-slate-400', 'border-hub-border');
-      });
-      if (btnEl) {
-        btnEl.classList.remove('bg-hub-surface', 'text-slate-400', 'border-hub-border');
-        btnEl.classList.add('bg-slate-800', 'text-white', 'border-slate-700');
-      }
-      renderDirectory();
-    }
-
-    function handleSearch(val) {
-      searchQuery = val.trim().toLowerCase();
-      if (activeTab !== "index") {
-        switchTab("index");
-      }
-      renderDirectory();
-    }
-
-    function switchTab(tab) {
-      activeTab = tab;
-      const vIndex = document.getElementById('view-index');
-      const vGrave = document.getElementById('view-graveyard');
-      const vSaved = document.getElementById('view-saved');
-      const pills = document.getElementById('category-pills');
-
-      const bIndex = document.getElementById('nav-btn-index');
-      const bGrave = document.getElementById('nav-btn-graveyard');
-      const bSaved = document.getElementById('nav-btn-saved');
-
-      // Reset styles
-      [bIndex, bGrave, bSaved].forEach(b => {
-        b.className = "px-3 py-1 rounded text-xs font-medium text-slate-400 hover:text-slate-200 transition flex items-center gap-1.5";
-      });
-
-      vIndex.classList.add('hidden');
-      vGrave.classList.add('hidden');
-      vSaved.classList.add('hidden');
-
-      if (tab === "index") {
-        vIndex.classList.remove('hidden');
-        pills.classList.remove('hidden');
-        bIndex.className = "px-3 py-1 rounded text-xs font-medium text-white bg-hub-card border border-slate-700/60 shadow-sm transition";
-        renderDirectory();
-      } else if (tab === "graveyard") {
-        vGrave.classList.remove('hidden');
-        pills.classList.add('hidden');
-        bGrave.className = "px-3 py-1 rounded text-xs font-medium text-white bg-hub-card border border-slate-700/60 shadow-sm transition flex items-center gap-1.5";
-        renderGraveyard();
-      } else if (tab === "saved") {
-        vSaved.classList.remove('hidden');
-        pills.classList.add('hidden');
-        bSaved.className = "px-3 py-1 rounded text-xs font-medium text-white bg-hub-card border border-slate-700/60 shadow-sm transition flex items-center gap-1.5";
-        renderSaved();
-      }
-    }
-
+    /* =========================================================
+       CARD & DIRECTORY RENDERING
+       ========================================================= */
     function renderItemCard(item, isSaved) {
       const isExpanded = expandedCardId === item.id;
       const primaryMirror = item.mirrors && item.mirrors[0] ? item.mirrors[0].url : "#";
 
       return `
         <div class="group border-b border-hub-border last:border-b-0 transition-colors ${isExpanded ? 'row-expanded' : 'hover:bg-hub-card/50'}">
-          <!-- Compact Row Trigger -->
+          <!-- Main Row -->
           <div class="p-3 sm:p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none" onclick="toggleItemAccordion('${item.id}')">
             
             <div class="flex items-center gap-3 min-w-0">
@@ -839,16 +1000,16 @@
               </div>
             </div>
 
-            <!-- Action controls: Bookmark + Launch + Chevron -->
+            <!-- Controls: Bookmark, Launch, Accordion -->
             <div class="flex items-center gap-2 flex-shrink-0" onclick="event.stopPropagation()">
               <button 
                 onclick="toggleBookmark('${item.id}')" 
                 title="${isSaved ? 'Remove Bookmark' : 'Save Link'}"
-                class="p-1 rounded hover:bg-hub-base text-slate-400 hover:text-amber-400 transition"
+                class="p-1 rounded hover:bg-hub-base transition ${isSaved ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}"
               >
-                <span class="material-symbols-outlined text-[18px] ${isSaved ? 'text-amber-400 fill-1' : ''}">
-                  ${isSaved ? 'bookmark' : 'bookmark_border'}
-                </span>
+                <svg class="w-4 h-4" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                </svg>
               </button>
 
               <a 
@@ -858,22 +1019,22 @@
                 class="px-2.5 py-1 rounded bg-hub-base hover:bg-sky-500 hover:text-black text-slate-300 font-mono text-[11px] flex items-center gap-1 border border-hub-border transition"
               >
                 <span>Launch</span>
-                <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                ${getSvgIcon("external", "w-3 h-3")}
               </a>
 
               <button 
                 onclick="toggleItemAccordion('${item.id}')" 
                 class="p-1 text-slate-400 hover:text-white transition"
               >
-                <span class="material-symbols-outlined text-sm transform transition-transform duration-200 ${isExpanded ? 'rotate-180 text-sky-400' : ''}">
-                  expand_more
-                </span>
+                <svg class="w-4 h-4 transform transition-transform duration-200 ${isExpanded ? 'rotate-180 text-sky-400' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
               </button>
             </div>
 
           </div>
 
-          <!-- Expanded Details Accordion (Pros, Cons, Mirrors) -->
+          <!-- Expanded Detail Pane -->
           ${isExpanded ? `
             <div class="px-4 pb-3.5 pt-1 text-xs border-t border-hub-border/60 bg-hub-base/40 space-y-3">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300 pt-1">
@@ -909,7 +1070,7 @@
                       class="px-2.5 py-1 rounded bg-hub-surface hover:bg-slate-800 text-sky-400 hover:text-sky-300 font-mono text-xs border border-hub-border flex items-center gap-1.5 transition"
                     >
                       <span>${m.name}</span>
-                      <span class="material-symbols-outlined text-[12px] text-slate-500">link</span>
+                      ${getSvgIcon("external", "w-3 h-3 text-slate-500")}
                     </a>
                   `).join('')}
                 </div>
@@ -921,7 +1082,6 @@
       `;
     }
 
-    // Helper to build a single Category Card Module
     function buildCategoryCard(cat, bookmarks) {
       let items = cat.items;
       if (searchQuery) {
@@ -941,14 +1101,14 @@
 
       return `
         <section class="bg-hub-surface border border-hub-border rounded-xl overflow-hidden flex flex-col shadow-sm">
-          <!-- Collapsible Master Category Header -->
+          <!-- Category Master Accordion Header -->
           <div 
             onclick="toggleCategoryAccordion('${cat.id}')"
             class="px-4 py-3 bg-hub-surface border-b border-hub-border flex items-center justify-between cursor-pointer select-none hover:bg-hub-card transition"
           >
             <div class="flex items-center gap-2.5">
-              <div class="w-6 h-6 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center">
-                <span class="material-symbols-outlined text-base">${cat.icon}</span>
+              <div class="w-6 h-6 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center icon-container">
+                ${getSvgIcon(cat.iconType, "w-3.5 h-3.5")}
               </div>
               <h2 class="font-bold text-white text-sm tracking-wide">${cat.title}</h2>
               <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-hub-base text-slate-400 border border-hub-border">
@@ -959,19 +1119,19 @@
               <span class="text-xs font-mono text-slate-500">
                 ${items.length} verified
               </span>
-              <span class="material-symbols-outlined text-slate-400 text-sm transition-transform duration-200 ${isCatOpen ? 'rotate-180 text-sky-400' : ''}">
-                expand_more
-              </span>
+              <svg class="w-4 h-4 text-slate-400 transition-transform duration-200 ${isCatOpen ? 'rotate-180 text-sky-400' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
             </div>
           </div>
 
-          <!-- Category Body (Top 7 + Overflow Dropdown) -->
+          <!-- Content: Top 7 + Secondary Drawer for 8+ -->
           ${isCatOpen ? `
             <div class="divide-y divide-hub-border flex-1">
               ${top7.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
             </div>
 
-            <!-- Collapsible +X More Drawer -->
+            <!-- Drawer for Rank 8+ -->
             ${overflow.length > 0 ? `
               <div class="border-t border-hub-border bg-hub-base/60 p-2.5">
                 <button 
@@ -979,7 +1139,9 @@
                   class="w-full py-2 px-3 rounded-lg bg-hub-surface hover:bg-slate-800 text-slate-400 hover:text-white border border-hub-border text-xs font-mono flex items-center justify-between transition"
                 >
                   <span class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm text-sky-400">alt_route</span>
+                    <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
                     <span>${isOverflowOpen ? 'Hide alternate mirrors' : `+ ${overflow.length} More Working Mirrors & Alternates`}</span>
                   </span>
                   <span class="text-[10px] px-1.5 py-0.5 rounded bg-hub-base border border-hub-border">
@@ -1024,9 +1186,7 @@
         return;
       }
 
-      // Responsive dual-column layout filling screen evenly:
-      // Left column: Anime Streaming
-      // Right column: Movies & TV Shows + Manga & Comics stacked
+      // Responsive dual-column structure that balances page space cleanly
       if (visibleCategories.length > 1) {
         const col1Cats = visibleCategories.filter(c => c.id === 'anime');
         const col2Cats = visibleCategories.filter(c => c.id !== 'anime');
@@ -1050,21 +1210,26 @@
       }
     }
 
-    // Render Graveyard Memorial Hall
+    /* =========================================================
+       GRAVEYARD VIEW (Zero text bleed, pure SVG icons)
+       ========================================================= */
     function renderGraveyard() {
       const container = document.getElementById('view-graveyard');
       container.innerHTML = `
         <div class="p-5 bg-hub-surface border border-hub-border rounded-xl space-y-4 shadow-sm">
+          
+          <!-- Memorial Header without font ligatures -->
           <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center">
-              <span class="material-symbols-outlined text-lg">tombstone</span>
+            <div class="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20 flex items-center justify-center flex-shrink-0 icon-container">
+              ${getSvgIcon("tombstone", "w-5 h-5 text-rose-400")}
             </div>
-            <div>
+            <div class="min-w-0">
               <h2 class="text-base font-bold text-white tracking-tight">The Media Graveyard (Hall of Remembrance)</h2>
-              <p class="text-xs text-slate-400">Remembering the giants, pioneer scanlation hubs, and video networks closed by enforcement or server costs.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Honoring the fallen giants, pioneer scanlation hubs, and video networks closed by enforcement or server costs.</p>
             </div>
           </div>
 
+          <!-- Cards Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-2">
             ${GRAVEYARD.map(item => `
               <div class="p-4 rounded-lg bg-hub-base border border-hub-border hover:border-slate-700 transition space-y-2">
@@ -1085,61 +1250,24 @@
       `;
     }
 
-    // Render Bookmarks Hall
-    function renderSaved() {
-      const container = document.getElementById('view-saved');
-      const marks = getBookmarks();
+    /* Toast Notification */
+    let toastTimer;
+    function showToast(text, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      const textEl = document.getElementById('toast-text');
+      const iconCheck = document.getElementById('toast-icon-check');
+      const iconTrash = document.getElementById('toast-icon-trash');
 
-      let allItems = [];
-      DIRECTORY.forEach(cat => {
-        allItems = allItems.concat(cat.items);
-      });
-
-      const savedItems = allItems.filter(i => marks.includes(i.id));
-
-      if (savedItems.length === 0) {
-        container.innerHTML = `
-          <div class="p-12 text-center text-slate-500 bg-hub-surface rounded-xl border border-hub-border space-y-2">
-            <span class="material-symbols-outlined text-3xl text-slate-600">bookmark_remove</span>
-            <p class="text-xs">You haven't bookmarked any streaming sites yet.</p>
-            <p class="text-[11px] text-slate-600">Click the bookmark icon on any directory row to save your favorites here.</p>
-          </div>
-        `;
-        return;
+      textEl.textContent = text;
+      if (isSuccess) {
+        iconCheck.classList.remove('hidden');
+        iconTrash.classList.add('hidden');
+      } else {
+        iconCheck.classList.add('hidden');
+        iconTrash.classList.remove('hidden');
       }
 
-      container.innerHTML = `
-        <div class="bg-hub-surface border border-hub-border rounded-xl overflow-hidden shadow-sm">
-          <div class="px-4 py-3 border-b border-hub-border flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-amber-400 text-lg">bookmarks</span>
-              <h2 class="font-bold text-white text-sm">Your Saved Portals (${savedItems.length})</h2>
-            </div>
-            <button onclick="clearAllBookmarks()" class="text-xs font-mono text-slate-400 hover:text-rose-400 underline">
-              Clear All
-            </button>
-          </div>
-          <div class="divide-y divide-hub-border">
-            ${savedItems.map(item => renderItemCard(item, true)).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    function clearAllBookmarks() {
-      localStorage.removeItem("streamindex_bookmarks");
-      updateBookmarkBadge();
-      renderSaved();
-      showToast("Cleared all saved links", "delete");
-    }
-
-    let toastTimer;
-    function showToast(text, icon = "check") {
-      const toast = document.getElementById('toast');
-      document.getElementById('toast-text').textContent = text;
-      document.getElementById('toast-icon').textContent = icon;
       clearTimeout(toastTimer);
-
       toast.classList.remove('translate-y-16', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
 
@@ -1149,7 +1277,7 @@
       }, 2000);
     }
 
-    // Keyboard shortcut / or f to focus search
+    /* Keyboard Hotkey / or f */
     window.addEventListener('keydown', (e) => {
       if ((e.key === '/' || e.key === 'f' || e.key === 'F') && document.activeElement.tagName !== 'INPUT') {
         e.preventDefault();
@@ -1159,7 +1287,6 @@
       }
     });
 
-    // Run on startup
     window.onload = function() {
       updateBookmarkBadge();
       renderDirectory();
