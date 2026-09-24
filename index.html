@@ -87,7 +87,55 @@
           </div>
           <div>
             <span class="font-bold text-white text-sm tracking-tight">StreamIndex</span>
-            <span class="text-[10px] text-neutral-500 font-mono ml-1 hidden md:inline">community index</span>
+          </div>
+        </div>
+
+        <!-- Main Switcher: Index vs Graveyard vs Bookmarks -->
+  <style>
+    /* Grounded, standard scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0c0d11;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #232736;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #33384c;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-1 {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 20;
+    }
+    /* Subtle highlight for active accordion rows */
+    .row-expanded {
+      background-color: #171b26 !important;
+      border-color: #3b82f6 !important;
+    }
+  </style>
+</head>
+
+<body class="bg-hub-base text-neutral-300 min-h-screen flex flex-col font-sans antialiased text-sm">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-30 bg-hub-surface/95 backdrop-blur-md border-b border-hub-border px-4 py-2.5">
+    <div class="max-w-[1500px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      
+      <!-- Logo & Navigation Tabs -->
+      <div class="flex items-center justify-between w-full sm:w-auto gap-4">
+        <div class="flex items-center gap-2.5">
+          <div class="w-7 h-7 rounded bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold font-mono text-xs">
+            SI
+          </div>
+          <div>
+            <span class="font-bold text-white text-sm tracking-tight">StreamIndex</span>
           </div>
         </div>
 
@@ -123,7 +171,7 @@
     </div>
   </header>
 
-  <main class="flex-1 max-w-5xl w-full mx-auto p-4 space-y-4">
+  <main class="flex-1 max-w-[1500px] w-full mx-auto p-4 space-y-4">
 
     <!-- Community Tip Banner -->
     <div class="bg-hub-surface border border-hub-border rounded-lg p-3 text-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-2.5">
@@ -132,9 +180,9 @@
         <span>Curated list for Otaku culture & cinema streaming. Ranks 1 to 7 shown; click cards to view mirrors.</span>
       </div>
       <div class="flex items-center gap-2 text-[11px] font-mono shrink-0">
-        <button onclick="toggleAllAccordions(true)" class="text-neutral-400 hover:text-white underline">Expand All</button>
+        <button onclick="toggleAllCategoryAccordions(true)" class="text-neutral-400 hover:text-white underline">Expand All Sections</button>
         <span class="text-neutral-600">&bull;</span>
-        <button onclick="toggleAllAccordions(false)" class="text-neutral-400 hover:text-white underline">Collapse All</button>
+        <button onclick="toggleAllCategoryAccordions(false)" class="text-neutral-400 hover:text-white underline">Collapse All Sections</button>
         <span class="text-neutral-600">&bull;</span>
         <button onclick="toggleSafetyGuide()" class="text-blue-400 hover:text-blue-300 flex items-center gap-0.5">
           <span class="material-symbols-outlined text-[14px]">shield</span> Adblock Setup
@@ -176,8 +224,8 @@
     </div>
 
     <!-- MAIN DIRECTORY VIEW -->
-    <div id="view-index" class="space-y-6">
-      <!-- Injected by JavaScript -->
+    <div id="view-index" class="w-full">
+      <!-- Injected by JavaScript into responsive multi-column layout -->
     </div>
 
     <!-- GRAVEYARD MEMORIAL VIEW -->
@@ -678,51 +726,19 @@
     ];
 
     let expandedCardId = null; // Currently open accordion card ID
+    let openCategorySections = { anime: true, movies: true, manga: true };
     let overflowSectionsOpen = { anime: false, movies: false, manga: false };
     let currentCategoryFilter = "all";
     let activeTab = "index"; // 'index' | 'graveyard' | 'saved'
     let searchQuery = "";
 
-    function getBookmarks() {
-      try {
-        return JSON.parse(localStorage.getItem('si_bookmarks') || '[]');
-      } catch (e) {
-        return [];
-      }
+    function toggleCategoryAccordion(catId) {
+      openCategorySections[catId] = !openCategorySections[catId];
+      renderDirectory();
     }
 
-    function toggleBookmark(id, event) {
-      if (event) event.stopPropagation();
-      let pins = getBookmarks();
-      const idx = pins.indexOf(id);
-      if (idx >= 0) {
-        pins.splice(idx, 1);
-        showToast("Removed from saved links", "bookmark_remove");
-      } else {
-        pins.push(id);
-        showToast("Saved to your bookmarks", "bookmark");
-      }
-      localStorage.setItem('si_bookmarks', JSON.stringify(pins));
-      updateBookmarkBadge();
-      
-      if (activeTab === "saved") {
-        renderSavedView();
-      } else {
-        renderDirectory();
-      }
-    }
-
-    function updateBookmarkBadge() {
-      const count = getBookmarks().length;
-      document.getElementById('nav-saved-badge').textContent = count;
-    }
-
-    function toggleCard(id) {
-      if (expandedCardId === id) {
-        expandedCardId = null;
-      } else {
-        expandedCardId = id;
-      }
+    function toggleAllCategoryAccordions(expand) {
+      openCategorySections = { anime: expand, movies: expand, manga: expand };
       renderDirectory();
     }
 
@@ -751,15 +767,33 @@
     function renderDirectory() {
       const container = document.getElementById('view-index');
       const bookmarks = getBookmarks();
-      let html = "";
 
-      DIRECTORY.forEach(cat => {
-        // Filter pills check
-        if (currentCategoryFilter !== "all" && currentCategoryFilter !== cat.id) {
-          return;
+      // Filter categories according to pills
+      const visibleCategories = DIRECTORY.filter(cat => {
+        if (currentCategoryFilter !== "all" && currentCategoryFilter !== cat.id) return false;
+        if (searchQuery) {
+          return cat.items.some(item => {
+            const inName = item.name.toLowerCase().includes(searchQuery);
+            const inTags = item.tags.some(t => t.toLowerCase().includes(searchQuery));
+            const inMirrors = item.mirrors.some(m => m.name.toLowerCase().includes(searchQuery) || m.url.toLowerCase().includes(searchQuery));
+            const inNote = item.note.toLowerCase().includes(searchQuery);
+            return inName || inTags || inMirrors || inNote;
+          });
         }
+        return true;
+      });
 
-        // Search query filter
+      if (visibleCategories.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center text-xs text-neutral-500 bg-hub-surface rounded-lg border border-hub-border font-mono w-full">
+            No active streaming services found matching "${searchQuery}".
+          </div>
+        `;
+        return;
+      }
+
+      // Render category card HTML helper
+      function buildCategoryCard(cat) {
         let items = cat.items;
         if (searchQuery) {
           items = items.filter(item => {
@@ -771,19 +805,18 @@
           });
         }
 
-        if (searchQuery && items.length === 0) {
-          return;
-        }
-
+        const isCatOpen = openCategorySections[cat.id] || searchQuery.length > 0;
         const top7 = items.slice(0, 7);
         const overflow = items.slice(7);
         const isOverflowOpen = overflowSectionsOpen[cat.id] || searchQuery.length > 0;
 
-        html += `
-          <section class="bg-hub-surface border border-hub-border rounded-lg overflow-hidden">
-            
-            <!-- Category Header -->
-            <div class="px-4 py-3 bg-hub-surface border-b border-hub-border flex items-center justify-between">
+        return `
+          <section class="bg-hub-surface border border-hub-border rounded-lg overflow-hidden flex flex-col">
+            <!-- Collapsible Master Category Header -->
+            <div 
+              onclick="toggleCategoryAccordion('${cat.id}')"
+              class="px-4 py-3 bg-hub-surface border-b border-hub-border flex items-center justify-between cursor-pointer select-none hover:bg-hub-card transition"
+            >
               <div class="flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-neutral-400 text-lg">${cat.icon}</span>
                 <h2 class="font-bold text-white text-sm tracking-wide">${cat.title}</h2>
@@ -791,309 +824,70 @@
                   ${cat.badge}
                 </span>
               </div>
-              <span class="text-xs font-mono text-neutral-500">
-                ${items.length} services
-              </span>
-            </div>
-
-            <!-- List of Top 7 Items -->
-            <div class="divide-y divide-hub-border">
-              ${top7.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
-            </div>
-
-            <!-- Collapsible +X More Mirrors Drawer (Items 8+) -->
-            ${overflow.length > 0 ? `
-              <div class="border-t border-hub-border bg-hub-base/60 p-2">
-                <button 
-                  onclick="toggleOverflow('${cat.id}')"
-                  class="w-full py-2 px-3 rounded bg-hub-surface hover:bg-neutral-800/80 text-neutral-400 hover:text-white border border-hub-border text-xs font-mono flex items-center justify-between transition"
-                >
-                  <span class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sm text-blue-400">subdirectory_arrow_right</span>
-                    <span>${isOverflowOpen ? 'Hide alternate mirrors' : `+ ${overflow.length} More Working Mirrors & Alternates`}</span>
-                  </span>
-                  <span class="text-[11px] text-neutral-500">
-                    ${isOverflowOpen ? 'Collapse' : 'Expand'}
-                  </span>
-                </button>
-
-                <div class="${isOverflowOpen ? 'block divide-y divide-hub-border mt-2 border-t border-hub-border' : 'hidden'}">
-                  ${overflow.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
-                </div>
-              </div>
-            ` : ''}
-
-          </section>
-        `;
-      });
-
-      if (!html) {
-        html = `
-          <div class="p-8 text-center text-xs text-neutral-500 bg-hub-surface rounded-lg border border-hub-border font-mono">
-            No active streaming services found matching "${searchQuery}".
-          </div>
-        `;
-      }
-
-      container.innerHTML = html;
-    }
-
-    function renderItemCard(item, isSaved) {
-      const isExpanded = (expandedCardId === item.id);
-
-      return `
-        <div class="transition-colors ${isExpanded ? 'row-expanded' : 'hover:bg-hub-card'}">
-          
-          <!-- Collapsed View (Click to toggle details) -->
-          <div 
-            onclick="toggleCard('${item.id}')"
-            class="px-4 py-3 cursor-pointer flex items-center justify-between gap-3 select-none"
-          >
-            <!-- Left Info: Rank, Name, Badges -->
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="font-mono text-xs font-semibold ${item.rank <= 3 ? 'text-amber-400' : 'text-neutral-500'} w-5 text-right shrink-0">
-                ${item.rank}.
-              </span>
-              <div class="min-w-0">
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span class="font-bold text-xs text-white hover:text-blue-400 transition truncate">${item.name}</span>
-                  ${item.tags.slice(0, 2).map(t => `
-                    <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-hub-base text-neutral-400 border border-hub-border">
-                      ${t}
-                    </span>
-                  `).join('')}
-                </div>
-                <p class="text-[11px] text-neutral-400 truncate mt-0.5">${item.note}</p>
-              </div>
-            </div>
-
-            <!-- Right Controls: Save Button & Quick Launch -->
-            <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
-              <button 
-                onclick="toggleBookmark('${item.id}', event)" 
-                class="p-1 rounded text-neutral-500 hover:text-amber-400 hover:bg-hub-base transition"
-                title="${isSaved ? 'Remove bookmark' : 'Bookmark link'}"
-              >
-                <span class="material-symbols-outlined text-[17px] ${isSaved ? 'text-amber-400 fill-1' : ''}">
-                  ${isSaved ? 'bookmark' : 'bookmark_border'}
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-mono text-neutral-500">
+                  ${items.length} services
                 </span>
-              </button>
-
-              <a 
-                href="${item.mirrors[0].url}" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="px-2.5 py-1 rounded bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border border-blue-500/30 text-xs font-mono flex items-center gap-1 transition"
-                title="Launch primary domain"
-              >
-                <span>Open</span>
-                <span class="material-symbols-outlined text-[13px]">open_in_new</span>
-              </a>
-
-              <button 
-                onclick="toggleCard('${item.id}')"
-                class="p-1 text-neutral-500 hover:text-white"
-                title="Toggle details"
-              >
-                <span class="material-symbols-outlined text-sm transition-transform duration-200 ${isExpanded ? 'rotate-180 text-blue-400' : ''}">
+                <span class="material-symbols-outlined text-neutral-400 text-sm transition-transform duration-200 ${isCatOpen ? 'rotate-180' : ''}">
                   expand_more
                 </span>
-              </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Expanded In-Place Details (Pros, Cons, Working Mirrors) -->
-          ${isExpanded ? `
-            <div class="px-4 pb-4 pt-1 bg-hub-base/40 border-t border-hub-border space-y-3.5 text-xs animate-fadeIn">
-              
-              <!-- Tag Pills -->
-              <div class="flex items-center gap-1.5 flex-wrap pt-1">
-                ${item.tags.map(t => `
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-neutral-800 text-neutral-300 border border-neutral-700">
-                    ${t}
-                  </span>
-                `).join('')}
+            <!-- Category Body (Top 7 + Overflow Dropdown) -->
+            ${isCatOpen ? `
+              <div class="divide-y divide-hub-border flex-1">
+                ${top7.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
               </div>
 
-              <!-- Pros & Cons Grid -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <!-- Pros -->
-                <div class="p-2.5 bg-hub-surface rounded border border-hub-border space-y-1">
-                  <span class="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider block mb-1">Strengths</span>
-                  ${item.pros.map(p => `
-                    <div class="flex items-start gap-1.5 text-neutral-300 text-[11px] leading-relaxed">
-                      <span class="text-emerald-400 font-mono font-bold select-none">+</span>
-                      <span>${p}</span>
-                    </div>
-                  `).join('')}
-                </div>
-
-                <!-- Cons -->
-                <div class="p-2.5 bg-hub-surface rounded border border-hub-border space-y-1">
-                  <span class="text-[10px] font-mono text-rose-400 font-bold uppercase tracking-wider block mb-1">Notice / Cons</span>
-                  ${item.cons.map(c => `
-                    <div class="flex items-start gap-1.5 text-neutral-400 text-[11px] leading-relaxed">
-                      <span class="text-rose-400 font-mono font-bold select-none">-</span>
-                      <span>${c}</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Working Mirror Domains -->
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-mono text-neutral-400 font-semibold uppercase tracking-wider block">
-                  Verified Mirror Links
-                </span>
-                <div class="flex items-center gap-2 flex-wrap">
-                  ${item.mirrors.map(m => `
-                    <a 
-                      href="${m.url}" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      class="px-2.5 py-1 rounded bg-hub-surface hover:bg-neutral-800 border border-hub-border text-neutral-300 hover:text-white font-mono text-[11px] flex items-center gap-1.5 transition"
-                    >
-                      <span class="material-symbols-outlined text-[13px] text-neutral-500">link</span>
-                      <span>${m.name}</span>
-                      <span class="material-symbols-outlined text-[11px] text-neutral-500">arrow_outward</span>
-                    </a>
-                  `).join('')}
+              <!-- Collapsible +X More Drawer -->
+              ${overflow.length > 0 ? `
+                <div class="border-t border-hub-border bg-hub-base/60 p-2">
                   <button 
-                    onclick="copyLink('${item.mirrors[0].url}')" 
-                    class="px-2 py-1 rounded bg-hub-surface hover:bg-neutral-800 border border-hub-border text-neutral-400 hover:text-white font-mono text-[11px] flex items-center gap-1"
-                    title="Copy direct URL"
+                    onclick="toggleOverflow('${cat.id}')"
+                    class="w-full py-2 px-3 rounded bg-hub-surface hover:bg-neutral-800/80 text-neutral-400 hover:text-white border border-hub-border text-xs font-mono flex items-center justify-between transition"
                   >
-                    <span class="material-symbols-outlined text-[13px]">content_copy</span>
-                    <span>Copy</span>
+                    <span class="flex items-center gap-2">
+                      <span class="material-symbols-outlined text-sm text-blue-400">subdirectory_arrow_right</span>
+                      <span>${isOverflowOpen ? 'Hide alternate mirrors' : `+ ${overflow.length} More Working Mirrors & Alternates`}</span>
+                    </span>
+                    <span class="text-[11px] text-neutral-500">
+                      ${isOverflowOpen ? 'Collapse' : 'Expand'}
+                    </span>
                   </button>
+
+                  <div class="${isOverflowOpen ? 'block divide-y divide-hub-border mt-2 border-t border-hub-border' : 'hidden'}">
+                    ${overflow.map(item => renderItemCard(item, bookmarks.includes(item.id))).join('')}
+                  </div>
                 </div>
-              </div>
-
-            </div>
-          ` : ''}
-
-        </div>
-      `;
-    }
-
-    function renderGraveyard() {
-      const container = document.getElementById('view-graveyard');
-      let html = `
-        <div class="bg-hub-surface border border-hub-border rounded-lg p-4 space-y-3">
-          <div class="flex items-center gap-2 text-rose-400">
-            <span class="material-symbols-outlined text-xl">tombstone</span>
-            <h2 class="font-bold text-white text-base">The Streaming Graveyard</h2>
-          </div>
-          <p class="text-xs text-neutral-400 leading-relaxed">
-            A memorial list of major piracy portals and encoders that were taken down by anti-piracy operations (ACE), developer retirements, or host seizures. This section prevents you from clicking dead links and lists their working modern successors.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          ${GRAVEYARD.map(item => `
-            <div class="p-3.5 bg-hub-surface border border-hub-border rounded-lg space-y-2 text-xs">
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-white text-sm">${item.name}</span>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">
-                  ${item.dates}
-                </span>
-              </div>
-              <div class="text-[11px] font-mono text-neutral-500">
-                ${item.category} &bull; <span class="text-neutral-400">${item.reason}</span>
-              </div>
-              <p class="text-neutral-400 leading-relaxed text-[11px] italic">
-                "${item.tribute}"
-              </p>
-              <div class="pt-1.5 border-t border-hub-border flex items-center gap-1.5 text-[11px] font-mono">
-                <span class="text-neutral-500">Use instead:</span>
-                <span class="text-blue-400 font-semibold">${item.useInstead}</span>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
-
-      container.innerHTML = html;
-    }
-
-    function renderSavedView() {
-      const container = document.getElementById('view-saved');
-      const bookmarks = getBookmarks();
-
-      if (bookmarks.length === 0) {
-        container.innerHTML = `
-          <div class="p-12 text-center text-xs text-neutral-500 bg-hub-surface rounded-lg border border-hub-border space-y-2 font-mono">
-            <span class="material-symbols-outlined text-3xl block text-neutral-600">bookmark_border</span>
-            <p class="text-neutral-300">No sites bookmarked yet.</p>
-            <p class="text-[11px] text-neutral-500">Click the bookmark icon on any card in the directory to save your favorite streams here.</p>
-          </div>
+              ` : ''}
+            ` : ''}
+          </section>
         `;
-        return;
       }
 
-      // Collect bookmarked objects
-      let allItems = [];
-      DIRECTORY.forEach(c => allItems = allItems.concat(c.items));
-      const savedItems = allItems.filter(i => bookmarks.includes(i.id));
+      // Responsive dual-column layout filling empty space:
+      // If showing all sections, Column 1 has Anime; Column 2 has Movies & Manga stacked.
+      if (visibleCategories.length > 1) {
+        const col1Cats = visibleCategories.filter(c => c.id === 'anime');
+        const col2Cats = visibleCategories.filter(c => c.id !== 'anime');
 
-      container.innerHTML = `
-        <div class="bg-hub-surface border border-hub-border rounded-lg overflow-hidden">
-          <div class="px-4 py-3 bg-hub-surface border-b border-hub-border flex items-center justify-between">
-            <h2 class="font-bold text-white text-sm">Your Bookmarked Links</h2>
-            <button onclick="clearAllBookmarks()" class="text-xs text-rose-400 hover:text-rose-300 font-mono">
-              Clear All
-            </button>
+        container.innerHTML = `
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+            <div class="space-y-4">
+              ${col1Cats.map(cat => buildCategoryCard(cat)).join('')}
+            </div>
+            <div class="space-y-4">
+              ${col2Cats.map(cat => buildCategoryCard(cat)).join('')}
+            </div>
           </div>
-          <div class="divide-y divide-hub-border">
-            ${savedItems.map(item => renderItemCard(item, true)).join('')}
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="space-y-4">
+            ${visibleCategories.map(cat => buildCategoryCard(cat)).join('')}
           </div>
-        </div>
-      `;
-    }
-
-    function clearAllBookmarks() {
-      localStorage.setItem('si_bookmarks', '[]');
-      updateBookmarkBadge();
-      renderSavedView();
-      showToast("Bookmarks cleared", "delete");
-    }
-
-    function switchTab(tab) {
-      activeTab = tab;
-      
-      const vIndex = document.getElementById('view-index');
-      const vGrave = document.getElementById('view-graveyard');
-      const vSaved = document.getElementById('view-saved');
-      const pills = document.getElementById('category-pills');
-
-      const btnIndex = document.getElementById('nav-btn-index');
-      const btnGrave = document.getElementById('nav-btn-graveyard');
-      const btnSaved = document.getElementById('nav-btn-saved');
-
-      // Reset button classes
-      [btnIndex, btnGrave, btnSaved].forEach(b => {
-        b.className = "px-2.5 py-1 rounded text-xs font-medium text-neutral-400 hover:text-neutral-200 transition flex items-center gap-1";
-      });
-
-      vIndex.classList.add('hidden');
-      vGrave.classList.add('hidden');
-      vSaved.classList.add('hidden');
-
-      if (tab === "index") {
-        vIndex.classList.remove('hidden');
-        pills.classList.remove('hidden');
-        btnIndex.className = "px-2.5 py-1 rounded text-xs font-medium text-white bg-hub-card border border-neutral-700/60 shadow-sm transition";
-        renderDirectory();
-      } else if (tab === "graveyard") {
-        vGrave.classList.remove('hidden');
-        pills.classList.add('hidden');
-        btnGrave.className = "px-2.5 py-1 rounded text-xs font-medium text-rose-300 bg-rose-950/40 border border-rose-500/30 transition flex items-center gap-1";
-        renderGraveyard();
-      } else if (tab === "saved") {
-        vSaved.classList.remove('hidden');
-        pills.classList.add('hidden');
-        btnSaved.className = "px-2.5 py-1 rounded text-xs font-medium text-amber-300 bg-amber-950/40 border border-amber-500/30 transition flex items-center gap-1";
-        renderSavedView();
+        `;
       }
     }
 
