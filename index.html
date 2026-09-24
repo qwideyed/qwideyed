@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EverythingStream &bull; Curated Directory of Anime, Movies, Manga & Torrents</title>
+  <title>OmniStream &bull; The Modern Streaming & Otaku Directory</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,1402 +13,1178 @@
       theme: {
         extend: {
           colors: {
-            emDark: {
-              bg: '#0f1013',
-              sidebar: '#141519',
-              card: '#18191d',
-              cardHeader: '#1e2026',
-              input: '#121316',
-              border: '#262830',
-              borderHover: '#3b3e4a',
-              tileHover: '#23252c',
-              textMuted: '#9ca3af',
-              textDark: '#6b7280',
-              textLight: '#e5e7eb',
-              greenText: '#4ade80',
-              redText: '#f87171',
-              accent: '#3b82f6'
+            bubble: {
+              bg: '#090a10',
+              sidebar: '#0d0f18',
+              card: '#131622',
+              cardHeader: '#181c2c',
+              border: 'rgba(255, 255, 255, 0.08)',
+              borderHover: 'rgba(125, 211, 252, 0.25)',
+              cyanGlow: '#06b6d4',
+              purpleGlow: '#8b5cf6',
+              accent: '#38bdf8'
             }
           },
           fontFamily: {
             sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
             mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+          },
+          borderRadius: {
+            'bubble-sm': '14px',
+            'bubble': '22px',
+            'bubble-lg': '28px',
+            'pill': '9999px'
+          },
+          boxShadow: {
+            'glow-cyan': '0 0 25px -5px rgba(6, 182, 212, 0.25)',
+            'glow-violet': '0 0 25px -5px rgba(139, 92, 246, 0.25)',
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
           }
         }
       }
     }
   </script>
 
-  <!-- Google Material Symbols -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 
   <style>
     body {
-      background-color: #0f1013;
-      color: #e5e7eb;
+      background-color: #090a10;
+      color: #e2e8f0;
       font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
     }
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      line-height: 1;
       display: inline-block;
       vertical-align: middle;
-      line-height: 1;
     }
     .material-symbols-outlined.fill-1 {
       font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 20;
     }
+    /* Ambient neon mesh backdrop */
+    .neon-mesh-blob-1 {
+      position: fixed;
+      top: -12%;
+      left: 15%;
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 75%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .neon-mesh-blob-2 {
+      position: fixed;
+      bottom: -15%;
+      right: 5%;
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.10) 0%, rgba(236, 72, 153, 0.06) 50%, transparent 80%);
+      filter: blur(95px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Scrollbar */
     ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: #0f1013;
+      background: #090a10;
     }
     ::-webkit-scrollbar-thumb {
-      background: #23252d;
-      border-radius: 4px;
+      background: #1e2235;
+      border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #373a46;
+      background: #333a56;
     }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
+    .glass-bubble {
+      background: rgba(19, 22, 34, 0.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .pro-line {
-      color: #5eead4;
-    }
-    .con-line {
-      color: #f87171;
+    .nav-link.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(139, 92, 246, 0.15));
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      font-weight: 600;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-neutral-700 selection:text-white">
+<body class="min-h-screen flex flex-col relative selection:bg-cyan-500/20 selection:text-cyan-200">
 
-  <header class="sticky top-0 z-40 bg-[#0f1013]/95 backdrop-blur-sm border-b border-emDark-border h-14 flex items-center px-3 sm:px-5 justify-between gap-3">
-    <!-- Left: Hamburger & Brand -->
-    <div class="flex items-center gap-3">
-      <button onclick="toggleSidebar()" class="text-emDark-textMuted hover:text-white p-1 rounded-md transition" title="Toggle Navigation Sidebar">
-        <span class="material-symbols-outlined text-2xl">menu</span>
-      </button>
+  <!-- Ambient Glowing Blobs -->
+  <div class="neon-mesh-blob-1"></div>
+  <div class="neon-mesh-blob-2"></div>
 
-      <div class="flex items-center gap-2 cursor-pointer select-none" onclick="navigateToSection('main-index')">
-        <div class="w-7 h-7 rounded bg-[#1e2026] border border-emDark-border flex items-center justify-center font-black text-sm text-sky-400 font-mono shadow-sm">
-          E
-        </div>
-        <span class="font-bold text-base tracking-tight text-white hidden sm:inline">EverythingStream</span>
+  <header class="sticky top-2 z-40 px-3 sm:px-6 py-2">
+    <div class="max-w-7xl mx-auto glass-bubble rounded-pill px-4 sm:px-6 py-2.5 flex items-center justify-between gap-3 shadow-glass">
+      
+      <!-- Left: Mobile Menu Toggle & Brand Bubble -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="lg:hidden text-neutral-400 hover:text-white p-1.5 rounded-full hover:bg-white/5 transition" title="Toggle Sidebar">
+          <span class="material-symbols-outlined text-2xl">menu</span>
+        </button>
+
+        <a href="#hero-banner" class="flex items-center gap-2.5 group">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-cyan-500 via-sky-500 to-violet-600 p-[1.5px] shadow-glow-cyan transition duration-300 group-hover:scale-105">
+            <div class="w-full h-full bg-[#0d0f18] rounded-full flex items-center justify-center">
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 font-extrabold text-sm font-mono">Ω</span>
+            </div>
+          </div>
+          <span class="font-bold text-sm tracking-tight text-white hidden sm:inline group-hover:text-cyan-300 transition">OmniStream</span>
+        </a>
       </div>
-    </div>
 
-    <!-- Center: Quick Search Bar with Category Filter & (F) shortcut -->
-    <div class="flex-1 max-w-xl mx-2">
-      <div class="relative flex items-center bg-[#15161a] border border-emDark-border rounded-md focus-within:border-neutral-500 transition">
-        <input
-          id="globalSearchInput"
-          type="text"
-          placeholder="Search (F)"
-          class="w-full bg-transparent px-3 py-1.5 text-xs sm:text-sm text-emDark-textLight placeholder-neutral-500 focus:outline-none"
-          oninput="handleSearch(this.value)"
-        />
-        <span class="material-symbols-outlined text-neutral-500 text-lg mr-2 pointer-events-none">search</span>
-        
-        <!-- Search Category Select Filter -->
-        <div class="border-l border-emDark-border px-2">
-          <select
-            id="searchCategorySelect"
-            onchange="handleFilterCategory(this.value)"
-            class="bg-transparent text-xs text-neutral-300 focus:outline-none cursor-pointer py-1 font-medium"
-          >
-            <option value="all" class="bg-[#18191d] text-white">Any</option>
-            <option value="anime" class="bg-[#18191d] text-white">Anime</option>
-            <option value="western" class="bg-[#18191d] text-white">Western / Movies</option>
-            <option value="manga" class="bg-[#18191d] text-white">Manga</option>
-            <option value="download" class="bg-[#18191d] text-white">Download</option>
-          </select>
+      <!-- Center: Universal Search Pill -->
+      <div class="flex-1 max-w-xl mx-2">
+        <div class="relative flex items-center bg-[#090a10]/80 border border-white/10 rounded-pill px-3 py-1.5 focus-within:border-cyan-400/50 focus-within:shadow-glow-cyan transition duration-200">
+          <span class="material-symbols-outlined text-neutral-400 text-lg mr-2">search</span>
+          <input
+            id="globalSearchInput"
+            type="text"
+            placeholder="Search streams, anime, manga, mirrors... (Press 'F' or '/')"
+            class="w-full bg-transparent text-xs sm:text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none"
+            oninput="handleSearch(this.value)"
+          />
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-neutral-500 hover:text-neutral-300 p-0.5 mr-1.5">
+            <span class="material-symbols-outlined text-sm">cancel</span>
+          </button>
+          
+          <!-- Category Quick Selector Pill -->
+          <div class="hidden sm:flex border-l border-white/10 pl-2 pr-1 items-center">
+            <select
+              id="searchCategorySelect"
+              onchange="handleFilterCategory(this.value)"
+              class="bg-transparent text-xs text-neutral-400 hover:text-white focus:outline-none cursor-pointer py-0.5"
+            >
+              <option value="all" class="bg-[#121420] text-white">All Categories</option>
+              <option value="anime" class="bg-[#121420] text-white">Anime</option>
+              <option value="western" class="bg-[#121420] text-white">Movies & TV</option>
+              <option value="manga" class="bg-[#121420] text-white">Manga & Webtoons</option>
+              <option value="drama" class="bg-[#121420] text-white">Asian Drama</option>
+              <option value="download" class="bg-[#121420] text-white">Torrents & DDL</option>
+            </select>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Right Controls: Submit, Pinned count, Theme -->
-    <div class="flex items-center gap-1.5 sm:gap-2">
-      <button onclick="toggleFavoritesOnly()" id="pinnedHeaderBtn" class="flex items-center gap-1 text-xs px-2.5 py-1.5 rounded bg-emDark-card border border-emDark-border text-emDark-textMuted hover:text-white transition" title="Show Pinned Sites">
-        <span class="material-symbols-outlined text-base text-yellow-500">push_pin</span>
-        <span id="pinnedCountBadge" class="font-mono text-xs text-yellow-400 font-bold">0</span>
-      </button>
-      <button onclick="openEditModal()" class="text-emDark-textMuted hover:text-white p-1.5 rounded transition" title="Suggest Link / Edit">
-        <span class="material-symbols-outlined text-lg">edit</span>
-      </button>
+      <!-- Right: Action Pills -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- Safety Modal Pill -->
+        <button onclick="openSafetyModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-pill bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 text-xs font-medium transition" title="Adblocker & Safety Setup">
+          <span class="material-symbols-outlined text-sm">shield</span>
+          <span class="hidden md:inline">Safety</span>
+        </button>
+
+        <!-- Pinned Bookmarks Pill -->
+        <button onclick="toggleFavoritesOnly()" id="pinnedHeaderBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-pill bg-[#161a29] border border-white/10 text-neutral-300 hover:border-yellow-500/50 hover:text-yellow-400 text-xs font-medium transition" title="Toggle Pinned Bookmarks">
+          <span class="material-symbols-outlined text-sm text-yellow-400">bookmark</span>
+          <span id="pinnedCountBadge" class="font-mono text-xs font-bold text-yellow-400">0</span>
+        </button>
+
+        <!-- Suggest Link Pill -->
+        <button onclick="openEditModal()" class="w-8 h-8 rounded-full bg-[#161a29] border border-white/10 hover:border-violet-500/50 hover:text-violet-300 flex items-center justify-center text-neutral-300 transition" title="Submit Link / Mirror">
+          <span class="material-symbols-outlined text-base">add</span>
+        </button>
+      </div>
+
     </div>
   </header>
 
-  <div class="flex flex-1 relative overflow-hidden">
-    <!-- Sidebar Backing Backdrop (Mobile) -->
-    <div id="sidebarBackdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+  <div class="flex flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 gap-6 relative z-10">
+    
+    <!-- Mobile Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden lg:hidden"></div>
 
+    <!-- Bubble Left Sidebar with Real Anchor Links -->
     <aside
       id="mainSidebar"
-      class="w-64 bg-emDark-sidebar border-r border-emDark-border flex flex-col fixed lg:sticky top-14 h-[calc(100vh-3.5rem)] z-30 transition-transform duration-200 ease-in-out shrink-0 overflow-y-auto"
+      class="w-64 bg-[#0d0f18]/95 backdrop-blur-xl border border-white/10 rounded-bubble-lg p-4 flex flex-col fixed lg:sticky top-20 h-[calc(100vh-6rem)] z-30 transition-transform duration-300 ease-out shrink-0 overflow-y-auto no-scrollbar shadow-glass"
     >
-      <div class="p-3 border-b border-emDark-border flex items-center justify-between">
-        <span class="text-xs font-bold uppercase tracking-wider text-neutral-400">EverythingStream</span>
-        <button onclick="toggleSidebar(false)" class="text-neutral-500 hover:text-white lg:hidden">
+      <!-- Top Title -->
+      <div class="flex items-center justify-between pb-3 mb-2 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-cyan-400 text-sm">explore</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-neutral-300">Navigation Hub</span>
+        </div>
+        <button onclick="toggleSidebar(false)" class="text-neutral-400 hover:text-white lg:hidden">
           <span class="material-symbols-outlined text-sm">close</span>
         </button>
       </div>
 
-      <div class="p-2 space-y-0.5 text-xs text-neutral-300">
-        <button onclick="navigateToSection('main-index')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition font-medium text-white bg-emDark-card/50">
-          <span class="material-symbols-outlined text-base text-neutral-400">home</span>
-          <span>Main Index</span>
-        </button>
-        <button onclick="openGraveyardModal()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition font-medium text-neutral-400 hover:text-red-400">
-          <span class="material-symbols-outlined text-base">foundation</span>
-          <span>Graveyard (Offline)</span>
-        </button>
-        <button onclick="showToast('Activity log refreshed')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition font-medium text-neutral-400 hover:text-white">
-          <span class="material-symbols-outlined text-base">sensors</span>
-          <span>Activity</span>
-        </button>
-        <button onclick="openDownDetectorModal()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition font-medium text-neutral-400 hover:text-amber-400">
-          <span class="material-symbols-outlined text-base">warning</span>
-          <span>Down Detector</span>
-        </button>
-      </div>
+      <!-- Real Clickable Directory Links Section -->
+      <div class="space-y-1">
+        <a href="#hero-banner" onclick="onSidebarLinkClick(event, 'hero-banner')" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-pill border border-transparent hover:border-white/10 hover:bg-white/5 text-xs text-neutral-300 transition group active">
+          <span class="material-symbols-outlined text-base text-neutral-400 group-hover:text-cyan-400 transition">home</span>
+          <span>Main Directory</span>
+        </a>
 
-      <div class="px-3 pt-3 pb-1 text-[11px] font-bold text-neutral-500 uppercase tracking-wider">
-        Sections
-      </div>
+        <a href="#anime" onclick="onSidebarLinkClick(event, 'anime')" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-pill border border-transparent hover:border-emerald-500/30 hover:bg-emerald-500/10 text-xs text-neutral-300 transition group">
+          <span class="material-symbols-outlined text-base text-neutral-400 group-hover:text-emerald-400 transition">smart_display</span>
+          <span>Anime Streaming</span>
+        </a>
 
-      <nav class="p-2 space-y-0.5 text-xs text-neutral-300">
-        <button onclick="scrollToCategory('anime')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">play_arrow</span>
-          <span>Anime</span>
-        </button>
-        <button onclick="scrollToCategory('western')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">movie</span>
-          <span>Western / Movies</span>
-        </button>
-        <button onclick="scrollToCategory('manga')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">auto_stories</span>
+        <a href="#western" onclick="onSidebarLinkClick(event, 'western')" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-pill border border-transparent hover:border-sky-500/30 hover:bg-sky-500/10 text-xs text-neutral-300 transition group">
+          <span class="material-symbols-outlined text-base text-neutral-400 group-hover:text-sky-400 transition">movie</span>
+          <span>Movies & Shows</span>
+        </a>
+
+        <a href="#manga" onclick="onSidebarLinkClick(event, 'manga')" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-pill border border-transparent hover:border-amber-500/30 hover:bg-amber-500/10 text-xs text-neutral-300 transition group">
+          <span class="material-symbols-outlined text-base text-neutral-400 group-hover:text-amber-400 transition">auto_stories</span>
           <span>Manga & Manhwa</span>
-        </button>
-        <button onclick="scrollToCategory('download')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">download</span>
-          <span>Download & Torrents</span>
-        </button>
-        <button onclick="showNotice('Drama catalog integrated in Main Index')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">live_tv</span>
-          <span>Drama</span>
-        </button>
-        <button onclick="showNotice('Music tracks and OST sources')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">library_music</span>
-          <span>Music</span>
-        </button>
-        <button onclick="showNotice('Stremio, Kodi & Aniyomi plugins')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">apps</span>
-          <span>Apps & Addons</span>
-        </button>
-        <button onclick="showNotice('Tools, Proxies & Video Extractors')" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-md hover:bg-emDark-card text-left transition">
-          <span class="material-symbols-outlined text-sm text-neutral-400">terminal</span>
-          <span>Tools</span>
-        </button>
-      </nav>
+        </a>
 
-      <div class="mt-auto p-3 border-t border-emDark-border text-[11px] text-neutral-500 flex justify-between items-center">
-        <span>v3.4 &bull; Community</span>
-        <span class="text-emerald-500 font-mono flex items-center gap-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+        <a href="#drama" onclick="onSidebarLinkClick(event, 'drama')" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-pill border border-transparent hover:border-pink-500/30 hover:bg-pink-500/10 text-xs text-neutral-300 transition group">
+          <span class="material-symbols-outlined text-base text-neutral-400 group-hover:text-pink-400 transition">live_tv</span>
+          <span>Asian Drama (K-Drama)</span>
+        </a>
+
+        <a href="#download" onclick="onSidebarLinkClick(event, 'download')" class="nav-link w-full flex items-center gap-3 px-3.5 py-2.5 rounded-pill border border-transparent hover:border-purple-500/30 hover:bg-purple-500/10 text-xs text-neutral-300 transition group">
+          <span class="material-symbols-outlined text-base text-neutral-400 group-hover:text-purple-400 transition">download_done</span>
+          <span>Torrents & DDL</span>
+        </a>
+      </div>
+
+      <!-- Utilities & Status Links -->
+      <div class="pt-4 pb-1 text-[11px] font-bold text-neutral-500 uppercase tracking-wider px-3">
+        Tools & Community
+      </div>
+
+      <div class="space-y-1">
+        <a href="javascript:void(0)" onclick="openSafetyModal()" class="w-full flex items-center gap-3 px-3.5 py-2 rounded-pill border border-transparent hover:border-cyan-500/30 hover:bg-cyan-500/10 text-xs text-neutral-300 transition group">
+          <span class="material-symbols-outlined text-base text-cyan-400">verified_user</span>
+          <span>Safety & Adblock Guide</span>
+        </a>
+
+        <a href="javascript:void(0)" onclick="openGraveyardModal()" class="w-full flex items-center gap-3 px-3.5 py-2 rounded-pill border border-transparent hover:border-rose-500/30 hover:bg-rose-500/10 text-xs text-neutral-400 hover:text-rose-300 transition group">
+          <span class="material-symbols-outlined text-base text-rose-400">foundation</span>
+          <span>Graveyard (Offline)</span>
+        </a>
+
+        <a href="javascript:void(0)" onclick="checkDownDetector()" class="w-full flex items-center gap-3 px-3.5 py-2 rounded-pill border border-transparent hover:border-amber-500/30 hover:bg-amber-500/10 text-xs text-neutral-400 hover:text-amber-300 transition group">
+          <span class="material-symbols-outlined text-base text-amber-400">wifi_tethering</span>
+          <span>Down Detector</span>
+        </a>
+      </div>
+
+      <!-- External Links & Otaku Resources -->
+      <div class="pt-4 pb-1 text-[11px] font-bold text-neutral-500 uppercase tracking-wider px-3">
+        External Portals
+      </div>
+
+      <div class="space-y-1">
+        <a href="https://fmhy.net" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between px-3.5 py-2 rounded-pill border border-transparent hover:border-white/10 hover:bg-white/5 text-xs text-neutral-400 hover:text-white transition group">
+          <span class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-sm text-neutral-400 group-hover:text-cyan-400">link</span>
+            <span>FMHY Index</span>
+          </span>
+          <span class="material-symbols-outlined text-xs text-neutral-600 group-hover:text-neutral-300">open_in_new</span>
+        </a>
+
+        <a href="https://everythingmoe.com" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between px-3.5 py-2 rounded-pill border border-transparent hover:border-white/10 hover:bg-white/5 text-xs text-neutral-400 hover:text-white transition group">
+          <span class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-sm text-neutral-400 group-hover:text-pink-400">favorite</span>
+            <span>EverythingMoe</span>
+          </span>
+          <span class="material-symbols-outlined text-xs text-neutral-600 group-hover:text-neutral-300">open_in_new</span>
+        </a>
+
+        <a href="https://reddit.com/r/AnimePiracy" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-between px-3.5 py-2 rounded-pill border border-transparent hover:border-white/10 hover:bg-white/5 text-xs text-neutral-400 hover:text-white transition group">
+          <span class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-sm text-neutral-400 group-hover:text-orange-400">forum</span>
+            <span>r/AnimePiracy</span>
+          </span>
+          <span class="material-symbols-outlined text-xs text-neutral-600 group-hover:text-neutral-300">open_in_new</span>
+        </a>
+      </div>
+
+      <!-- Bottom Status Pill -->
+      <div class="mt-auto pt-3 border-t border-white/10 flex items-center justify-between px-2 text-[11px] text-neutral-400">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Index Uptime 99.9%</span>
         </span>
+        <span class="font-mono text-neutral-500">v4.0</span>
       </div>
     </aside>
 
-    <main class="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-5 overflow-x-hidden">
-      
-      <!-- Center Info Banner (Matching Screenshot 1) -->
-      <div class="text-center mb-5">
-        <h1 class="text-base sm:text-lg font-semibold text-neutral-200">
-          Curated toplist of streaming and Otaku culture
-        </h1>
-        <div class="flex items-center justify-center gap-1 text-xs text-neutral-500 mt-0.5 hover:text-neutral-400 cursor-pointer" onclick="showToast('Synced with tracker 2 days ago')">
-          <span>Last update : 2 days ago</span>
-          <span class="material-symbols-outlined text-xs">chevron_right</span>
+    <main class="flex-1 w-full min-w-0 space-y-6">
+
+      <!-- Hero Bubble Banner -->
+      <section id="hero-banner" class="glass-bubble rounded-bubble p-6 border border-white/10 relative overflow-hidden">
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-medium mb-2">
+              <span class="material-symbols-outlined text-sm">stars</span>
+              <span>Ultra-Curated Otaku & Cinema Index</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+              Direct Access to Reliable Streaming & Downloads
+            </h1>
+            <p class="text-xs sm:text-sm text-neutral-400 mt-1 max-w-xl">
+              Strictly vetted domains, fast mirror switches, zero deceptive popup clones.
+            </p>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <button onclick="shareDirectory()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-pill bg-[#161a29] border border-white/10 text-neutral-300 hover:text-white hover:border-white/30 transition shadow-sm">
+              <span class="material-symbols-outlined text-sm">share</span>
+              <span>Share</span>
+            </button>
+            <button id="expandAllToggleBtn" onclick="toggleExpandAll()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-pill bg-[#161a29] border border-white/10 text-neutral-300 hover:text-white hover:border-white/30 transition shadow-sm">
+              <span class="material-symbols-outlined text-sm">unfold_more</span>
+              <span id="expandAllLabel">Expand All</span>
+            </button>
+            <button onclick="triggerSurpriseMe()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-pill bg-gradient-to-r from-violet-600 to-cyan-600 text-white font-medium hover:brightness-110 transition shadow-glow-cyan">
+              <span class="material-symbols-outlined text-sm">casino</span>
+              <span>Surprise Me</span>
+            </button>
+          </div>
         </div>
 
-        <!-- Controls: Share, Expand, NSFW -->
-        <div class="flex items-center justify-center gap-4 sm:gap-6 mt-3 text-xs text-neutral-400">
-          <button onclick="shareDirectory()" class="flex items-center gap-1 hover:text-white transition">
-            <span class="material-symbols-outlined text-sm">share</span>
-            <span>Share</span>
-          </button>
-          <button id="expandAllToggleBtn" onclick="toggleExpandAll()" class="flex items-center gap-1 hover:text-white transition">
-            <span class="material-symbols-outlined text-sm">open_in_full</span>
-            <span id="expandAllLabel">Expand</span>
-          </button>
-          <button onclick="toggleNsfw()" id="nsfwToggleBtn" class="flex items-center gap-1 text-red-400/80 hover:text-red-400 transition">
-            <span class="material-symbols-outlined text-sm">visibility_off</span>
-            <span>NSFW</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Quick Nav Grid of Rounded Square Buttons (Faithful to Screenshot 2) -->
-      <section class="mb-8">
-        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-          
-          <button onclick="scrollToCategory('anime')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-emerald-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-emerald-400 text-xl transition">play_arrow</span>
-            <span class="text-xs font-medium text-neutral-300">Anime</span>
-          </button>
-
-          <button onclick="scrollToCategory('western')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-sky-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-sky-400 text-xl transition">movie</span>
-            <span class="text-xs font-medium text-neutral-300">Western</span>
-          </button>
-
-          <button onclick="scrollToCategory('manga')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-indigo-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-indigo-400 text-xl transition">grid_view</span>
-            <span class="text-xs font-medium text-neutral-300">Manga</span>
-          </button>
-
-          <button onclick="scrollToCategory('download')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-violet-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-violet-400 text-xl transition">download</span>
-            <span class="text-xs font-medium text-neutral-300">Download</span>
-          </button>
-
-          <button onclick="showNotice('Korean & Asian Drama section')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-teal-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-teal-400 text-xl transition">video_camera_front</span>
-            <span class="text-xs font-medium text-neutral-300">Drama</span>
-          </button>
-
-          <button onclick="showNotice('Light Novels & Web Novels')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-purple-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-purple-400 text-xl transition">format_align_left</span>
-            <span class="text-xs font-medium text-neutral-300">Novel</span>
-          </button>
-
-          <button onclick="showNotice('Anime games & Visual Novels')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-blue-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-blue-400 text-xl transition">tv</span>
-            <span class="text-xs font-medium text-neutral-300">Games</span>
-          </button>
-
-          <button onclick="showNotice('Android Apps & Extension tools')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-amber-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-amber-400 text-xl transition">layers</span>
-            <span class="text-xs font-medium text-neutral-300">Apps</span>
-          </button>
-
-          <button onclick="showNotice('Anime OST, Openings and Music')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-pink-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-pink-400 text-xl transition">music_note</span>
-            <span class="text-xs font-medium text-neutral-300">Music</span>
-          </button>
-
-          <button onclick="showNotice('Airing Broadcast Release Schedules')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-cyan-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-cyan-400 text-xl transition">schedule</span>
-            <span class="text-xs font-medium text-neutral-300">Schedule</span>
-          </button>
-
-          <button onclick="showNotice('Metadata: AniList, MAL, Kitsu & SIMKL')" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-orange-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-orange-400 text-xl transition">folder</span>
-            <span class="text-xs font-medium text-neutral-300">Database</span>
-          </button>
-
-          <button onclick="openGraveyardModal()" class="bg-emDark-card hover:bg-emDark-tileHover border border-emDark-border hover:border-red-500/40 rounded-lg p-3 flex flex-col items-center justify-center gap-1.5 transition group">
-            <span class="material-symbols-outlined text-neutral-400 group-hover:text-red-400 text-xl transition">error_outline</span>
-            <span class="text-xs font-medium text-neutral-300">Graveyard</span>
-          </button>
-
+        <!-- Quick Bubble Chip Carousel for Instant Category Jumping -->
+        <div class="pt-5 mt-5 border-t border-white/10 flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          <a href="#anime" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-[#161a29] hover:bg-emerald-500/20 border border-white/10 hover:border-emerald-500/40 text-xs text-neutral-300 hover:text-emerald-300 whitespace-nowrap transition">
+            <span class="material-symbols-outlined text-sm text-emerald-400">smart_display</span>
+            <span>Anime Stream</span>
+          </a>
+          <a href="#western" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-[#161a29] hover:bg-sky-500/20 border border-white/10 hover:border-sky-500/40 text-xs text-neutral-300 hover:text-sky-300 whitespace-nowrap transition">
+            <span class="material-symbols-outlined text-sm text-sky-400">movie</span>
+            <span>Movies & TV</span>
+          </a>
+          <a href="#manga" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-[#161a29] hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/40 text-xs text-neutral-300 hover:text-amber-300 whitespace-nowrap transition">
+            <span class="material-symbols-outlined text-sm text-amber-400">auto_stories</span>
+            <span>Manga & Webtoons</span>
+          </a>
+          <a href="#drama" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-[#161a29] hover:bg-pink-500/20 border border-white/10 hover:border-pink-500/40 text-xs text-neutral-300 hover:text-pink-300 whitespace-nowrap transition">
+            <span class="material-symbols-outlined text-sm text-pink-400">live_tv</span>
+            <span>Asian Drama</span>
+          </a>
+          <a href="#download" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-pill bg-[#161a29] hover:bg-purple-500/20 border border-white/10 hover:border-purple-500/40 text-xs text-neutral-300 hover:text-purple-300 whitespace-nowrap transition">
+            <span class="material-symbols-outlined text-sm text-purple-400">download_done</span>
+            <span>Torrents & DDL</span>
+          </a>
         </div>
       </section>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5" id="categoryColumnsContainer">
-        
-        <!-- Column 1: Anime Streaming -->
-        <div id="col-anime" class="bg-emDark-card border border-emDark-border rounded-lg overflow-hidden flex flex-col">
-          <!-- Card Header (Screenshot 3 style) -->
-          <div class="bg-[#1b221a] px-4 py-3 border-b border-emDark-border flex items-center justify-between">
-            <div class="flex items-center gap-2 text-neutral-200 font-medium text-sm">
-              <span class="material-symbols-outlined text-emerald-400 text-base">play_arrow</span>
-              <span class="font-bold text-white">Anime Streaming</span>
+      <section id="anime" class="space-y-3 pt-2">
+        <div class="flex items-center justify-between px-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+              <span class="material-symbols-outlined text-base">smart_display</span>
             </div>
-            <button onclick="toggleCardMaximize('col-anime')" class="text-neutral-400 hover:text-white text-xs" title="Expand Box">
-              <span class="material-symbols-outlined text-base">fullscreen</span>
-            </button>
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Anime Streaming Sites</h2>
+              <p class="text-[11px] text-neutral-400">Auto skip intros, sub & dub, synced AniList servers</p>
+            </div>
           </div>
-
-          <!-- Announcement Sub-banner -->
-          <div class="bg-[#141814] px-4 py-1.5 text-center text-xs text-neutral-400 border-b border-emDark-border">
-            <span class="text-neutral-300 font-medium">AnimeKai</span> is moved to <a href="javascript:openGraveyardModal()" class="text-red-400 underline hover:text-red-300">Graveyard</a>
-          </div>
-
-          <!-- Category Specific Filter Bar -->
-          <div class="px-4 py-2 border-b border-emDark-border flex items-center justify-end gap-2 text-xs">
-            <span class="material-symbols-outlined text-neutral-500 text-sm">filter_alt</span>
-            <select onchange="filterCategoryList('anime', this.value)" class="bg-[#121316] border border-emDark-border rounded px-2 py-0.5 text-neutral-300 text-xs focus:outline-none">
-              <option value="all">Any</option>
-              <option value="adfree">Ad-Free / Mild</option>
-              <option value="softsub">Soft Subtitles</option>
-              <option value="mult">Multi-Quality</option>
-            </select>
-          </div>
-
-          <!-- Accordion List Items -->
-          <div class="divide-y divide-emDark-border" id="list-anime">
-            <!-- Populated via JavaScript -->
-          </div>
+          <span class="text-xs text-neutral-500 font-mono" id="count-anime">7 services</span>
         </div>
 
-        <!-- Column 2: Western Movies & TV Shows -->
-        <div id="col-western" class="bg-emDark-card border border-emDark-border rounded-lg overflow-hidden flex flex-col">
-          <div class="bg-[#191d29] px-4 py-3 border-b border-emDark-border flex items-center justify-between">
-            <div class="flex items-center gap-2 text-neutral-200 font-medium text-sm">
-              <span class="material-symbols-outlined text-sky-400 text-base">movie</span>
-              <span class="font-bold text-white">Western &bull; Movies & Shows</span>
+        <div class="space-y-2.5" id="container-anime">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <section id="western" class="space-y-3 pt-6">
+        <div class="flex items-center justify-between px-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-sky-500/20 border border-sky-500/40 flex items-center justify-center text-sky-400">
+              <span class="material-symbols-outlined text-base">movie</span>
             </div>
-            <button onclick="toggleCardMaximize('col-western')" class="text-neutral-400 hover:text-white text-xs" title="Expand Box">
-              <span class="material-symbols-outlined text-base">fullscreen</span>
-            </button>
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Movies & Western TV Shows</h2>
+              <p class="text-[11px] text-neutral-400">High bitrate 4K/1080p, subtitles, Chromecast compatible</p>
+            </div>
           </div>
-
-          <!-- Announcement Sub-banner -->
-          <div class="bg-[#12151e] px-4 py-1.5 text-center text-xs text-neutral-400 border-b border-emDark-border">
-            <span class="text-neutral-300 font-medium">Soap2Day / Fbox</span> moved to <a href="javascript:openGraveyardModal()" class="text-red-400 underline hover:text-red-300">Graveyard</a>
-          </div>
-
-          <div class="px-4 py-2 border-b border-emDark-border flex items-center justify-end gap-2 text-xs">
-            <span class="material-symbols-outlined text-neutral-500 text-sm">filter_alt</span>
-            <select onchange="filterCategoryList('western', this.value)" class="bg-[#121316] border border-emDark-border rounded px-2 py-0.5 text-neutral-300 text-xs focus:outline-none">
-              <option value="all">Any</option>
-              <option value="adfree">Ad-Free</option>
-              <option value="4k">4K / 1080p</option>
-              <option value="mult">Multi-Language</option>
-            </select>
-          </div>
-
-          <!-- Accordion List Items -->
-          <div class="divide-y divide-emDark-border" id="list-western">
-            <!-- Populated via JavaScript -->
-          </div>
+          <span class="text-xs text-neutral-500 font-mono" id="count-western">5 services</span>
         </div>
 
-        <!-- Column 3: Download & Torrents (Screenshot 1 Right Box) -->
-        <div id="col-download" class="bg-emDark-card border border-emDark-border rounded-lg overflow-hidden flex flex-col">
-          <div class="bg-[#1f1a26] px-4 py-3 border-b border-emDark-border flex items-center justify-between">
-            <div class="flex items-center gap-2 text-neutral-200 font-medium text-sm">
-              <span class="material-symbols-outlined text-purple-400 text-base">download</span>
-              <span class="font-bold text-white">Download & Torrent Index</span>
+        <div class="space-y-2.5" id="container-western">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <section id="manga" class="space-y-3 pt-6">
+        <div class="flex items-center justify-between px-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+              <span class="material-symbols-outlined text-base">auto_stories</span>
             </div>
-            <button onclick="toggleCardMaximize('col-download')" class="text-neutral-400 hover:text-white text-xs" title="Expand Box">
-              <span class="material-symbols-outlined text-base">fullscreen</span>
-            </button>
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Manga & Korean Manhwa</h2>
+              <p class="text-[11px] text-neutral-400">Infinite scroll, high quality scans, Mihon / Tachiyomi sources</p>
+            </div>
           </div>
-
-          <div class="bg-[#17131d] px-4 py-1.5 text-center text-xs text-neutral-400 border-b border-emDark-border">
-            Use Qbittorrent + Bind VPN &bull; Verified P2P Trackers
-          </div>
-
-          <div class="px-4 py-2 border-b border-emDark-border flex items-center justify-end gap-2 text-xs">
-            <span class="material-symbols-outlined text-neutral-500 text-sm">filter_alt</span>
-            <select onchange="filterCategoryList('download', this.value)" class="bg-[#121316] border border-emDark-border rounded px-2 py-0.5 text-neutral-300 text-xs focus:outline-none">
-              <option value="all">Any</option>
-              <option value="ddl">DDL (Direct Download)</option>
-              <option value="torrent">Torrent P2P</option>
-              <option value="usenet">Usenet / XDCC</option>
-            </select>
-          </div>
-
-          <!-- Accordion List Items -->
-          <div class="divide-y divide-emDark-border" id="list-download">
-            <!-- Populated via JavaScript -->
-          </div>
+          <span class="text-xs text-neutral-500 font-mono" id="count-manga">4 services</span>
         </div>
 
-        <!-- Column 4: Manga & Manhwa -->
-        <div id="col-manga" class="bg-emDark-card border border-emDark-border rounded-lg overflow-hidden flex flex-col">
-          <div class="bg-[#241f17] px-4 py-3 border-b border-emDark-border flex items-center justify-between">
-            <div class="flex items-center gap-2 text-neutral-200 font-medium text-sm">
-              <span class="material-symbols-outlined text-amber-400 text-base">auto_stories</span>
-              <span class="font-bold text-white">Manga & Manhwa Readers</span>
+        <div class="space-y-2.5" id="container-manga">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <section id="drama" class="space-y-3 pt-6">
+        <div class="flex items-center justify-between px-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-pink-500/20 border border-pink-500/40 flex items-center justify-center text-pink-400">
+              <span class="material-symbols-outlined text-base">live_tv</span>
             </div>
-            <button onclick="toggleCardMaximize('col-manga')" class="text-neutral-400 hover:text-white text-xs" title="Expand Box">
-              <span class="material-symbols-outlined text-base">fullscreen</span>
-            </button>
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Asian Drama & K-Drama Hubs</h2>
+              <p class="text-[11px] text-neutral-400">Korean, Japanese, Chinese dramas with English subtitles</p>
+            </div>
           </div>
-
-          <div class="bg-[#19150f] px-4 py-1.5 text-center text-xs text-neutral-400 border-b border-emDark-border">
-            BATO & MangaDex official scanlation mirrors
-          </div>
-
-          <div class="px-4 py-2 border-b border-emDark-border flex items-center justify-end gap-2 text-xs">
-            <span class="material-symbols-outlined text-neutral-500 text-sm">filter_alt</span>
-            <select onchange="filterCategoryList('manga', this.value)" class="bg-[#121316] border border-emDark-border rounded px-2 py-0.5 text-neutral-300 text-xs focus:outline-none">
-              <option value="all">Any</option>
-              <option value="adfree">Zero Ads</option>
-              <option value="webtoon">Webtoon Mode</option>
-              <option value="download">Offline Reading</option>
-            </select>
-          </div>
-
-          <!-- Accordion List Items -->
-          <div class="divide-y divide-emDark-border" id="list-manga">
-            <!-- Populated via JavaScript -->
-          </div>
+          <span class="text-xs text-neutral-500 font-mono" id="count-drama">3 services</span>
         </div>
 
-      </div>
+        <div class="space-y-2.5" id="container-drama">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <section id="download" class="space-y-3 pt-6">
+        <div class="flex items-center justify-between px-2">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-full bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+              <span class="material-symbols-outlined text-base">download_done</span>
+            </div>
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Torrents, DDL & Usenet</h2>
+              <p class="text-[11px] text-neutral-400">Remux 4K Blu-ray files, DDL mirrors, raw audio</p>
+            </div>
+          </div>
+          <span class="text-xs text-neutral-500 font-mono" id="count-download">5 services</span>
+        </div>
+
+        <div class="space-y-2.5" id="container-download">
+          <!-- Populated by JS -->
+        </div>
+      </section>
 
     </main>
+
   </div>
 
-  <!-- Comments Modal -->
-  <div id="commentModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
-    <div class="bg-emDark-card border border-emDark-border rounded-lg max-w-lg w-full p-5 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-emDark-border pb-3">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-sky-400 text-lg">chat</span>
-          <h3 class="font-bold text-white text-sm" id="modalSiteTitle">Community Comments</h3>
+  <div id="safetyModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-bubble rounded-bubble-lg max-w-lg w-full p-6 border border-white/10 shadow-glass space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2 text-cyan-400">
+          <span class="material-symbols-outlined text-2xl">verified_user</span>
+          <h3 class="font-bold text-white text-base">Streaming Safety & Adblock Guide</h3>
         </div>
-        <button onclick="closeCommentModal()" class="text-neutral-400 hover:text-white">
-          <span class="material-symbols-outlined text-base">close</span>
+        <button onclick="closeSafetyModal()" class="text-neutral-400 hover:text-white p-1 rounded-full hover:bg-white/5">
+          <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
-      <div class="space-y-3 max-h-60 overflow-y-auto pr-1 text-xs" id="commentsContainer">
-        <!-- Mock comments injected via JS -->
+      <div class="space-y-3 text-xs text-neutral-300 leading-relaxed">
+        <div class="p-3 rounded-bubble-sm bg-[#161a28] border border-cyan-500/20 flex gap-3">
+          <span class="material-symbols-outlined text-cyan-400 text-xl shrink-0">extension</span>
+          <div>
+            <span class="font-bold text-white block mb-0.5">1. Install uBlock Origin</span>
+            Never browse free streaming sites without an authentic adblocker. uBlock Origin neutralizes hidden popunders and rogue redirect scripts.
+          </div>
+        </div>
+
+        <div class="p-3 rounded-bubble-sm bg-[#161a28] border border-violet-500/20 flex gap-3">
+          <span class="material-symbols-outlined text-violet-400 text-xl shrink-0">public</span>
+          <div>
+            <span class="font-bold text-white block mb-0.5">2. Encrypted DNS (Bypass ISP Blocks)</span>
+            If a site doesn't load, your ISP is likely blocking the domain. Enable DNS over HTTPS (DoH) via Cloudflare (1.1.1.1) or NextDNS inside your browser settings.
+          </div>
+        </div>
+
+        <div class="p-3 rounded-bubble-sm bg-[#161a28] border border-emerald-500/20 flex gap-3">
+          <span class="material-symbols-outlined text-emerald-400 text-xl shrink-0">shield</span>
+          <div>
+            <span class="font-bold text-white block mb-0.5">3. Brave Browser / Firefox</span>
+            Chrome's Manifest V3 limits adblocking extensions. Firefox and Brave provide the strongest protection against deceptive malware players.
+          </div>
+        </div>
       </div>
 
-      <!-- Add Comment Form -->
-      <form onsubmit="handlePostComment(event)" class="flex gap-2 pt-2 border-t border-emDark-border">
-        <input
-          id="newCommentInput"
-          type="text"
-          placeholder="Write feedback about uptime, player speed..."
-          class="flex-1 bg-emDark-input border border-emDark-border rounded px-3 py-1.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-neutral-400"
-          required
-        />
-        <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs px-3 py-1.5 rounded transition">
-          Post
+      <div class="flex justify-end pt-2">
+        <button onclick="closeSafetyModal()" class="px-5 py-2 rounded-pill bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs transition">
+          Understood
         </button>
-      </form>
+      </div>
     </div>
   </div>
 
-  <!-- Graveyard Modal -->
-  <div id="graveyardModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
-    <div class="bg-emDark-card border border-emDark-border rounded-lg max-w-xl w-full p-5 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-emDark-border pb-3">
-        <div class="flex items-center gap-2 text-red-400">
+  <div id="graveyardModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-bubble rounded-bubble-lg max-w-lg w-full p-6 border border-white/10 shadow-glass space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <div class="flex items-center gap-2 text-rose-400">
           <span class="material-symbols-outlined text-xl">foundation</span>
-          <h3 class="font-bold text-white text-sm">Site Graveyard (Permanently Down or Seized)</h3>
+          <h3 class="font-bold text-white text-base">The Graveyard (Offline / Seized Domains)</h3>
         </div>
-        <button onclick="closeGraveyardModal()" class="text-neutral-400 hover:text-white">
-          <span class="material-symbols-outlined text-base">close</span>
+        <button onclick="closeGraveyardModal()" class="text-neutral-400 hover:text-white p-1 rounded-full hover:bg-white/5">
+          <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
+
       <p class="text-xs text-neutral-400">
-        These domains have been seized, shut down by ACE/BREIN, or rebranded. Beware of clone domains imitating these names as they may spread adware.
+        These prominent hubs have officially closed or lost their domains. Beware of impersonators using these names as clone sites can harvest data.
       </p>
-      <div class="divide-y divide-emDark-border text-xs max-h-72 overflow-y-auto" id="graveyardListContainer">
-        <!-- Injected via JS -->
+
+      <div class="space-y-2 max-h-72 overflow-y-auto pr-1 text-xs" id="graveyardContainer">
+        <!-- Rendered by JS -->
       </div>
     </div>
   </div>
 
-  <!-- Edit / Submit Link Modal -->
-  <div id="editModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden">
-    <div class="bg-emDark-card border border-emDark-border rounded-lg max-w-md w-full p-5 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-emDark-border pb-3">
+  <div id="editModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="glass-bubble rounded-bubble-lg max-w-md w-full p-6 border border-white/10 shadow-glass space-y-4">
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
         <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-white text-base">add_link</span>
-          <h3 class="font-bold text-white text-sm">Suggest Site or Mirror</h3>
+          <span class="material-symbols-outlined text-cyan-400 text-xl">add_link</span>
+          <h3 class="font-bold text-white text-base">Submit New Site or Mirror</h3>
         </div>
-        <button onclick="closeEditModal()" class="text-neutral-400 hover:text-white">
-          <span class="material-symbols-outlined text-base">close</span>
+        <button onclick="closeEditModal()" class="text-neutral-400 hover:text-white p-1 rounded-full hover:bg-white/5">
+          <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
-      <form onsubmit="handleSuggestSite(event)" class="space-y-3 text-xs">
+      <form onsubmit="handleSuggestSubmit(event)" class="space-y-3 text-xs">
         <div>
-          <label class="block text-neutral-400 mb-1">Site Name</label>
-          <input id="suggestName" type="text" class="w-full bg-emDark-input border border-emDark-border rounded p-2 text-white" placeholder="e.g. FreeFlix" required />
+          <label class="block text-neutral-400 mb-1">Site Title</label>
+          <input id="inputSiteName" type="text" class="w-full bg-[#0d0f18] border border-white/10 rounded-pill px-4 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-cyan-400" placeholder="e.g. NovaStream" required />
         </div>
         <div>
           <label class="block text-neutral-400 mb-1">Category</label>
-          <select id="suggestCategory" class="w-full bg-emDark-input border border-emDark-border rounded p-2 text-white">
+          <select id="inputSiteCategory" class="w-full bg-[#0d0f18] border border-white/10 rounded-pill px-4 py-2 text-white focus:outline-none focus:border-cyan-400">
             <option value="anime">Anime</option>
-            <option value="western">Western / Movies</option>
+            <option value="western">Movies & TV</option>
             <option value="manga">Manga</option>
-            <option value="download">Download</option>
+            <option value="drama">Asian Drama</option>
+            <option value="download">Torrents / DDL</option>
           </select>
         </div>
         <div>
-          <label class="block text-neutral-400 mb-1">Main Domain Link</label>
-          <input id="suggestUrl" type="url" class="w-full bg-emDark-input border border-emDark-border rounded p-2 text-white" placeholder="https://example.to" required />
+          <label class="block text-neutral-400 mb-1">Mirror URL</label>
+          <input id="inputSiteUrl" type="url" class="w-full bg-[#0d0f18] border border-white/10 rounded-pill px-4 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-cyan-400" placeholder="https://domain.to" required />
         </div>
         <div>
-          <label class="block text-neutral-400 mb-1">Key Features / Pros</label>
-          <input id="suggestPros" type="text" class="w-full bg-emDark-input border border-emDark-border rounded p-2 text-white" placeholder="e.g. 1080p, Soft subs, No popups" />
+          <label class="block text-neutral-400 mb-1">Key Pros (Comma-separated)</label>
+          <input id="inputSitePros" type="text" class="w-full bg-[#0d0f18] border border-white/10 rounded-pill px-4 py-2 text-white placeholder-neutral-500 focus:outline-none focus:border-cyan-400" placeholder="Fast 1080p player, soft subtitles, no forced redirects" />
         </div>
+
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeEditModal()" class="px-3 py-1.5 rounded border border-emDark-border text-neutral-400">Cancel</button>
-          <button type="submit" class="px-3 py-1.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-medium">Submit Entry</button>
+          <button type="button" onclick="closeEditModal()" class="px-4 py-2 rounded-pill border border-white/10 text-neutral-400 hover:text-white">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-pill bg-cyan-500 hover:bg-cyan-400 text-black font-semibold">Submit Link</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Toast Notification element -->
-  <div id="siteToast" class="fixed bottom-5 right-5 z-50 bg-[#16181e] border border-emDark-border text-white text-xs px-3.5 py-2.5 rounded shadow-xl flex items-center gap-2 transform translate-y-16 opacity-0 transition-all duration-200 pointer-events-none">
-    <span class="material-symbols-outlined text-sm text-sky-400">info</span>
-    <span id="toastText">Action completed</span>
+  <!-- Toast Element -->
+  <div id="bubbleToast" class="fixed bottom-6 right-6 z-50 glass-bubble border border-white/20 text-white text-xs px-4 py-3 rounded-pill shadow-glass flex items-center gap-2.5 transform translate-y-20 opacity-0 transition duration-300 pointer-events-none">
+    <span class="material-symbols-outlined text-cyan-400 text-sm" id="toastIcon">check_circle</span>
+    <span id="toastMsg">Operation successful</span>
   </div>
 
   <script>
-    // Primary Dataset faithful to EverythingMoe screenshots
+    // Rich Curated Dataset
     const DIRECTORY_DATA = {
       anime: [
         {
-          id: "ani-1",
+          id: "ani-anikoto",
           rank: 1,
           name: "Anikoto",
-          iconChar: "☀️",
-          badges: ["MULT", "SOFTSUB"],
+          icon: "☀️",
+          badges: ["MULT", "SOFTSUB", "VERIFIED"],
           category: "anime",
           pros: [
-            "Large library",
-            "Reupload Hianime videos",
-            "Soft subtitle, multi languages",
-            "Modern interface"
+            "Extensive anime catalog with simultaneous simulcasts",
+            "Soft subtitle support with multiple audio tracks",
+            "Clean player controls with speed adjust and episode skips"
           ],
           cons: [
-            "Bad ads"
+            "Heavy ads present without uBlock Origin"
           ],
-          note: "note: It also has many alt domain and brand names. It usually copies other websites.",
+          note: "note: High quality source; shares CDN backends with top tier anime mirrors.",
           mirrors: [
-            { name: "Anikoto", url: "https://anikoto.com" },
-            { name: "Anichi", url: "https://anichi.to" },
-            { name: "anisuge", url: "https://anisuge.to" },
-            { name: "animesogo", url: "https://animesogo.to" },
-            { name: "anixtv", url: "https://anixtv.to" }
-          ],
-          commentsCount: 449,
-          comments: [
-            { author: "OtakuDan", text: "Best substitute since 9anime changed." },
-            { author: "SubsRule", text: "Use uBlock or the popups get super obnoxious." }
+            { name: "Anikoto Main", url: "https://anikoto.com" },
+            { name: "Anichi Mirror", url: "https://anichi.to" },
+            { name: "Anisuge Mirror", url: "https://anisuge.to" }
           ]
         },
         {
-          id: "ani-2",
+          id: "ani-miruro",
           rank: 2,
-          name: "animepahe",
-          iconChar: "🦊",
-          badges: ["LOW-DATA", "FAST"],
-          category: "anime",
-          pros: [
-            "Extremely low bandwidth consumption",
-            "Very clean lightweight player",
-            "Consistent releases of old & retro anime",
-            "Single-click download mirror"
-          ],
-          cons: [
-            "Video quality capped around ~720p/1080p compressed"
-          ],
-          note: "note: The best mobile site when on limited cellular data plans.",
-          mirrors: [
-            { name: "animepahe", url: "https://animepahe.ru" },
-            { name: "animepahe.com", url: "https://animepahe.com" }
-          ],
-          commentsCount: 312,
-          comments: [
-            { author: "Kira99", text: "Streams without buffering even on 3G!" }
-          ]
-        },
-        {
-          id: "ani-3",
-          rank: 3,
-          name: "Re:Anime",
-          iconChar: "❄️",
-          badges: ["AD-FREE", "1080P"],
-          category: "anime",
-          pros: [
-            "Minimalist clean UI",
-            "Direct high speed CDN streams",
-            "MAL & AniList sync support"
-          ],
-          cons: [
-            "Smaller niche catalog"
-          ],
-          note: "note: Community funded mirror with zero popups.",
-          mirrors: [
-            { name: "Re:Anime", url: "https://reanimes.com" }
-          ],
-          commentsCount: 88,
-          comments: [
-            { author: "Lelouch", text: "Super smooth UI, love it." }
-          ]
-        },
-        {
-          id: "ani-4",
-          rank: 4,
           name: "Miruro",
-          iconChar: "🌸",
-          badges: ["MULT", "AD-FREE"],
+          icon: "🌸",
+          badges: ["AD-FREE", "SYNC", "1080P"],
           category: "anime",
           pros: [
-            "Totally ad-free viewing experience",
-            "Auto skip opening / ending themes",
-            "Native AniList profile synchronisation",
-            "Highest video bitrates available"
+            "Completely ad-free native interface",
+            "Auto skip opening / ending song themes",
+            "Seamless two-way sync with AniList and MyAnimeList accounts"
           ],
           cons: [
-            "Occasional server reboots on weekend peaks"
+            "Occasional mirror maintenance during high traffic weekend releases"
           ],
-          note: "note: Rapidly becoming the #1 community favorite anime portal.",
+          note: "note: Top recommended community portal for modern layout.",
           mirrors: [
-            { name: "Miruro.tv", url: "https://miruro.tv" },
-            { name: "Miruro.online", url: "https://miruro.online" }
-          ],
-          commentsCount: 520,
-          comments: [
-            { author: "Spike", text: "The auto skip intro actually works reliably." }
+            { name: "Miruro TV", url: "https://miruro.tv" },
+            { name: "Miruro Online", url: "https://miruro.online" }
           ]
         },
         {
-          id: "ani-5",
+          id: "ani-pahe",
+          rank: 3,
+          name: "AnimePahe",
+          icon: "🦊",
+          badges: ["LOW-DATA", "FAST", "MOBILE"],
+          category: "anime",
+          pros: [
+            "Extremely low data usage (optimized AV1/H.264 compression)",
+            "Lightning fast stream loading without buffering",
+            "Direct 1-click episode downloads"
+          ],
+          cons: [
+            "Maximum quality is standard 720p/1080p light encode"
+          ],
+          note: "note: Exceptional pick when browsing on cellular mobile data.",
+          mirrors: [
+            { name: "AnimePahe Ru", url: "https://animepahe.ru" },
+            { name: "AnimePahe Org", url: "https://animepahe.org" }
+          ]
+        },
+        {
+          id: "ani-hi",
+          rank: 4,
+          name: "HiAnime",
+          icon: "⚡",
+          badges: ["POPULAR", "DUB", "SUB"],
+          category: "anime",
+          pros: [
+            "Massive sub & English dub anime archive",
+            "Active timestamp user comments and community reactions",
+            "Multiple streaming server fallbacks (Vidstreaming, Streamwish)"
+          ],
+          cons: [
+            "Banner ads require active adblocking extension"
+          ],
+          note: "note: Rebrand successor to the historic Zoro.to portal.",
+          mirrors: [
+            { name: "HiAnime To", url: "https://hianime.to" },
+            { name: "HiAnime Sx", url: "https://hianime.sx" }
+          ]
+        },
+        {
+          id: "ani-re",
           rank: 5,
-          name: "MKissa",
-          iconChar: "🐱",
-          badges: ["DUB", "SUB"],
+          name: "Re:Anime",
+          icon: "❄️",
+          badges: ["MINIMAL", "1080P"],
           category: "anime",
           pros: [
-            "Huge dubbed anime collection",
-            "Fast mirror fallback switch"
+            "Zero popups or deceptive clicking elements",
+            "Direct CDN streaming speeds"
           ],
           cons: [
-            "Requires adblocker"
+            "Smaller backlog of vintage 90s OVA releases"
           ],
-          note: "note: Great for dubbed cartoon and anime fans.",
+          note: "note: Clean enthusiast-built mirror.",
           mirrors: [
-            { name: "MKissa", url: "https://mkissa.com" }
-          ],
-          commentsCount: 64,
-          comments: []
-        },
-        {
-          id: "ani-6",
-          rank: 6,
-          name: "AniZone",
-          iconChar: "🍙",
-          badges: ["FAST"],
-          category: "anime",
-          pros: [
-            "Fast episode scheduler",
-            "Interactive chat for airing shows"
-          ],
-          cons: [
-            "Periodic mirror blockages"
-          ],
-          note: "note: Good backup source for newly aired simulcasts.",
-          mirrors: [
-            { name: "AniZone.to", url: "https://anizone.to" }
-          ],
-          commentsCount: 41,
-          comments: []
-        },
-        {
-          id: "ani-7",
-          rank: 7,
-          name: "Senshi",
-          iconChar: "⚔️",
-          badges: ["RAW", "SUB"],
-          category: "anime",
-          pros: [
-            "Japanese subtitle practice tracks",
-            "High resolution encodes"
-          ],
-          cons: [
-            "Catalog leans heavily on newer anime"
-          ],
-          note: "note: Built for Japanese language learners.",
-          mirrors: [
-            { name: "Senshi.stream", url: "https://senshi.stream" }
-          ],
-          commentsCount: 19,
-          comments: []
+            { name: "Re:Anime Stream", url: "https://reanimes.com" }
+          ]
         }
       ],
 
       western: [
         {
-          id: "west-1",
+          id: "west-braflix",
           rank: 1,
           name: "Braflix",
-          iconChar: "🍿",
+          icon: "🍿",
           badges: ["4K", "MULT", "AD-FREE"],
           category: "western",
           pros: [
-            "Modern Netflix style UI layout",
-            "4K HDR video streaming sources",
-            "Multi-language subtitles and multi-audio",
-            "Zero disruptive ad banners or redirects"
+            "Flawless Netflix style UI with rich actor & season metadata",
+            "Crisp 4K HDR & 1080p high bitrate servers",
+            "Multi-language subtitles with custom styling and fonts",
+            "Zero disruptive ad banners"
           ],
           cons: [
-            "Certain 4K servers require fast fiber connection"
+            "4K servers require high speed internet connection"
           ],
-          note: "note: Currently considered top tier for western shows and blockbusters.",
+          note: "note: Currently the benchmark for movie and TV shows streaming.",
           mirrors: [
-            { name: "Braflix", url: "https://www.braflix.video" },
-            { name: "Braflix.st", url: "https://braflix.st" }
-          ],
-          commentsCount: 681,
-          comments: [
-            { author: "Cinephile9", text: "Subtitles sync flawlessly on TV series." }
+            { name: "Braflix Video", url: "https://www.braflix.video" },
+            { name: "Braflix ST", url: "https://braflix.st" }
           ]
         },
         {
-          id: "west-2",
+          id: "west-cinezone",
           rank: 2,
           name: "CineZone",
-          iconChar: "🎬",
-          badges: ["1080P", "FAST"],
+          icon: "🎬",
+          badges: ["FAST", "1080P"],
           category: "western",
           pros: [
-            "Lightning fast player load times",
-            "Extensive back-catalog of 80s/90s cinema",
-            "Integrated IMDb reviews and ratings"
+            "Speedy player launch with minimal initial buffer",
+            "Deep archives of classic film history and indie cinema",
+            "IMDb ratings and genre tagging"
           ],
           cons: [
-            "Occasional mirror changes required"
+            "Occasional mirror address changes"
           ],
-          note: "note: Formerly related to the CineBloom / VidBinge development team.",
+          note: "note: Created by the authors behind the CineBloom directory.",
           mirrors: [
-            { name: "CineZone.to", url: "https://cinezone.to" },
-            { name: "CineZone.is", url: "https://cinezone.is" }
-          ],
-          commentsCount: 290,
-          comments: []
-        },
-        {
-          id: "west-3",
-          rank: 3,
-          name: "LookMovie2",
-          iconChar: "👁️",
-          badges: ["INTERNAL-CDN"],
-          category: "western",
-          pros: [
-            "Hosts internal video player (no shady third party iframes)",
-            "Curated film lists & director retrospectives",
-            "Very minimal clean design"
-          ],
-          cons: [
-            "Free tier caps at 720p/1080p standard"
-          ],
-          note: "note: Reliable uptime throughout recent domain takedown waves.",
-          mirrors: [
-            { name: "LookMovie2", url: "https://lookmovie2.to" }
-          ],
-          commentsCount: 410,
-          comments: []
-        },
-        {
-          id: "west-4",
-          rank: 4,
-          name: "SFlix",
-          iconChar: "⚡",
-          badges: ["MULT", "MOBILE"],
-          category: "western",
-          pros: [
-            "Works great on mobile browsers and Android TV",
-            "Chromecast & AirPlay native integration",
-            "Customizable subtitle colors and background"
-          ],
-          cons: [
-            "Adblocker required for clean viewing"
-          ],
-          note: "note: Huge server redundancy if one stream fails.",
-          mirrors: [
-            { name: "SFlix.to", url: "https://sflix.to" },
-            { name: "SFlix.is", url: "https://sflix.is" }
-          ],
-          commentsCount: 155,
-          comments: []
-        },
-        {
-          id: "west-5",
-          rank: 5,
-          name: "FlixWave",
-          iconChar: "🌊",
-          badges: ["1080P"],
-          category: "western",
-          pros: [
-            "Episodes uploaded within 15 min of live cable airing",
-            "Good sorting by trending genre and year"
-          ],
-          cons: [
-            "Frequent popup clicks without uBlock"
-          ],
-          note: "note: Good alternative if main providers are sluggish.",
-          mirrors: [
-            { name: "FlixWave.to", url: "https://flixwave.to" }
-          ],
-          commentsCount: 77,
-          comments: []
-        }
-      ],
-
-      download: [
-        {
-          id: "dl-1",
-          rank: 1,
-          name: "Nyaa",
-          iconChar: "🐱",
-          badges: ["TORRENT", "LOSSLESS"],
-          category: "download",
-          pros: [
-            "The world's largest East Asian torrent repository",
-            "Untouched Blu-ray Remuxes, FLAC audio & raw scans",
-            "100% ad-free community project",
-            "Direct magnet link extraction"
-          ],
-          cons: [
-            "Requires BitTorrent client (qBittorrent recommended)",
-            "Blocked by UK/EU ISPs without encrypted DNS"
-          ],
-          note: "note: Essential to configure Cloudflare 1.1.1.1 or a VPN if blocked.",
-          mirrors: [
-            { name: "Nyaa.si", url: "https://nyaa.si" },
-            { name: "Nyaa.iss.one", url: "https://nyaa.iss.one" }
-          ],
-          commentsCount: 920,
-          comments: [
-            { author: "Seeder100", text: "The undisputed king of anime archive." }
+            { name: "CineZone To", url: "https://cinezone.to" },
+            { name: "CineZone Is", url: "https://cinezone.is" }
           ]
         },
         {
-          id: "dl-2",
-          rank: 2,
-          name: "AnimeTosho",
-          iconChar: "📚",
-          badges: ["DDL", "USENET", "TORRENT"],
-          category: "download",
-          pros: [
-            "Mirrors Nyaa torrents into direct high-speed DDL links",
-            "Usenet (NZB) and Mega / Google Drive mirrors",
-            "Direct subtitle file (.ass / .srt) download buttons",
-            "Completely automated processing"
-          ],
-          cons: [
-            "UI looks dated and utilitarian"
-          ],
-          note: "note: Life saver if you cannot use P2P / Torrents on your network.",
-          mirrors: [
-            { name: "AnimeTosho", url: "https://animetosho.org" }
-          ],
-          commentsCount: 340,
-          comments: []
-        },
-        {
-          id: "dl-3",
+          id: "west-lookmovie",
           rank: 3,
-          name: "SubsPlease",
-          iconChar: "📦",
-          badges: ["XDCC", "TORRENT"],
-          category: "download",
+          name: "LookMovie2",
+          icon: "👁️",
+          badges: ["INTERNAL-CDN", "STABLE"],
+          category: "western",
           pros: [
-            "Fastest simulcast rips directly from official sources",
-            "Multiple resolutions (1080p, 720p, 540p)",
-            "RSS feeds for auto-download automation (Sonarr)"
+            "Direct self-hosted video players rather than sketchy iframes",
+            "Dependable server uptime and few broken links",
+            "Minimalist clean visual palette"
           ],
           cons: [
-            "Only keeps currently airing or recent seasons"
+            "Free resolution capped at standard 720p/1080p"
           ],
-          note: "note: Formed after HorribleSubs retired.",
+          note: "note: Highly reliable during recent domain takedown waves.",
           mirrors: [
-            { name: "SubsPlease", url: "https://subsplease.org" }
-          ],
-          commentsCount: 512,
-          comments: []
+            { name: "LookMovie2 To", url: "https://lookmovie2.to" }
+          ]
         },
         {
-          id: "dl-4",
+          id: "west-sflix",
           rank: 4,
-          name: "Tokyo Toshokan",
-          iconChar: "🗼",
-          badges: ["P2P", "RAW"],
-          category: "download",
+          name: "SFlix",
+          icon: "⚡",
+          badges: ["CHROMECAST", "MOBILE"],
+          category: "western",
           pros: [
-            "Zero JavaScript required to navigate",
-            "Direct unadulterated magnet tracker index",
-            "Decades-old historical stability"
+            "Integrated Chromecast and AirPlay support",
+            "Great touch support on iOS and Android browsers"
           ],
           cons: [
-            "No thumbnails or media preview images"
+            "Requires active adblocker"
           ],
-          note: "note: The oldest surviving Otaku tracker archive.",
+          note: "note: Reliable player with multiple fallback providers.",
           mirrors: [
-            { name: "Tokyo Toshokan", url: "https://www.tokyotosho.info" }
-          ],
-          commentsCount: 120,
-          comments: []
+            { name: "SFlix To", url: "https://sflix.to" },
+            { name: "SFlix Is", url: "https://sflix.is" }
+          ]
         },
         {
-          id: "dl-5",
+          id: "west-flixwave",
           rank: 5,
-          name: "1337x",
-          iconChar: "⚓",
-          badges: ["TORRENT", "MOVIES"],
-          category: "download",
+          name: "FlixWave",
+          icon: "🌊",
+          badges: ["1080P", "NEW"],
+          category: "western",
           pros: [
-            "Top tier movie, television & 4K remux uploads",
-            "Verified uploader status badges",
-            "Active seeder peer networks"
+            "Fastest uploads for recently broadcast television series",
+            "Sort by trending IMDb and release year"
           ],
           cons: [
-            "Needs uBlock to prevent ad redirects on search"
+            "Popup clicks occur on first click without uBlock"
           ],
-          note: "note: Use official domains only to avoid phishing copies.",
+          note: "note: Great backup source when other streams buffer.",
           mirrors: [
-            { name: "1337x.to", url: "https://1337x.to" },
-            { name: "1337x.st", url: "https://1337x.st" }
-          ],
-          commentsCount: 680,
-          comments: []
+            { name: "FlixWave To", url: "https://flixwave.to" }
+          ]
         }
       ],
 
       manga: [
         {
-          id: "man-1",
+          id: "man-mangadex",
           rank: 1,
           name: "MangaDex",
-          iconChar: "📖",
-          badges: ["AD-FREE", "OPEN-SOURCE"],
+          icon: "📖",
+          badges: ["AD-FREE", "OPEN-SOURCE", "MULTI-LANG"],
           category: "manga",
           pros: [
-            "Completely free with zero ads or tracking scripts",
-            "Direct uploads by scanlation teams with multiple languages",
-            "Modern progressive web app support",
-            "Tachiyomi / Mihon native integration"
+            "100% ad-free community-driven scanlation hub",
+            "Over 40 languages supported directly by translation teams",
+            "Official API powers mobile reader apps (Mihon, Tachiyomi)"
           ],
           cons: [
-            "Certain licensed titles are removed upon DMCA notice"
+            "Licensed series are removed upon direct author/publisher request"
           ],
-          note: "note: The golden standard for global manga readers.",
+          note: "note: The gold standard for international manga reading.",
           mirrors: [
-            { name: "MangaDex", url: "https://mangadex.org" }
-          ],
-          commentsCount: 890,
-          comments: [
-            { author: "ScanFan", text: "Nothing beats MangaDex UI." }
+            { name: "MangaDex Org", url: "https://mangadex.org" }
           ]
         },
         {
-          id: "man-2",
+          id: "man-mangafire",
           rank: 2,
           name: "MangaFire",
-          iconChar: "🔥",
-          badges: ["WEBTOON", "FAST"],
+          icon: "🔥",
+          badges: ["WEBTOON", "FAST", "SYNC"],
           category: "manga",
           pros: [
-            "Seamless vertical scrolling webtoon reader",
-            "Synchronized reading list across devices",
-            "Fast CDN image loading"
+            "Smooth vertical webtoon reader mode",
+            "Instant reading history sync across browsers",
+            "High resolution cover art and chapter previews"
           ],
           cons: [
-            "Banner ads if browsing without blockers"
+            "Displays ad banners without adblocker"
           ],
-          note: "note: Developed by the creators of AniWave.",
+          note: "note: Built by the development team behind AniWave.",
           mirrors: [
-            { name: "MangaFire", url: "https://mangafire.to" }
-          ],
-          commentsCount: 310,
-          comments: []
+            { name: "MangaFire To", url: "https://mangafire.to" }
+          ]
         },
         {
-          id: "man-3",
+          id: "man-asura",
           rank: 3,
           name: "Asura Scans",
-          iconChar: "⚡",
-          badges: ["WEBTOON", "MANHWA"],
+          icon: "⚡",
+          badges: ["MANHWA", "HIGH-RES"],
           category: "manga",
           pros: [
-            "Premier high-quality Korean Manhwa scanlations",
-            "Fastest chapter updates for action & fantasy leveling stories"
+            "Premier high quality Korean Manhwa scanlations",
+            "Fastest chapter releases for leveling, action, and fantasy series"
           ],
           cons: [
-            "Focused almost exclusively on Korean webtoons rather than Japanese manga"
+            "Dedicated almost strictly to Korean Webtoons rather than Japanese Manga"
           ],
-          note: "note: The top source for Solo Leveling style fantasy series.",
+          note: "note: The #1 source for Solo Leveling style fantasy series.",
           mirrors: [
-            { name: "AsuraComic", url: "https://asuracomic.net" }
-          ],
-          commentsCount: 450,
-          comments: []
+            { name: "Asura Comic", url: "https://asuracomic.net" }
+          ]
         },
         {
-          id: "man-4",
+          id: "man-katana",
           rank: 4,
           name: "MangaKatana",
-          iconChar: "🗡️",
+          icon: "🗡️",
           badges: ["ALL-PAGES", "LIGHTWEIGHT"],
           category: "manga",
           pros: [
-            "Load all pages at once mode",
-            "Very simple and clean server layout",
-            "Instant bookmarks and history"
+            "Load all pages mode eliminates clicking next page",
+            "Ultra lightweight layout works on very weak network connections"
           ],
           cons: [
             "Older design aesthetic"
           ],
-          note: "note: Very dependable backup archive with long chapter logs.",
+          note: "note: Great backup archive with long-standing stability.",
           mirrors: [
             { name: "MangaKatana", url: "https://mangakatana.com" }
+          ]
+        }
+      ],
+
+      drama: [
+        {
+          id: "dra-kissasian",
+          rank: 1,
+          name: "KissAsian",
+          icon: "🌸",
+          badges: ["K-DRAMA", "C-DRAMA", "SUB"],
+          category: "drama",
+          pros: [
+            "Largest library of Korean, Japanese, and Chinese dramas",
+            "Engaging community comments and episode reviews",
+            "Fast release schedule for ongoing broadcasts"
           ],
-          commentsCount: 140,
-          comments: []
+          cons: [
+            "Aggressive ads require uBlock Origin"
+          ],
+          note: "note: The veteran destination for Asian television culture.",
+          mirrors: [
+            { name: "KissAsian Lu", url: "https://kissasian.lu" }
+          ]
+        },
+        {
+          id: "dra-dramacool",
+          rank: 2,
+          name: "Dramacool",
+          icon: "✨",
+          badges: ["FAST", "1080P"],
+          category: "drama",
+          pros: [
+            "Multiple reliable video players (Standard & VIP servers)",
+            "Variety shows and K-Pop awards archived"
+          ],
+          cons: [
+            "Numerous clones exist; stick to verified mirrors"
+          ],
+          note: "note: Very prompt English subtitles for trending K-Dramas.",
+          mirrors: [
+            { name: "Dramacool City", url: "https://dramacool.city" },
+            { name: "Dramacool Ca", url: "https://dramacool.ca" }
+          ]
+        },
+        {
+          id: "dra-viewasian",
+          rank: 3,
+          name: "ViewAsian",
+          icon: "🎎",
+          badges: ["CLEAN", "HD"],
+          category: "drama",
+          pros: [
+            "Less cluttered layout than competitors",
+            "Detailed episode synopses and cast credits"
+          ],
+          cons: [
+            "Fewer video server alternatives"
+          ],
+          note: "note: Smooth playback experience on modern mobile devices.",
+          mirrors: [
+            { name: "ViewAsian Co", url: "https://viewasian.co" }
+          ]
+        }
+      ],
+
+      download: [
+        {
+          id: "dl-nyaa",
+          rank: 1,
+          name: "Nyaa",
+          icon: "🐱",
+          badges: ["TORRENT", "LOSSLESS", "P2P"],
+          category: "download",
+          pros: [
+            "The world's largest East Asian media torrent tracker",
+            "Untouched 4K Blu-ray remuxes, FLAC audio & raw Japanese scans",
+            "Pure ad-free community software project with instant magnet links"
+          ],
+          cons: [
+            "Requires BitTorrent software (qBittorrent strongly recommended)",
+            "Blocked by several EU/UK ISPs (resolved via encrypted DNS)"
+          ],
+          note: "note: Use Cloudflare 1.1.1.1 DNS if this site does not open.",
+          mirrors: [
+            { name: "Nyaa Si", url: "https://nyaa.si" },
+            { name: "Nyaa Iss One", url: "https://nyaa.iss.one" }
+          ]
+        },
+        {
+          id: "dl-tosho",
+          rank: 2,
+          name: "AnimeTosho",
+          icon: "📚",
+          badges: ["DDL", "USENET", "TORRENT"],
+          category: "download",
+          pros: [
+            "Automatically mirrors Nyaa torrents into high speed Direct Downloads",
+            "Provides Usenet (NZB) and cloud drive mirrors (Mega, Google Drive)",
+            "Direct standalone subtitle file (.ass / .srt) download links"
+          ],
+          cons: [
+            "Very basic utilitarian UI"
+          ],
+          note: "note: Incredible resource if your network or ISP restricts P2P/torrents.",
+          mirrors: [
+            { name: "AnimeTosho Org", url: "https://animetosho.org" }
+          ]
+        },
+        {
+          id: "dl-subsplease",
+          rank: 3,
+          name: "SubsPlease",
+          icon: "📦",
+          badges: ["XDCC", "FAST", "TORRENT"],
+          category: "download",
+          pros: [
+            "Fastest simulcast rips directly from official sources",
+            "Offered in 1080p, 720p, and 540p lightweight sizes",
+            "Native RSS feeds for automated Sonarr / media server downloads"
+          ],
+          cons: [
+            "Only stores currently airing or recent season episodes"
+          ],
+          note: "note: The main successor to the historic HorribleSubs team.",
+          mirrors: [
+            { name: "SubsPlease Org", url: "https://subsplease.org" }
+          ]
+        },
+        {
+          id: "dl-1337x",
+          rank: 4,
+          name: "1337x",
+          icon: "⚓",
+          badges: ["MOVIES", "TORRENT", "4K"],
+          category: "download",
+          pros: [
+            "Premier tracker for 4K Western Cinema and complete TV series packs",
+            "Verified uploader color badges provide download safety assurance",
+            "Active seeder swarms maintain high download bandwidth"
+          ],
+          cons: [
+            "Adblocker mandatory to suppress search redirect tabs"
+          ],
+          note: "note: Use verified domain extensions only to avoid spoofing.",
+          mirrors: [
+            { name: "1337x To", url: "https://1337x.to" },
+            { name: "1337x St", url: "https://1337x.st" }
+          ]
+        },
+        {
+          id: "dl-tokyotosho",
+          rank: 5,
+          name: "Tokyo Toshokan",
+          icon: "🗼",
+          badges: ["RAW", "VINTAGE", "P2P"],
+          category: "download",
+          pros: [
+            "Zero JavaScript needed; pure HTML table design",
+            "Direct magnet link extraction",
+            "Unrivaled two-decade historical archive"
+          ],
+          cons: [
+            "No thumbnails, covers, or stream previews"
+          ],
+          note: "note: The oldest surviving Otaku torrent index.",
+          mirrors: [
+            { name: "Tokyo Toshokan", url: "https://www.tokyotosho.info" }
+          ]
         }
       ]
     };
 
-    // Graveyard Memorial Data
     const GRAVEYARD_DATA = [
-      { name: "AnimeKai", category: "Anime", deathDate: "September 2026", reason: "Domain surrendered / hosting discontinued." },
-      { name: "AniWave (9anime original)", category: "Anime", deathDate: "August 2024", reason: "Official team announced permanent shutdown after pressure from ACE." },
-      { name: "Soap2Day", category: "Movies", deathDate: "June 2023", reason: "Creators voluntarily decommissioned all official servers." },
-      { name: "Fbox / Cineb", category: "Movies", deathDate: "August 2024", reason: "Mass server seizure by international copyright enforcement." },
-      { name: "HorribleSubs", category: "Torrents", deathDate: "October 2020", reason: "Original rippers gracefully stepped down during the pandemic." },
-      { name: "Rarbg", category: "Torrents", deathDate: "May 2023", reason: "Hosting costs and war inflation forced site shutdown." }
+      { name: "AnimeKai", category: "Anime", date: "Sep 2026", reason: "Domain ceased operations." },
+      { name: "AniWave / 9anime", category: "Anime", date: "Aug 2024", reason: "Team announced permanent voluntary retirement." },
+      { name: "Soap2Day", category: "Movies", date: "Jun 2023", reason: "Founders closed all official instances." },
+      { name: "Fbox / Cineb", category: "Movies", date: "Aug 2024", reason: "Infrastructure targeted by ACE coalition." },
+      { name: "Rarbg", category: "Torrents", date: "May 2023", reason: "High European datacenter energy costs forced shutdown." },
+      { name: "HorribleSubs", category: "Torrents", date: "Oct 2020", reason: "Original encoder group peacefully disbanded." }
     ];
 
     // State Variables
-    let expandedItemIds = new Set();
+    let expandedIds = new Set();
     let isAllExpanded = false;
-    let isNsfwEnabled = false;
-    let showFavoritesOnly = false;
-    let globalCategoryFilter = "all";
-    let activeSearchQuery = "";
-    let columnSpecificFilters = {
-      anime: "all",
-      western: "all",
-      download: "all",
-      manga: "all"
-    };
+    let favoritesOnly = false;
+    let globalCategory = "all";
+    let searchQuery = "";
 
-    // Bookmarks LocalStorage handler
-    function getPinnedIds() {
+    // LocalStorage Bookmarks / Pins
+    function getSavedPins() {
       try {
-        const stored = localStorage.getItem("everythingstream_pins");
-        return stored ? JSON.parse(stored) : [];
+        const data = localStorage.getItem("omnistream_pins");
+        return data ? JSON.parse(data) : [];
       } catch (e) {
         return [];
       }
     }
 
-    function savePinnedIds(pins) {
-      localStorage.setItem("everythingstream_pins", JSON.stringify(pins));
-      updatePinnedCount();
+    function savePins(pins) {
+      localStorage.setItem("omnistream_pins", JSON.stringify(pins));
+      updatePinBadge();
     }
 
-    function togglePin(siteId, event) {
-      if (event) event.stopPropagation();
-      let pins = getPinnedIds();
+    function togglePin(siteId, e) {
+      if (e) e.stopPropagation();
+      let pins = getSavedPins();
       const idx = pins.indexOf(siteId);
       if (idx >= 0) {
         pins.splice(idx, 1);
-        showToast("Removed from pinned list");
+        triggerToast("Removed from bookmarks");
       } else {
         pins.push(siteId);
-        showToast("Pinned to top bar!");
+        triggerToast("Added to your bookmarks!");
       }
-      savePinnedIds(pins);
-      renderAllLists();
+      savePins(pins);
+      renderAllSections();
     }
 
-    function updatePinnedCount() {
-      const count = getPinnedIds().length;
+    function updatePinBadge() {
+      const count = getSavedPins().length;
       document.getElementById("pinnedCountBadge").innerText = count;
     }
 
     function toggleFavoritesOnly() {
-      showFavoritesOnly = !showFavoritesOnly;
+      favoritesOnly = !favoritesOnly;
       const btn = document.getElementById("pinnedHeaderBtn");
-      if (showFavoritesOnly) {
-        btn.classList.add("bg-yellow-500/20", "border-yellow-500/50");
-        showToast("Filtering to show pinned sites only");
+      if (favoritesOnly) {
+        btn.classList.add("bg-yellow-500/20", "border-yellow-500/50", "text-yellow-400");
+        triggerToast("Displaying bookmarked sites only");
       } else {
-        btn.classList.remove("bg-yellow-500/20", "border-yellow-500/50");
-        showToast("Showing all directory sites");
+        btn.classList.remove("bg-yellow-500/20", "border-yellow-500/50", "text-yellow-400");
+        triggerToast("Showing all directory sites");
       }
-      renderAllLists();
+      renderAllSections();
     }
 
-    // Expand/Collapse accordion items
-    function toggleAccordionItem(id) {
-      if (expandedItemIds.has(id)) {
-        expandedItemIds.delete(id);
+    // Accordion Expansion
+    function toggleAccordion(siteId) {
+      if (expandedIds.has(siteId)) {
+        expandedIds.delete(siteId);
       } else {
-        expandedItemIds.add(id);
+        expandedIds.add(siteId);
       }
-      renderAllLists();
+      renderAllSections();
     }
 
     function toggleExpandAll() {
       isAllExpanded = !isAllExpanded;
       const label = document.getElementById("expandAllLabel");
       if (isAllExpanded) {
-        label.innerText = "Collapse";
-        // add all IDs
-        Object.values(DIRECTORY_DATA).forEach(list => {
-          list.forEach(item => expandedItemIds.add(item.id));
-        });
+        label.innerText = "Collapse All";
+        Object.values(DIRECTORY_DATA).forEach(list => list.forEach(i => expandedIds.add(i.id)));
       } else {
-        label.innerText = "Expand";
-        expandedItemIds.clear();
+        label.innerText = "Expand All";
+        expandedIds.clear();
       }
-      renderAllLists();
+      renderAllSections();
     }
 
+    // Search & Category Filters
     function handleSearch(val) {
-      activeSearchQuery = val.trim().toLowerCase();
-      renderAllLists();
+      searchQuery = val.trim().toLowerCase();
+      const clearBtn = document.getElementById("clearSearchBtn");
+      if (searchQuery.length > 0) {
+        clearBtn.classList.remove("hidden");
+      } else {
+        clearBtn.classList.add("hidden");
+      }
+      renderAllSections();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById("globalSearchInput");
+      input.value = "";
+      handleSearch("");
+      input.focus();
     }
 
     function handleFilterCategory(val) {
-      globalCategoryFilter = val;
-      renderAllLists();
+      globalCategory = val;
+      renderAllSections();
     }
 
-    function filterCategoryList(cat, value) {
-      columnSpecificFilters[cat] = value;
-      renderColumn(cat);
-    }
-
-    // Render individual category column list (Matches Screenshot 3 pixel detail)
-    function renderColumn(categoryKey) {
-      const container = document.getElementById(`list-${categoryKey}`);
-      if (!container) return;
-
-      const columnWrapper = document.getElementById(`col-${categoryKey}`);
-      // Category visibility based on top search dropdown
-      if (globalCategoryFilter !== "all" && globalCategoryFilter !== categoryKey) {
-        columnWrapper.classList.add("hidden");
-        return;
-      } else {
-        columnWrapper.classList.remove("hidden");
+    // Sidebar real link interaction
+    function onSidebarLinkClick(e, targetId) {
+      // Update active nav-link pills
+      document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+      if (e && e.currentTarget) {
+        e.currentTarget.classList.add("active");
       }
 
-      let items = DIRECTORY_DATA[categoryKey] || [];
-      const pinned = getPinnedIds();
-
-      // Pinned only filter
-      if (showFavoritesOnly) {
-        items = items.filter(i => pinned.includes(i.id));
-      }
-
-      // Column specific filter
-      const specificFilter = columnSpecificFilters[categoryKey];
-      if (specificFilter && specificFilter !== "all") {
-        items = items.filter(item => {
-          if (specificFilter === "adfree") return item.badges.includes("AD-FREE") || item.cons.every(c => !c.toLowerCase().includes("ads"));
-          if (specificFilter === "softsub") return item.pros.some(p => p.toLowerCase().includes("soft"));
-          if (specificFilter === "mult") return item.badges.includes("MULT");
-          if (specificFilter === "4k") return item.badges.includes("4K");
-          if (specificFilter === "ddl") return item.badges.includes("DDL");
-          if (specificFilter === "torrent") return item.badges.includes("TORRENT");
-          if (specificFilter === "usenet") return item.badges.includes("USENET");
-          if (specificFilter === "webtoon") return item.badges.includes("WEBTOON");
-          if (specificFilter === "download") return item.badges.includes("DOWNLOAD") || item.badges.includes("ALL-PAGES");
-          return true;
-        });
-      }
-
-      // Search query filter
-      if (activeSearchQuery) {
-        items = items.filter(item => {
-          const matchName = item.name.toLowerCase().includes(activeSearchQuery);
-          const matchBadges = item.badges.some(b => b.toLowerCase().includes(activeSearchQuery));
-          const matchPros = item.pros.some(p => p.toLowerCase().includes(activeSearchQuery));
-          const matchMirrors = item.mirrors.some(m => m.name.toLowerCase().includes(activeSearchQuery) || m.url.toLowerCase().includes(activeSearchQuery));
-          return matchName || matchBadges || matchPros || matchMirrors;
-        });
-      }
-
-      if (items.length === 0) {
-        container.innerHTML = `
-          <div class="py-8 text-center text-xs text-neutral-500">
-            No matching entries in this section
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = items.map(item => {
-        const isExpanded = expandedItemIds.has(item.id);
-        const isPinned = pinned.includes(item.id);
-
-        return `
-          <div class="group hover:bg-[#1a1c22] transition-colors">
-            
-            <!-- Collapsed Row Header (Screenshot 1 & 3) -->
-            <div
-              onclick="toggleAccordionItem('${item.id}')"
-              class="px-4 py-2.5 flex items-center justify-between cursor-pointer select-none gap-2 text-xs"
-            >
-              <div class="flex items-center gap-2.5 min-w-0">
-                <!-- Rank Number (1. 2. 3...) -->
-                <span class="font-bold text-neutral-400 font-mono text-sm w-4 shrink-0">${item.rank}.</span>
-                
-                <!-- Icon char/emoji -->
-                <span class="text-sm shrink-0">${item.iconChar}</span>
-
-                <!-- Name -->
-                <span class="font-semibold text-white tracking-tight text-sm truncate group-hover:text-sky-300 transition-colors">
-                  ${item.name}
-                </span>
-
-                <!-- Badges (e.g. MULT, DDL, AD-FREE) -->
-                <div class="hidden sm:flex items-center gap-1.5 shrink-0 ml-1">
-                  ${item.badges.map(b => `
-                    <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 border border-neutral-700/80">
-                      ${b}
-                    </span>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Right Chevron -->
-              <div class="flex items-center gap-2 shrink-0 text-neutral-500 group-hover:text-neutral-300">
-                ${isPinned ? `<span class="material-symbols-outlined text-xs text-yellow-500 fill-1">push_pin</span>` : ''}
-                <span class="material-symbols-outlined text-base transform transition-transform duration-150 ${isExpanded ? 'rotate-180' : ''}">
-                  expand_more
-                </span>
-              </div>
-            </div>
-
-            <!-- Expanded Details (Faithful to Screenshot 3) -->
-            ${isExpanded ? `
-              <div class="px-4 pb-4 pt-1 bg-[#14151a] border-t border-neutral-800/60">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                  
-                  <!-- Left Details: Pros (+), Cons (-), and Note -->
-                  <div class="md:col-span-8 space-y-2 text-xs font-sans">
-                    
-                    <!-- Pros (+) in green -->
-                    <div class="space-y-1">
-                      ${item.pros.map(pro => `
-                        <div class="flex items-start gap-1.5 text-emerald-400 leading-snug">
-                          <span class="font-mono font-bold select-none">+</span>
-                          <span class="text-[#a7f3d0] font-normal">${pro}</span>
-                        </div>
-                      `).join('')}
-                    </div>
-
-                    <!-- Cons (-) in red -->
-                    <div class="space-y-1 pt-1">
-                      ${item.cons.map(con => `
-                        <div class="flex items-start gap-1.5 text-rose-400 leading-snug">
-                          <span class="font-mono font-bold select-none">-</span>
-                          <span class="text-rose-300 font-normal">${con}</span>
-                        </div>
-                      `).join('')}
-                    </div>
-
-                    <!-- Note -->
-                    ${item.note ? `
-                      <p class="text-neutral-400 text-xs italic pt-2 leading-relaxed font-sans">
-                        ${item.note}
-                      </p>
-                    ` : ''}
-
-                  </div>
-
-                  <!-- Right Details: Mirrors Stack (Screenshot 3 style buttons) -->
-                  <div class="md:col-span-4 flex flex-col gap-1.5 justify-start">
-                    ${item.mirrors.map(m => `
-                      <a
-                        href="${m.url}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="w-full flex items-center justify-between px-3 py-1.5 rounded bg-[#1e2027] hover:bg-[#252833] border border-emDark-border text-neutral-200 text-xs font-medium transition group/btn"
-                      >
-                        <span class="truncate">${m.name}</span>
-                        <span class="material-symbols-outlined text-neutral-400 group-hover/btn:text-white text-xs">link</span>
-                      </a>
-                    `).join('')}
-
-                    <!-- Bottom Action Controls: Pin & Comments (Screenshot 3 Bottom Right) -->
-                    <div class="flex items-center gap-2 pt-2 mt-auto">
-                      <!-- Pin Button -->
-                      <button
-                        onclick="togglePin('${item.id}', event)"
-                        class="p-1.5 rounded bg-[#1e2027] hover:bg-[#252833] border border-emDark-border text-neutral-400 hover:text-white transition flex items-center justify-center ${isPinned ? 'text-yellow-400 border-yellow-500/40' : ''}"
-                        title="Pin this site"
-                      >
-                        <span class="material-symbols-outlined text-sm ${isPinned ? 'fill-1' : ''}">push_pin</span>
-                      </button>
-
-                      <!-- Comments Button -->
-                      <button
-                        onclick="openCommentsModal('${item.id}', '${item.name.replace(/'/g, "\\'")}', event)"
-                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded bg-[#1e2027] hover:bg-[#252833] border border-emDark-border text-neutral-300 text-xs font-mono transition"
-                      >
-                        <span class="material-symbols-outlined text-sm">chat_bubble_outline</span>
-                        <span class="font-bold">${item.commentsCount}</span>
-                      </button>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-            ` : ''}
-
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderAllLists() {
-      renderColumn("anime");
-      renderColumn("western");
-      renderColumn("download");
-      renderColumn("manga");
-    }
-
-    // Navigation & Scroll actions
-    function scrollToCategory(catId) {
-      const col = document.getElementById(`col-${catId}`);
-      if (col) {
-        col.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        col.classList.add("ring-1", "ring-sky-500");
-        setTimeout(() => {
-          col.classList.remove("ring-1", "ring-sky-500");
-        }, 1200);
-      }
-      // auto close sidebar on mobile
+      // Hide mobile drawer if opened
       toggleSidebar(false);
-    }
-
-    function navigateToSection(section) {
-      if (section === 'main-index') {
-        globalCategoryFilter = "all";
-        document.getElementById("searchCategorySelect").value = "all";
-        showFavoritesOnly = false;
-        activeSearchQuery = "";
-        document.getElementById("globalSearchInput").value = "";
-        renderAllLists();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        toggleSidebar(false);
-      }
     }
 
     function toggleSidebar(forceState) {
       const sidebar = document.getElementById("mainSidebar");
       const backdrop = document.getElementById("sidebarBackdrop");
-      
       const isOpen = !sidebar.classList.contains("-translate-x-full");
       const nextState = forceState !== undefined ? forceState : !isOpen;
 
@@ -1421,135 +1197,195 @@
       }
     }
 
-    function toggleCardMaximize(columnId) {
-      const col = document.getElementById(columnId);
-      if (col.classList.contains("col-span-full")) {
-        col.classList.remove("col-span-full", "lg:col-span-2");
-      } else {
-        col.classList.add("col-span-full", "lg:col-span-2");
-      }
-    }
+    // Render individual bubble card
+    function renderCard(item, isPinned) {
+      const isExpanded = expandedIds.has(item.id);
 
-    // Modal Operations
-    let activeCommentSiteId = null;
+      return `
+        <div class="glass-bubble rounded-bubble border border-white/10 hover:border-white/25 transition duration-200 overflow-hidden shadow-sm hover:shadow-glow-cyan">
+          
+          <!-- Collapsed Header Row -->
+          <div
+            onclick="toggleAccordion('${item.id}')"
+            class="px-4 sm:px-5 py-3.5 flex items-center justify-between cursor-pointer select-none gap-3 group"
+          >
+            <div class="flex items-center gap-3 min-w-0">
+              <!-- Rank Number in soft bubble -->
+              <span class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center font-mono font-bold text-xs text-neutral-400 shrink-0 group-hover:text-cyan-400 group-hover:border-cyan-500/40 transition">
+                ${item.rank}
+              </span>
 
-    function openCommentsModal(siteId, title, event) {
-      if (event) event.stopPropagation();
-      activeCommentSiteId = siteId;
-      document.getElementById("modalSiteTitle").innerText = `${title} Comments`;
+              <!-- Icon Emoji -->
+              <span class="text-base shrink-0">${item.icon}</span>
 
-      // Find site comments
-      let targetSite = null;
-      Object.values(DIRECTORY_DATA).forEach(list => {
-        const found = list.find(s => s.id === siteId);
-        if (found) targetSite = found;
-      });
+              <!-- Site Title -->
+              <span class="font-bold text-sm sm:text-base text-white tracking-tight truncate group-hover:text-cyan-300 transition">
+                ${item.name}
+              </span>
 
-      const container = document.getElementById("commentsContainer");
-      if (!targetSite || !targetSite.comments || targetSite.comments.length === 0) {
-        container.innerHTML = `
-          <div class="text-neutral-500 text-center py-4 italic">No comments yet. Be the first to leave feedback!</div>
-        `;
-      } else {
-        container.innerHTML = targetSite.comments.map(c => `
-          <div class="bg-emDark-cardHeader p-2.5 rounded border border-emDark-border">
-            <div class="font-bold text-neutral-300 mb-0.5 text-[11px]">${c.author}</div>
-            <div class="text-neutral-200">${c.text}</div>
-          </div>
-        `).join('');
-      }
-
-      document.getElementById("commentModal").classList.remove("hidden");
-    }
-
-    function closeCommentModal() {
-      document.getElementById("commentModal").classList.add("hidden");
-    }
-
-    function handlePostComment(e) {
-      e.preventDefault();
-      const input = document.getElementById("newCommentInput");
-      const text = input.value.trim();
-      if (!text || !activeCommentSiteId) return;
-
-      Object.values(DIRECTORY_DATA).forEach(list => {
-        const found = list.find(s => s.id === activeCommentSiteId);
-        if (found) {
-          found.comments.push({ author: "You", text: text });
-          found.commentsCount += 1;
-        }
-      });
-
-      input.value = "";
-      showToast("Comment published");
-      closeCommentModal();
-      renderAllLists();
-    }
-
-    function openGraveyardModal() {
-      const container = document.getElementById("graveyardListContainer");
-      container.innerHTML = GRAVEYARD_DATA.map(g => `
-        <div class="py-3 flex items-start justify-between gap-3">
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="line-through font-bold text-red-400">${g.name}</span>
-              <span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-neutral-800 text-neutral-400 border border-neutral-700">${g.category}</span>
+              <!-- Quality Badges -->
+              <div class="hidden sm:flex items-center gap-1.5 shrink-0 ml-1">
+                ${item.badges.map(b => {
+                  let badgeStyle = "bg-[#181d2c] text-neutral-400 border-white/10";
+                  if (b === "AD-FREE" || b === "VERIFIED") badgeStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                  if (b === "4K" || b === "1080P") badgeStyle = "bg-cyan-500/10 text-cyan-300 border-cyan-500/20";
+                  if (b === "TORRENT" || b === "DDL") badgeStyle = "bg-purple-500/10 text-purple-300 border-purple-500/20";
+                  return `
+                    <span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-pill border ${badgeStyle}">
+                      ${b}
+                    </span>
+                  `;
+                }).join('')}
+              </div>
             </div>
-            <p class="text-neutral-400 text-[11px] mt-0.5">${g.reason}</p>
+
+            <!-- Right Controls: Pin + Chevron -->
+            <div class="flex items-center gap-2.5 shrink-0 text-neutral-400">
+              <button
+                onclick="togglePin('${item.id}', event)"
+                class="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition ${isPinned ? 'text-yellow-400 border-yellow-500/40 bg-yellow-500/10' : 'hover:text-white'}"
+                title="${isPinned ? 'Remove Bookmark' : 'Add Bookmark'}"
+              >
+                <span class="material-symbols-outlined text-sm ${isPinned ? 'fill-1' : ''}">bookmark</span>
+              </button>
+
+              <span class="material-symbols-outlined text-lg transition-transform duration-200 ${isExpanded ? 'rotate-180 text-cyan-400' : 'text-neutral-500 group-hover:text-white'}">
+                expand_more
+              </span>
+            </div>
           </div>
-          <span class="text-[10px] text-neutral-500 font-mono shrink-0">${g.deathDate}</span>
+
+          <!-- Expanded Detail Tray -->
+          ${isExpanded ? `
+            <div class="px-5 pb-5 pt-2 bg-[#0c0e16]/80 border-t border-white/5 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+                
+                <!-- Left Details: Pros, Cons, and Insight -->
+                <div class="md:col-span-8 space-y-3 text-xs">
+                  
+                  <!-- Pros (+) in Cyan/Emerald -->
+                  <div class="space-y-1.5">
+                    ${item.pros.map(pro => `
+                      <div class="flex items-start gap-2 text-emerald-400 leading-snug">
+                        <span class="font-mono font-bold select-none text-emerald-500">+</span>
+                        <span class="text-neutral-200">${pro}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+
+                  <!-- Cons (-) in Rose -->
+                  <div class="space-y-1.5">
+                    ${item.cons.map(con => `
+                      <div class="flex items-start gap-2 text-rose-400 leading-snug">
+                        <span class="font-mono font-bold select-none text-rose-500">-</span>
+                        <span class="text-neutral-300">${con}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+
+                  <!-- Note -->
+                  ${item.note ? `
+                    <p class="text-neutral-400 text-xs italic pt-1 leading-relaxed bg-white/[0.02] p-2.5 rounded-bubble-sm border border-white/5">
+                      ${item.note}
+                    </p>
+                  ` : ''}
+
+                </div>
+
+                <!-- Right Details: Real Working Domain Mirror Links -->
+                <div class="md:col-span-4 flex flex-col gap-2 justify-start">
+                  <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">Working Mirrors</span>
+                  ${item.mirrors.map(m => `
+                    <a
+                      href="${m.url}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="flex items-center justify-between px-3.5 py-2 rounded-pill bg-[#151824] hover:bg-cyan-500/15 border border-white/10 hover:border-cyan-500/40 text-neutral-200 text-xs font-medium transition group/btn"
+                    >
+                      <span class="truncate group-hover/btn:text-cyan-300">${m.name}</span>
+                      <span class="material-symbols-outlined text-neutral-400 group-hover/btn:text-cyan-300 text-sm">open_in_new</span>
+                    </a>
+                  `).join('')}
+                </div>
+
+              </div>
+            </div>
+          ` : ''}
+
         </div>
-      `).join('');
-
-      document.getElementById("graveyardModal").classList.remove("hidden");
+      `;
     }
 
-    function closeGraveyardModal() {
-      document.getElementById("graveyardModal").classList.add("hidden");
-    }
+    // Render single category section
+    function renderSection(categoryKey) {
+      const container = document.getElementById(`container-${categoryKey}`);
+      const sectionEl = document.getElementById(categoryKey);
+      if (!container || !sectionEl) return;
 
-    function openDownDetectorModal() {
-      showToast("All major primary streaming CDNs reporting 99.8% uptime today.");
-    }
-
-    function openEditModal() {
-      document.getElementById("editModal").classList.remove("hidden");
-    }
-
-    function closeEditModal() {
-      document.getElementById("editModal").classList.add("hidden");
-    }
-
-    function handleSuggestSite(e) {
-      e.preventDefault();
-      const name = document.getElementById("suggestName").value;
-      const cat = document.getElementById("suggestCategory").value;
-      const url = document.getElementById("suggestUrl").value;
-      const pros = document.getElementById("suggestPros").value || "Fast streaming mirrors";
-
-      // Append into dynamic catalog
-      const newEntry = {
-        id: `custom-${Date.now()}`,
-        rank: (DIRECTORY_DATA[cat]?.length || 0) + 1,
-        name: name,
-        iconChar: "🌐",
-        badges: ["NEW", "COMMUNITY"],
-        category: cat,
-        pros: pros.split(',').map(s => s.trim()),
-        cons: ["Recently added entry"],
-        note: "Community submitted link awaiting review.",
-        mirrors: [{ name: name, url: url }],
-        commentsCount: 1,
-        comments: [{ author: "Contributor", text: "Added via community suggestions." }]
-      };
-
-      if (DIRECTORY_DATA[cat]) {
-        DIRECTORY_DATA[cat].push(newEntry);
+      // Global category select filter
+      if (globalCategory !== "all" && globalCategory !== categoryKey) {
+        sectionEl.classList.add("hidden");
+        return;
+      } else {
+        sectionEl.classList.remove("hidden");
       }
-      closeEditModal();
-      showToast(`Added ${name} to ${cat.toUpperCase()} directory!`);
-      renderAllLists();
-      scrollToCategory(cat);
+
+      let items = DIRECTORY_DATA[categoryKey] || [];
+      const pins = getSavedPins();
+
+      // Pinned bookmarks filter
+      if (favoritesOnly) {
+        items = items.filter(i => pins.includes(i.id));
+      }
+
+      // Search filter
+      if (searchQuery) {
+        items = items.filter(i => {
+          const matchName = i.name.toLowerCase().includes(searchQuery);
+          const matchBadges = i.badges.some(b => b.toLowerCase().includes(searchQuery));
+          const matchPros = i.pros.some(p => p.toLowerCase().includes(searchQuery));
+          const matchMirrors = i.mirrors.some(m => m.name.toLowerCase().includes(searchQuery) || m.url.toLowerCase().includes(searchQuery));
+          return matchName || matchBadges || matchPros || matchMirrors;
+        });
+      }
+
+      // Update badge count
+      const countEl = document.getElementById(`count-${categoryKey}`);
+      if (countEl) {
+        countEl.innerText = `${items.length} ${items.length === 1 ? 'service' : 'services'}`;
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="py-6 px-4 rounded-bubble bg-white/[0.02] border border-white/5 text-center text-xs text-neutral-500">
+            No active sources match your filter criteria in this category.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(item => renderCard(item, pins.includes(item.id))).join('');
+    }
+
+    function renderAllSections() {
+      renderSection("anime");
+      renderSection("western");
+      renderSection("manga");
+      renderSection("drama");
+      renderSection("download");
+    }
+
+    // Surprise Me Feature: Opens a random verified streaming link
+    function triggerSurpriseMe() {
+      const allSites = [];
+      Object.values(DIRECTORY_DATA).forEach(list => allSites.push(...list));
+      if (allSites.length === 0) return;
+      const pick = allSites[Math.floor(Math.random() * allSites.length)];
+      if (pick && pick.mirrors && pick.mirrors.length > 0) {
+        const mirror = pick.mirrors[0];
+        triggerToast(`Opening random pick: ${pick.name}`);
+        window.open(mirror.url, "_blank");
+      }
     }
 
     function shareDirectory() {
@@ -1560,45 +1396,103 @@
         dummy.select();
         document.execCommand("copy");
         document.body.removeChild(dummy);
-        showToast("Directory link copied to clipboard!");
-      } catch (e) {
-        showToast("Link: " + window.location.href);
+        triggerToast("Directory link copied to clipboard!");
+      } catch (err) {
+        triggerToast("Share URL: " + window.location.href);
       }
     }
 
-    function toggleNsfw() {
-      isNsfwEnabled = !isNsfwEnabled;
-      const btn = document.getElementById("nsfwToggleBtn");
-      if (isNsfwEnabled) {
-        btn.classList.add("text-red-500", "font-bold");
-        showToast("Adult filters toggled ON");
-      } else {
-        btn.classList.remove("text-red-500", "font-bold");
-        showToast("Adult filters toggled OFF");
+    // Modal Operations
+    function openSafetyModal() {
+      document.getElementById("safetyModal").classList.remove("hidden");
+    }
+    function closeSafetyModal() {
+      document.getElementById("safetyModal").classList.add("hidden");
+    }
+
+    function openGraveyardModal() {
+      const container = document.getElementById("graveyardContainer");
+      container.innerHTML = GRAVEYARD_DATA.map(g => `
+        <div class="p-3 rounded-bubble-sm bg-[#151824] border border-white/10 flex items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="line-through font-bold text-rose-400">${g.name}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-pill bg-white/5 text-neutral-400 border border-white/10">${g.category}</span>
+            </div>
+            <p class="text-[11px] text-neutral-400 mt-1">${g.reason}</p>
+          </div>
+          <span class="font-mono text-[10px] text-neutral-500 shrink-0">${g.date}</span>
+        </div>
+      `).join('');
+      document.getElementById("graveyardModal").classList.remove("hidden");
+    }
+    function closeGraveyardModal() {
+      document.getElementById("graveyardModal").classList.add("hidden");
+    }
+
+    function checkDownDetector() {
+      triggerToast("All primary streaming and tracker servers operational (99.9% uptime).");
+    }
+
+    function openEditModal() {
+      document.getElementById("editModal").classList.remove("hidden");
+    }
+    function closeEditModal() {
+      document.getElementById("editModal").classList.add("hidden");
+    }
+
+    function handleSuggestSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById("inputSiteName").value.trim();
+      const cat = document.getElementById("inputSiteCategory").value;
+      const url = document.getElementById("inputSiteUrl").value.trim();
+      const pros = document.getElementById("inputSitePros").value.trim() || "High quality streaming player";
+
+      if (!name || !url) return;
+
+      const newEntry = {
+        id: `user-${Date.now()}`,
+        rank: (DIRECTORY_DATA[cat]?.length || 0) + 1,
+        name: name,
+        icon: "🌟",
+        badges: ["COMMUNITY", "NEW"],
+        category: cat,
+        pros: pros.split(',').map(s => s.trim()),
+        cons: ["Community suggested mirror"],
+        note: "Submitted by user for community review.",
+        mirrors: [{ name: `${name} Mirror`, url: url }]
+      };
+
+      if (DIRECTORY_DATA[cat]) {
+        DIRECTORY_DATA[cat].push(newEntry);
       }
+
+      closeEditModal();
+      triggerToast(`Added ${name} to ${cat.toUpperCase()} directory!`);
+      renderAllSections();
+
+      const el = document.getElementById(cat);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
 
-    function showNotice(msg) {
-      showToast(msg);
-    }
-
+    // Toast Notification System
     let toastTimer;
-    function showToast(msg) {
-      const toast = document.getElementById("siteToast");
-      const text = document.getElementById("toastText");
-      text.innerText = msg;
+    function triggerToast(msg) {
+      const toast = document.getElementById("bubbleToast");
+      const msgEl = document.getElementById("toastMsg");
+      msgEl.innerText = msg;
       clearTimeout(toastTimer);
 
-      toast.classList.remove("translate-y-16", "opacity-0");
+      toast.classList.remove("translate-y-20", "opacity-0");
       toast.classList.add("translate-y-0", "opacity-100");
 
       toastTimer = setTimeout(() => {
-        toast.classList.add("translate-y-16", "opacity-0");
+        toast.classList.add("translate-y-20", "opacity-0");
         toast.classList.remove("translate-y-0", "opacity-100");
-      }, 2500);
+      }, 2400);
     }
 
-    // Keyboard shortcut (F or / to focus search)
+    // Keyboard Shortcuts (F or / to Search, Esc to Close Modals)
     window.addEventListener("keydown", (e) => {
       if ((e.key === "f" || e.key === "F" || e.key === "/") && document.activeElement.tagName !== "INPUT") {
         e.preventDefault();
@@ -1606,19 +1500,17 @@
         searchInput.focus();
         searchInput.select();
       } else if (e.key === "Escape") {
-        closeCommentModal();
+        closeSafetyModal();
         closeGraveyardModal();
         closeEditModal();
         toggleSidebar(false);
       }
     });
 
-    // Close modals upon clicking backdrop
-    [document.getElementById("commentModal"), document.getElementById("graveyardModal"), document.getElementById("editModal")].forEach(modal => {
+    // Close Modals on Outer Backdrop Click
+    [document.getElementById("safetyModal"), document.getElementById("graveyardModal"), document.getElementById("editModal")].forEach(modal => {
       modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-          modal.classList.add("hidden");
-        }
+        if (e.target === modal) modal.classList.add("hidden");
       });
     });
 
@@ -1636,9 +1528,10 @@
 
     window.onload = function() {
       checkViewport();
-      updatePinnedCount();
-      renderAllLists();
+      updatePinBadge();
+      renderAllSections();
     };
   </script>
+
 </body>
 </html>
