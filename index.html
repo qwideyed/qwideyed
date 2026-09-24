@@ -1,1781 +1,1323 @@
 <!DOCTYPE html>
-<html lang="en" class="dark h-full">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OmniStream &bull; CyberDeck Media Directory</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniStream CyberDeck | Media Directory & Memorial</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
           colors: {
             deck: {
-              void: '#06070a',
-              panel: '#0d0f15',
-              surface: '#12151f',
-              card: '#161925',
-              cardHover: '#1c2132',
-              cardActive: '#1e2439',
-              border: '#23283b',
-              borderBright: 'rgba(99, 102, 241, 0.4)',
-              accentCyan: '#06b6d4',
-              accentViolet: '#8b5cf6',
-              accentMint: '#10b981',
-              accentAmber: '#f59e0b',
-              accentRose: '#f43f5e'
+              base: '#07080b',
+              surface: '#0d0f15',
+              card: '#12151e',
+              border: '#1e2330',
+              accent: '#38bdf8',
+              violet: '#a855f7',
+              emerald: '#10b981',
+              rose: '#f43f5e',
+              amber: '#f59e0b'
             }
-          },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-            mono: ['JetBrains Mono', 'Menlo', 'monospace']
-          },
-          boxShadow: {
-            'glow-cyan': '0 0 20px -3px rgba(6, 182, 212, 0.3)',
-            'glow-violet': '0 0 25px -4px rgba(139, 92, 246, 0.35)',
-            'deck-panel': '0 10px 40px -10px rgba(0,0,0,0.85)'
           }
         }
       }
-    }
+    };
   </script>
 
-  <!-- Google Fonts & Material Symbols -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-
   <style>
-    body {
-      background-color: #06070a;
-      color: #e2e8f0;
-      font-family: 'Inter', sans-serif;
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
     }
-    .material-symbols-outlined {
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1;
+    ::-webkit-scrollbar-track {
+      background: #07080b;
     }
-    .material-symbols-outlined.fill-1 {
-      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 20;
+    ::-webkit-scrollbar-thumb {
+      background: #1e2330;
+      border-radius: 9999px;
     }
-    /* Subtle neon scanlines & glass backgrounds */
-    .deck-glass {
+    ::-webkit-scrollbar-thumb:hover {
+      background: #38bdf8;
+    }
+    .glass-deck {
       background: rgba(13, 15, 21, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .hud-header {
-      background: rgba(10, 12, 18, 0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid #1f2438;
+    .neon-glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.15);
     }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #06070a; }
-    ::-webkit-scrollbar-thumb { background: #1c2132; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2f3752; }
-    .active-deck-item {
-      border-color: #06b6d4 !important;
-      background: linear-gradient(90deg, rgba(6, 182, 212, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%) !important;
-      box-shadow: 0 0 15px -3px rgba(6, 182, 212, 0.25);
+    .neon-glow-violet {
+      box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.15);
+    }
+    .scanline {
+      background: linear-gradient(rgba(18, 21, 30, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+      background-size: 100% 2px, 3px 100%;
     }
   </style>
 </head>
-<body class="h-full flex flex-col overflow-hidden select-none selection:bg-cyan-500/30 selection:text-cyan-200">
 
-  <header class="hud-header h-16 shrink-0 z-40 px-4 sm:px-6 flex items-center justify-between gap-3">
-    <!-- Brand / Status Indicator -->
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-sky-500 to-violet-600 p-[1.5px] shadow-glow-cyan shrink-0">
-        <div class="w-full h-full bg-[#090b11] rounded-[10px] flex items-center justify-center">
-          <span class="material-symbols-outlined text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400 text-xl">terminal</span>
-        </div>
-      </div>
-      <div>
-        <div class="flex items-center gap-2">
-          <span class="font-extrabold text-sm sm:text-base text-white tracking-tight">OMNISTREAM</span>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-bold tracking-wider">COCKPIT v7.0</span>
-        </div>
-        <div class="flex items-center gap-2 text-[11px] text-neutral-400 font-mono">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Index Verified Online</span>
-        </div>
-      </div>
-    </div>
+<body class="bg-deck-base text-slate-200 min-h-screen flex flex-col font-sans selection:bg-cyan-500/30 selection:text-cyan-200">
 
-    <!-- Center Search Bar with Hotkey Trigger -->
-    <div class="flex-1 max-w-xl mx-2 sm:mx-6">
-      <div class="relative flex items-center bg-[#0a0c13] border border-[#23283b] rounded-xl px-3.5 py-1.5 focus-within:border-cyan-400/70 focus-within:shadow-glow-cyan transition">
-        <span class="material-symbols-outlined text-neutral-400 text-lg mr-2.5">search</span>
-        <input
-          id="commandSearchInput"
-          type="text"
-          placeholder="Quick-find domains, anime, movies, tags... (Press 'F' or '/')"
-          class="w-full bg-transparent text-xs sm:text-sm text-white placeholder-neutral-500 focus:outline-none font-sans"
-          oninput="handleSearch(this.value)"
-        />
-        <div class="flex items-center gap-1">
-          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden text-neutral-500 hover:text-neutral-300 p-0.5 mr-1" title="Clear search">
-            <span class="material-symbols-outlined text-sm">close</span>
+  <!-- TOP COMMAND BAR HUD -->
+  <header class="sticky top-0 z-40 glass-deck border-b border-deck-border/80 px-4 lg:px-6 py-3">
+    <div class="max-w-[1700px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand & Mode Switch -->
+      <div class="flex items-center justify-between w-full md:w-auto gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+            <span class="material-symbols-outlined text-[20px]">layers</span>
+          </div>
+          <div>
+            <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-2">
+              OmniStream <span class="text-[10px] uppercase font-mono tracking-widest px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">CyberDeck</span>
+            </h1>
+            <p class="text-[11px] text-slate-400">Stream & Manga Directory</p>
+          </div>
+        </div>
+
+        <!-- Mode Segment Switch (Index vs Graveyard) -->
+        <div class="flex bg-deck-card p-1 rounded-xl border border-deck-border">
+          <button id="view-index-btn" onclick="setViewMode('index')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/30">
+            <span class="material-symbols-outlined text-[15px]">browse</span> Live Hub
           </button>
-          <kbd class="hidden md:inline-flex text-[10px] font-mono bg-white/5 border border-white/10 text-neutral-400 px-1.5 py-0.5 rounded">Ctrl+K</kbd>
+          <button id="view-graveyard-btn" onclick="setViewMode('graveyard')" class="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all">
+            <span class="material-symbols-outlined text-[15px]">tombstone</span> Graveyard
+            <span id="graveyard-count" class="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-800 text-slate-400 border border-slate-700">11</span>
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- HUD Control Buttons -->
-    <div class="flex items-center gap-2 shrink-0">
-      <button onclick="triggerSurpriseMe()" class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-violet-500/40 hover:bg-violet-500/10 text-xs text-neutral-300 hover:text-violet-300 font-medium transition" title="Open random high-ranking service">
-        <span class="material-symbols-outlined text-sm text-violet-400">casino</span>
-        <span>Surprise Site</span>
-      </button>
+      <!-- Universal Search & Quick Filters -->
+      <div class="w-full md:max-w-md relative flex items-center">
+        <span class="material-symbols-outlined absolute left-3.5 text-slate-400 text-[18px]">search</span>
+        <input 
+          id="global-search"
+          type="text" 
+          placeholder="Search portals, mirrors, domains... (Press / to focus)"
+          class="w-full pl-10 pr-16 py-2 bg-deck-card/80 border border-deck-border rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all font-mono"
+        >
+        <kbd class="absolute right-3 px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-deck-surface rounded border border-deck-border pointer-events-none">/</kbd>
+      </div>
 
-      <button onclick="toggleBookmarksDrawer(true)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#141724] border border-white/10 hover:border-amber-500/50 text-xs text-neutral-200 hover:text-amber-400 font-medium transition" title="Show Bookmarked Sites">
-        <span class="material-symbols-outlined text-sm text-amber-400 fill-1">bookmark</span>
-        <span class="hidden sm:inline">Pinned</span>
-        <span id="headerPinnedBadge" class="font-mono text-xs px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span>
-      </button>
+      <!-- Quick Action Controls -->
+      <div class="flex items-center gap-2 self-end md:self-auto">
+        <button onclick="triggerSurpriseMe()" title="Surprise Me (Random Working Stream)" class="flex items-center gap-1.5 px-3 py-2 bg-deck-card hover:bg-deck-border/60 text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-deck-border transition-all">
+          <span class="material-symbols-outlined text-[16px] text-amber-400">casino</span>
+          <span class="hidden sm:inline">Surprise Me</span>
+        </button>
 
-      <button onclick="openSafetyModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-300 hover:bg-cyan-500/20 font-medium transition" title="Protection and Adblocking Guide">
-        <span class="material-symbols-outlined text-sm">shield</span>
-        <span class="hidden sm:inline">Safety</span>
-      </button>
+        <button onclick="toggleBookmarksDrawer()" title="View Saved Bookmarks" class="relative flex items-center gap-1.5 px-3 py-2 bg-deck-card hover:bg-deck-border/60 text-slate-300 hover:text-white rounded-xl text-xs font-medium border border-deck-border transition-all">
+          <span class="material-symbols-outlined text-[16px] text-cyan-400">bookmarks</span>
+          <span class="hidden sm:inline">Saved</span>
+          <span id="bookmark-badge" class="px-1.5 py-0.2 text-[10px] font-mono rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">0</span>
+        </button>
+
+        <button onclick="toggleSafetyModal()" title="Safety, uBlock & DNS Setup" class="flex items-center gap-1.5 px-3 py-2 bg-deck-card hover:bg-deck-border/60 text-emerald-400 hover:text-emerald-300 rounded-xl text-xs font-medium border border-emerald-500/20 hover:border-emerald-500/40 transition-all">
+          <span class="material-symbols-outlined text-[16px]">verified_user</span>
+          <span class="hidden sm:inline">Adblock Guard</span>
+        </button>
+      </div>
+
     </div>
   </header>
 
-  <main class="flex-1 flex flex-col md:flex-row min-h-0 relative overflow-hidden bg-[#06070a]">
+  <!-- MAIN DUAL-PANE COCKPIT VIEWPORT -->
+  <main class="flex-1 max-w-[1700px] w-full mx-auto p-3 sm:p-5 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5">
 
-    <!-- LEFT COLUMN: Directory Shelf & Category Modules (Scrollable) -->
-    <section class="w-full md:w-[48%] lg:w-[42%] xl:w-[38%] h-full flex flex-col border-r border-[#1f2438] bg-[#090b12]">
-      
-      <!-- Shelf Action Bar -->
-      <div class="px-4 py-2.5 border-b border-[#1f2438] bg-[#0c0e16] flex items-center justify-between gap-2 shrink-0">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-cyan-400 text-sm">folder_open</span>
-          <span class="text-xs font-bold text-neutral-300 uppercase tracking-wider">Directory Modules</span>
+    <!-- LEFT COLUMN: Directory Category Modules (lg:col-span-7 xl:col-span-8) -->
+    <section class="lg:col-span-7 xl:col-span-8 flex flex-col gap-4">
+
+      <!-- View Switcher Banner -->
+      <div id="status-banner" class="p-3.5 rounded-2xl bg-deck-surface border border-deck-border flex items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2.5">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span class="text-slate-300 font-medium">All systems monitored: Domains verified daily & active.</span>
         </div>
-        <div class="flex items-center gap-1.5 text-xs">
-          <button onclick="toggleAllModules(true)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border border-white/5 transition" title="Expand All Sections">
-            Expand All
-          </button>
-          <button onclick="toggleAllModules(false)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white border border-white/5 transition" title="Collapse All Sections">
-            Collapse
-          </button>
+        <div class="flex items-center gap-2 text-slate-400">
+          <button onclick="expandAllSections(true)" class="hover:text-cyan-400 font-mono text-[11px] underline underline-offset-4">Expand All</button>
+          <span class="text-slate-700">|</span>
+          <button onclick="expandAllSections(false)" class="hover:text-cyan-400 font-mono text-[11px] underline underline-offset-4">Collapse All</button>
         </div>
       </div>
 
-      <!-- Quick Category Pills / Switcher -->
-      <div class="px-3 py-2 border-b border-[#1c2030] bg-[#08090f] flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 text-xs">
-        <button onclick="filterCategoryPill('all')" class="cat-pill active px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[11px] font-medium whitespace-nowrap">All</button>
-        <button onclick="filterCategoryPill('anime')" class="cat-pill px-3 py-1 rounded-lg bg-white/5 text-neutral-400 border border-white/5 hover:text-white text-[11px] font-medium whitespace-nowrap">Anime</button>
-        <button onclick="filterCategoryPill('western')" class="cat-pill px-3 py-1 rounded-lg bg-white/5 text-neutral-400 border border-white/5 hover:text-white text-[11px] font-medium whitespace-nowrap">Movies & Shows</button>
-        <button onclick="filterCategoryPill('manga')" class="cat-pill px-3 py-1 rounded-lg bg-white/5 text-neutral-400 border border-white/5 hover:text-white text-[11px] font-medium whitespace-nowrap">Manga</button>
-        <button onclick="filterCategoryPill('drama')" class="cat-pill px-3 py-1 rounded-lg bg-white/5 text-neutral-400 border border-white/5 hover:text-white text-[11px] font-medium whitespace-nowrap">K-Drama</button>
-        <button onclick="filterCategoryPill('cartoons')" class="cat-pill px-3 py-1 rounded-lg bg-white/5 text-neutral-400 border border-white/5 hover:text-white text-[11px] font-medium whitespace-nowrap">Cartoons</button>
-        <button onclick="filterCategoryPill('download')" class="cat-pill px-3 py-1 rounded-lg bg-white/5 text-neutral-400 border border-white/5 hover:text-white text-[11px] font-medium whitespace-nowrap">Torrents / DDL</button>
-      </div>
-
-      <!-- Container for all Category Accordion Dropdowns -->
-      <div id="shelfModulesContainer" class="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
+      <!-- LIVE INDEX CONTAINER (Movies/Shows, Anime, Manga) -->
+      <div id="index-container" class="flex flex-col gap-4">
         <!-- Rendered dynamically by JavaScript -->
       </div>
+
+      <!-- GRAVEYARD CONTAINER (Memorial for Deceased Sites) -->
+      <div id="graveyard-container" class="hidden flex-col gap-4">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+
     </section>
 
-    <!-- RIGHT COLUMN: Interactive Site Inspector & Preview Deck -->
-    <section class="flex-1 h-full flex flex-col bg-[#07080e] overflow-hidden relative" id="inspectorStage">
-      <!-- Dynamically filled with Inspector Card OR Welcome Deck -->
-    </section>
+    <!-- RIGHT COLUMN: Site Inspector & Preview Deck (lg:col-span-5 xl:col-span-4) -->
+    <aside class="lg:col-span-5 xl:col-span-4">
+      <div class="sticky top-20 flex flex-col gap-4">
+        
+        <!-- Inspector Card -->
+        <div id="inspector-panel" class="rounded-2xl bg-deck-surface border border-deck-border p-5 shadow-2xl transition-all duration-300">
+          <!-- Populated by JavaScript when a user clicks or previews a card -->
+        </div>
+
+        <!-- Quick Safety Checklist Widget -->
+        <div class="rounded-2xl bg-gradient-to-br from-deck-card to-deck-surface border border-deck-border/80 p-4 text-xs text-slate-400 space-y-2.5">
+          <div class="flex items-center gap-2 text-slate-200 font-bold">
+            <span class="material-symbols-outlined text-amber-400 text-base">shield_with_heart</span>
+            <span>Piracy Stream Etiquette & Safety</span>
+          </div>
+          <p class="leading-relaxed">Free streaming platforms frequently rotate mirror domains and ad-networks. Always pair your browser with <strong class="text-cyan-400">uBlock Origin</strong> and an encrypted DNS like <strong class="text-cyan-400">1.1.1.1</strong>.</p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <a href="https://ublockorigin.com" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 bg-deck-border/70 hover:bg-deck-border rounded-lg text-[11px] text-slate-300 font-mono flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined text-[13px] text-rose-400">extension</span> Get uBlock
+            </a>
+            <a href="https://one.one.one.one" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 bg-deck-border/70 hover:bg-deck-border rounded-lg text-[11px] text-slate-300 font-mono flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined text-[13px] text-cyan-400">dns</span> Cloudflare DNS
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </aside>
 
   </main>
 
-  <div id="bookmarksDrawerBackdrop" onclick="toggleBookmarksDrawer(false)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity"></div>
-  <aside id="bookmarksDrawer" class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-[#0c0e16] border-l border-[#22273a] shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-out flex flex-col">
-    <div class="p-4 border-b border-[#1f2438] flex items-center justify-between bg-[#0e111a]">
-      <div class="flex items-center gap-2 text-amber-400">
-        <span class="material-symbols-outlined fill-1">bookmark</span>
-        <h3 class="font-bold text-white text-sm">Saved Bookmarks</h3>
-        <span id="drawerPinnedCount" class="font-mono text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">0</span>
+  <!-- SAVED BOOKMARKS SLIDE DRAWER -->
+  <div id="bookmarks-backdrop" onclick="toggleBookmarksDrawer()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+  <div id="bookmarks-drawer" class="fixed right-0 top-0 bottom-0 w-full max-w-md bg-deck-surface border-l border-deck-border z-50 transform translate-x-full transition-transform duration-300 flex flex-col p-5 shadow-2xl">
+    <div class="flex items-center justify-between pb-4 border-b border-deck-border">
+      <div class="flex items-center gap-2 text-white font-bold">
+        <span class="material-symbols-outlined text-cyan-400">bookmarks</span>
+        <span>My Saved Links</span>
       </div>
-      <button onclick="toggleBookmarksDrawer(false)" class="p-1 rounded-lg hover:bg-white/10 text-neutral-400 hover:text-white">
+      <button onclick="toggleBookmarksDrawer()" class="p-1 rounded-lg hover:bg-deck-border text-slate-400 hover:text-white transition-all">
         <span class="material-symbols-outlined text-lg">close</span>
       </button>
     </div>
-
-    <div id="bookmarksList" class="flex-1 overflow-y-auto p-4 space-y-2">
-      <!-- Rendered dynamically -->
+    <div id="bookmarks-list" class="flex-1 overflow-y-auto py-4 space-y-2">
+      <!-- Injected by JavaScript -->
     </div>
-
-    <div class="p-3 border-t border-[#1f2438] bg-[#08090f] flex justify-between items-center text-xs text-neutral-500">
-      <span>Stored locally in browser</span>
-      <button onclick="clearAllBookmarks()" class="text-rose-400 hover:text-rose-300 font-medium">Clear All</button>
-    </div>
-  </aside>
-
-  <div id="safetyModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-[#0f111a] rounded-2xl max-w-lg w-full p-5 sm:p-6 border border-[#23283b] shadow-deck-panel space-y-4">
-      <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <div class="flex items-center gap-2 text-cyan-400">
-          <span class="material-symbols-outlined text-2xl">shield</span>
-          <h3 class="font-bold text-white text-base">Adblock & Streaming Protection Toolkit</h3>
-        </div>
-        <button onclick="closeSafetyModal()" class="text-neutral-400 hover:text-white p-1 rounded-lg hover:bg-white/5">
-          <span class="material-symbols-outlined text-lg">close</span>
-        </button>
-      </div>
-
-      <div class="space-y-2.5 text-xs text-neutral-300 leading-relaxed">
-        <div class="p-3.5 rounded-xl bg-[#141724] border border-cyan-500/25 flex gap-3">
-          <span class="material-symbols-outlined text-cyan-400 text-xl shrink-0">extension</span>
-          <div>
-            <span class="font-bold text-white block mb-0.5">1. Install uBlock Origin</span>
-            Mandatory for video streaming. Strips intrusive inline scripts, fake download buttons, and deceptive popup ads.
-          </div>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-[#141724] border border-violet-500/25 flex gap-3">
-          <span class="material-symbols-outlined text-violet-400 text-xl shrink-0">public</span>
-          <div>
-            <span class="font-bold text-white block mb-0.5">2. Secure DNS (Bypass ISP Blockades)</span>
-            If any domain shows an NXDOMAIN or block page, switch your browser DNS to <strong>Cloudflare (1.1.1.1)</strong> or <strong>NextDNS</strong>.
-          </div>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-[#141724] border border-emerald-500/25 flex gap-3">
-          <span class="material-symbols-outlined text-emerald-400 text-xl shrink-0">verified_user</span>
-          <div>
-            <span class="font-bold text-white block mb-0.5">3. Recommended Web Browsers</span>
-            Firefox (best manifest support for adblocking) or Brave Browser (native shields enabled).
-          </div>
-        </div>
-      </div>
-
-      <div class="flex justify-end pt-2">
-        <button onclick="closeSafetyModal()" class="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs transition">
-          I Understand
-        </button>
-      </div>
+    <div class="pt-3 border-t border-deck-border text-center text-xs text-slate-500">
+      Bookmarks are securely stored in your local browser storage.
     </div>
   </div>
 
-  <div id="hubToast" class="fixed bottom-6 right-6 z-50 bg-[#121520]/95 backdrop-blur-md border border-cyan-500/30 text-white text-xs px-4 py-3 rounded-xl shadow-glow-cyan flex items-center gap-2.5 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    <span class="material-symbols-outlined text-cyan-400 text-base" id="toastIcon">check_circle</span>
-    <span id="toastMsg" class="font-medium">System ready</span>
+  <!-- SAFETY & ADBLOCK MODAL -->
+  <div id="safety-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="max-w-lg w-full bg-deck-surface border border-deck-border rounded-2xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-deck-border pb-3">
+        <div class="flex items-center gap-2 text-white font-bold">
+          <span class="material-symbols-outlined text-emerald-400">verified_user</span>
+          <span>Adblock & Stream Protection Kit</span>
+        </div>
+        <button onclick="toggleSafetyModal()" class="text-slate-400 hover:text-white">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="space-y-3 text-xs text-slate-300 leading-relaxed">
+        <div class="p-3 rounded-xl bg-deck-card border border-deck-border space-y-1">
+          <span class="font-bold text-white flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-rose-400 text-sm">security</span> 1. The Adblock Rule
+          </span>
+          <p class="text-slate-400">Never browse streaming sites without <strong class="text-white">uBlock Origin</strong>. Turn off all fake download buttons and crypto-miners automatically.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-deck-card border border-deck-border space-y-1">
+          <span class="font-bold text-white flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-cyan-400 text-sm">public</span> 2. DNS Unblocking
+          </span>
+          <p class="text-slate-400">If a domain won't load, your Internet Provider has likely blocked it. Switch your router or device DNS to <strong>1.1.1.1</strong> (Cloudflare) or <strong>8.8.8.8</strong> (Google) to bypass 99% of provider blocks.</p>
+        </div>
+        <div class="p-3 rounded-xl bg-deck-card border border-deck-border space-y-1">
+          <span class="font-bold text-white flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-amber-400 text-sm">web</span> 3. Recommended Browsers
+          </span>
+          <p class="text-slate-400">Use <strong>Brave Browser</strong> or <strong>Firefox with uBlock Origin</strong>. They prevent aggressive pop-unders and tracking redirects.</p>
+        </div>
+      </div>
+      <button onclick="toggleSafetyModal()" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-xs transition-all">
+        Understood, Take Me Back
+      </button>
+    </div>
   </div>
 
+  <!-- SCRIPT LOGIC & DATA STORAGE -->
   <script>
-    const DIRECTORY_CATEGORIES = [
-      {
+    // ==========================================
+    // 1. DATA REPOSITORY: 3 TARGET CATEGORIES + GRAVEYARD
+    // ==========================================
+    const DIRECTORY_DATA = {
+      movies: {
+        id: "movies",
+        title: "Movies & TV Shows",
+        icon: "movie",
+        badgeColor: "from-sky-500/20 to-blue-600/20 border-sky-500/30 text-sky-400",
+        description: "Direct streaming portals for Hollywood blockbusters, trending TV series, and multi-server releases.",
+        items: [
+          {
+            id: "mov-1",
+            name: "Cineby",
+            rank: 1,
+            badge: "4K MULTI",
+            rating: "9.8",
+            primaryUrl: "https://cineby.app",
+            mirrors: [
+              { name: "cineby.app", url: "https://cineby.app", ping: "42ms" },
+              { name: "cineby.ru", url: "https://cineby.ru", ping: "58ms" }
+            ],
+            pros: ["Clean Netflix-style UI", "Zero intrusive popups", "Fast multi-server 4K streams"],
+            cons: ["Server switches occasionally during peak hours"],
+            notes: "One of the best modern streaming experiences currently available online."
+          },
+          {
+            id: "mov-2",
+            name: "Vidbox",
+            rank: 2,
+            badge: "FAST",
+            rating: "9.6",
+            primaryUrl: "https://vidbox.to",
+            mirrors: [
+              { name: "vidbox.to", url: "https://vidbox.to", ping: "38ms" }
+            ],
+            pros: ["Extremely minimal ads", "Instant video buffering", "Auto-play next episode"],
+            cons: ["Subtitles occasionally require manual sync offset"],
+            notes: "Lightning fast CDN hosting for current season TV shows."
+          },
+          {
+            id: "mov-3",
+            name: "LookMovie",
+            rank: 3,
+            badge: "ESTABLISHED",
+            rating: "9.5",
+            primaryUrl: "https://lookmovie2.to",
+            mirrors: [
+              { name: "lookmovie2.to", url: "https://lookmovie2.to", ping: "45ms" },
+              { name: "lookmovie.foundation", url: "https://lookmovie.foundation", ping: "60ms" }
+            ],
+            pros: ["Massive historic archive", "Multi-language subtitles", "Original native video player"],
+            cons: ["1080p requires free account signup on some mirrors"],
+            notes: "High reliability track record over years of uptime."
+          },
+          {
+            id: "mov-4",
+            name: "Bingeflex",
+            rank: 4,
+            badge: "AD-FREE",
+            rating: "9.4",
+            primaryUrl: "https://bingeflex.me",
+            mirrors: [
+              { name: "bingeflex.me", url: "https://bingeflex.me", ping: "52ms" }
+            ],
+            pros: ["Clean user dashboard", "Watch party sync feature", "No redirects"],
+            cons: ["Smaller catalog of obscure vintage films"],
+            notes: "Great community-driven player interface."
+          },
+          {
+            id: "mov-5",
+            name: "Braflix",
+            rank: 5,
+            badge: "POPULAR",
+            rating: "9.3",
+            primaryUrl: "https://braflix.st",
+            mirrors: [
+              { name: "braflix.st", url: "https://braflix.st", ping: "49ms" },
+              { name: "braflix.ru", url: "https://braflix.ru", ping: "63ms" }
+            ],
+            pros: ["Unified search for movies & anime", "Multiple embed provider sources"],
+            cons: ["Occasional dead embed link requires switching server"],
+            notes: "Widely regarded replacement for older deceased giants."
+          },
+          {
+            id: "mov-6",
+            name: "Broflix",
+            rank: 6,
+            badge: "HD",
+            rating: "9.1",
+            primaryUrl: "https://broflix.cc",
+            mirrors: [
+              { name: "broflix.cc", url: "https://broflix.cc", ping: "55ms" }
+            ],
+            pros: ["Streamlined mobile layout", "Quick episode picker"],
+            cons: ["Requires uBlock Origin on external embeds"],
+            notes: "Mobile-optimized lightweight mirror."
+          },
+          {
+            id: "mov-7",
+            name: "SFlix",
+            rank: 7,
+            badge: "CATALOG",
+            rating: "9.0",
+            primaryUrl: "https://sflix.to",
+            mirrors: [
+              { name: "sflix.to", url: "https://sflix.to", ping: "61ms" },
+              { name: "sflix.se", url: "https://sflix.se", ping: "65ms" }
+            ],
+            pros: ["Gigantic TV show episode back-catalogue", "Fast download buttons"],
+            cons: ["Banner advertisements present without adblocker"],
+            notes: "Best for finding older multi-season television shows."
+          },
+          // Overflow items (> 7) tucked into collapsible drawer
+          {
+            id: "mov-8",
+            name: "FlixWave",
+            rank: 8,
+            badge: "MIRROR",
+            rating: "8.8",
+            primaryUrl: "https://flixwave.to",
+            mirrors: [{ name: "flixwave.to", url: "https://flixwave.to", ping: "72ms" }],
+            pros: ["Fast updates", "Subtitles in 20+ languages"],
+            cons: ["Popups if adblocker is disabled"],
+            notes: "Solid alternate when main servers undergo maintenance."
+          },
+          {
+            id: "mov-9",
+            name: "HydraHD",
+            rank: 9,
+            badge: "MINIMAL",
+            rating: "8.7",
+            primaryUrl: "https://hydrahd.com",
+            mirrors: [{ name: "hydrahd.com", url: "https://hydrahd.com", ping: "54ms" }],
+            pros: ["No ads on desktop", "Fast load times"],
+            cons: ["Search requires exact spelling"],
+            notes: "Sleek dark theme player."
+          },
+          {
+            id: "mov-10",
+            name: "M4UFree",
+            rank: 10,
+            badge: "ARCHIVE",
+            rating: "8.5",
+            primaryUrl: "https://m4ufree.tv",
+            mirrors: [{ name: "m4ufree.tv", url: "https://m4ufree.tv", ping: "80ms" }],
+            pros: ["Vintage and classic movie availability"],
+            cons: ["Older UI aesthetics"],
+            notes: "Old school directory layout."
+          },
+          {
+            id: "mov-11",
+            name: "RidoMovies",
+            rank: 11,
+            badge: "EMBED",
+            rating: "8.4",
+            primaryUrl: "https://ridomovies.tv",
+            mirrors: [{ name: "ridomovies.tv", url: "https://ridomovies.tv", ping: "67ms" }],
+            pros: ["Unique server hosts", "Active comment sections"],
+            cons: ["Slow buffer on 4K files"],
+            notes: "Good alternate host."
+          }
+        ]
+      },
+
+      anime: {
         id: "anime",
-        name: "Anime Streaming",
-        icon: "smart_display",
-        color: "emerald",
-        badge: "Simulcast & Softsubs",
-        desc: "Fast subbed and dubbed Japanese animation with active backup players.",
+        title: "Anime Streaming",
+        icon: "play_circle",
+        badgeColor: "from-cyan-500/20 to-teal-500/20 border-cyan-500/30 text-cyan-400",
+        description: "Dedicated anime streaming portals with subbed/dubbed audio, release schedules, and soft-subtitles.",
         items: [
           {
             id: "ani-1",
+            name: "Miruro",
             rank: 1,
-            name: "HiAnime",
-            icon: "⚡",
-            health: "99.8%",
-            safety: "Safe (uBlock)",
-            badges: ["POPULAR", "DUB", "SUB", "1080P"],
-            pros: ["Huge catalog of English dubs", "Interactive timestamped community discussions", "Rich backup player host selectors"],
-            cons: ["Sidebar banners present without an adblocker"],
-            note: "The primary community successor to Zoro.to with synced watch progress.",
+            badge: "AD-FREE",
+            rating: "9.9",
+            primaryUrl: "https://miruro.tv",
             mirrors: [
-              { name: "HiAnime To", url: "https://hianime.to", ping: "42ms" },
-              { name: "HiAnime Sx", url: "https://hianime.sx", ping: "55ms" }
-            ]
+              { name: "miruro.tv", url: "https://miruro.tv", ping: "35ms" },
+              { name: "miruro.online", url: "https://miruro.online", ping: "40ms" }
+            ],
+            pros: ["Zero advertisements", "AniList / MAL sync built-in", "Custom soft-sub font styles"],
+            cons: ["Occasional buffering during Sunday peak broadcasts"],
+            notes: "The gold standard for modern clean anime streaming."
           },
           {
             id: "ani-2",
+            name: "Anikoto",
             rank: 2,
-            name: "Miruro",
-            icon: "🌸",
-            health: "99.5%",
-            safety: "Ad-Free",
-            badges: ["AD-FREE", "MAL-SYNC", "1080P"],
-            pros: ["100% ad-free modern user interface", "Syncs directly with AniList and MyAnimeList", "Custom keyboard playback binds"],
-            cons: ["Peak hours may cause brief initial stream buffering"],
-            note: "One of the most aesthetically pleasing anime interfaces available.",
+            badge: "MULTI",
+            rating: "9.7",
+            primaryUrl: "https://anikoto.com",
             mirrors: [
-              { name: "Miruro TV", url: "https://miruro.tv", ping: "38ms" },
-              { name: "Miruro Online", url: "https://miruro.online", ping: "45ms" }
-            ]
+              { name: "anikoto.com", url: "https://anikoto.com", ping: "42ms" },
+              { name: "anichi.tv", url: "https://anichi.tv", ping: "48ms" }
+            ],
+            pros: ["Massive library with vintage OVAs", "Soft subtitle multi-languages", "Modern responsive UI"],
+            cons: ["Some mirrors carry redirect scripts without adblock"],
+            notes: "High quality stream embeds and fast release scraping."
           },
           {
             id: "ani-3",
-            rank: 3,
             name: "AnimePahe",
-            icon: "🦊",
-            health: "99.9%",
-            safety: "Safe",
-            badges: ["LOW-DATA", "FAST", "MOBILE"],
-            pros: ["Unbeatable video compression buffers smoothly on slow mobile networks", "One-click direct episode download", "Minimal server latency"],
-            cons: ["Video bitrate is capped to prioritize data saving over 4K fidelity"],
-            note: "Best site for watching on phones and limited internet data caps.",
+            rank: 3,
+            badge: "COMPACT",
+            rating: "9.6",
+            primaryUrl: "https://animepahe.ru",
             mirrors: [
-              { name: "AnimePahe Ru", url: "https://animepahe.ru", ping: "31ms" },
-              { name: "AnimePahe Org", url: "https://animepahe.org", ping: "36ms" }
-            ]
+              { name: "animepahe.ru", url: "https://animepahe.ru", ping: "50ms" },
+              { name: "animepahe.org", url: "https://animepahe.org", ping: "54ms" }
+            ],
+            pros: ["Extremely compressed lightweight video files", "Instant loading on slow internet", "Direct download buttons"],
+            cons: ["720p/1080p compression shows artifacts in fast action"],
+            notes: "The champion for low data usage and smooth playback."
           },
           {
             id: "ani-4",
+            name: "Re:Anime",
             rank: 4,
-            name: "Anikoto",
-            icon: "☀️",
-            health: "98.9%",
-            safety: "Safe",
-            badges: ["SOFTSUB", "MULTI-LANG", "VERIFIED"],
-            pros: ["Simulcasts uploaded within minutes of airing in Japan", "Soft-subtitles with multi-language tracks", "Interactive auto-skip intro button"],
-            cons: ["Occasional domain name updates"],
-            note: "Popular modern player with reliable multi-server backups.",
+            badge: "CLEAN",
+            rating: "9.4",
+            primaryUrl: "https://reanitv.com",
             mirrors: [
-              { name: "Anikoto Main", url: "https://anikoto.com", ping: "60ms" },
-              { name: "Anichi Mirror", url: "https://anichi.to", ping: "64ms" }
-            ]
+              { name: "reanitv.com", url: "https://reanitv.com", ping: "44ms" }
+            ],
+            pros: ["Minimal aesthetic design", "Fast episode skip controls", "No video player overlays"],
+            cons: ["Smaller comment community"],
+            notes: "Smooth, clean dark-mode interface with rapid video playback."
           },
           {
             id: "ani-5",
+            name: "HiAnime",
             rank: 5,
-            name: "AnimeSuge",
-            icon: "🟣",
-            health: "98.4%",
-            safety: "Safe (uBlock)",
-            badges: ["FAST", "1080P", "SUB"],
-            pros: ["Clean episode grid navigation", "Active user reviews and ratings", "Autoplay next episode"],
-            cons: ["Uses third party video hosts"],
-            note: "Great secondary backup when main streaming domains are under maintenance.",
-            mirrors: [{ name: "AnimeSuge To", url: "https://animesuge.to", ping: "48ms" }]
+            badge: "HUGE",
+            rating: "9.3",
+            primaryUrl: "https://hianime.to",
+            mirrors: [
+              { name: "hianime.to", url: "https://hianime.to", ping: "38ms" },
+              { name: "hianime.nz", url: "https://hianime.nz", ping: "45ms" }
+            ],
+            pros: ["Largest active userbase and comments", "Auto-skip intro/outro", "Synced watch2gether rooms"],
+            cons: ["Aggressive ads unless running uBlock Origin"],
+            notes: "The direct successor carrying forward the Zoro/Aniwatch database."
           },
           {
             id: "ani-6",
+            name: "AniZone",
             rank: 6,
-            name: "Gogoanime Classic",
-            icon: "🟡",
-            health: "99.1%",
-            safety: "Adblock Req",
-            badges: ["ARCHIVE", "DUB", "RETRO"],
-            pros: ["Unmatched retro catalog going back to the 1970s", "Multiple embed fallback servers", "Lightweight HTML"],
-            cons: ["Deceptive popups without an active adblock extension"],
-            note: "The longest-running archive for obscure and vintage series.",
-            mirrors: [{ name: "Anitaku To", url: "https://anitaku.to", ping: "52ms" }]
+            badge: "FAST",
+            rating: "9.1",
+            primaryUrl: "https://anizone.to",
+            mirrors: [
+              { name: "anizone.to", url: "https://anizone.to", ping: "52ms" }
+            ],
+            pros: ["Multiple audio tracks (Sub/Dub)", "Fast schedule release radar"],
+            cons: ["Mobile layout occasionally truncates episode list"],
+            notes: "Dependable secondary portal."
           },
           {
             id: "ani-7",
+            name: "Senshi",
             rank: 7,
-            name: "Re:Anime",
-            icon: "❄️",
-            health: "98.7%",
-            safety: "Ad-Free",
-            badges: ["MINIMAL", "1080P", "CDN"],
-            pros: ["Zero popups or redirects", "Direct CDN connection speeds", "No UI bloat"],
-            cons: ["Smaller selection of vintage OVA releases"],
-            note: "Minimalist and distraction-free streaming.",
-            mirrors: [{ name: "Re:Anime Stream", url: "https://reanimes.com", ping: "40ms" }]
+            badge: "NEW",
+            rating: "9.0",
+            primaryUrl: "https://senshi.me",
+            mirrors: [
+              { name: "senshi.me", url: "https://senshi.me", ping: "41ms" }
+            ],
+            pros: ["Modern card-grid layout", "Keyboard hotkeys for video player"],
+            cons: ["New platform with fluctuating server routes"],
+            notes: "Rising community favorite."
           },
-          /* Overflow items (Sites 8+) */
+          // Overflow items (> 7)
           {
             id: "ani-8",
+            name: "KickAssAnime",
             rank: 8,
-            name: "YugenAnime",
-            icon: "🌌",
-            health: "97.8%",
-            safety: "Safe",
-            badges: ["CLEAN", "1080P"],
-            pros: ["Clean UI aesthetic", "Episode notification bookmarks"],
-            cons: ["Frequent domain migrations"],
-            note: "Popular community portal with fast navigation.",
-            mirrors: [{ name: "YugenAnime Tv", url: "https://yugenanime.tv", ping: "62ms" }]
+            badge: "VETERAN",
+            rating: "8.9",
+            primaryUrl: "https://kaas.am",
+            mirrors: [{ name: "kaas.am", url: "https://kaas.am", ping: "58ms" }],
+            pros: ["Custom HTML5 player with pitch adjustment", "Direct DDL links"],
+            cons: ["UI redesign is polarizing for some users"],
+            notes: "Longstanding survivor with strong mirror resilience."
           },
           {
             id: "ani-9",
+            name: "AllManga",
             rank: 9,
-            name: "AnimeOut",
-            icon: "📥",
-            health: "98.0%",
-            safety: "Safe",
-            badges: ["DDL", "ENCODE"],
-            pros: ["Direct episode download files", "Optimized small video file sizes"],
-            cons: ["Download link protector wait timer"],
-            note: "Direct episode download portal.",
-            mirrors: [{ name: "AnimeOut", url: "https://animeout.xyz", ping: "71ms" }]
+            badge: "DUAL",
+            rating: "8.8",
+            primaryUrl: "https://allmanga.to",
+            mirrors: [{ name: "allmanga.to", url: "https://allmanga.to", ping: "62ms" }],
+            pros: ["Hosts both anime episodes and manga chapters"],
+            cons: ["Search bar can be sluggish"],
+            notes: "Great two-in-one resource."
           },
           {
             id: "ani-10",
+            name: "AnimeFlix",
             rank: 10,
-            name: "AniWave Clone",
-            icon: "🌊",
-            health: "96.5%",
-            safety: "Adblock Req",
-            badges: ["CLONE", "HD"],
-            pros: ["Familiar classic AniWave interface", "Full episode lists"],
-            cons: ["Unofficial clone mirror"],
-            note: "Surviving community mirror of the classic AniWave/9anime style.",
-            mirrors: [{ name: "AniWave Mirror", url: "https://aniwave.best", ping: "85ms" }]
+            badge: "COMMUNITY",
+            rating: "8.6",
+            primaryUrl: "https://animeflix.live",
+            mirrors: [{ name: "animeflix.live", url: "https://animeflix.live", ping: "70ms" }],
+            pros: ["Organized season playlists", "Discord sync"],
+            cons: ["Embeds require re-clicks occasionally"],
+            notes: "Reliable fallback site."
+          },
+          {
+            id: "ani-11",
+            name: "YugenAnime",
+            rank: 11,
+            badge: "LIGHT",
+            rating: "8.5",
+            primaryUrl: "https://yugenanime.tv",
+            mirrors: [{ name: "yugenanime.tv", url: "https://yugenanime.tv", ping: "75ms" }],
+            pros: ["Very clean typography and layout"],
+            cons: ["Limited server alternatives per episode"],
+            notes: "Solid minimalist directory."
           }
         ]
       },
-      {
-        id: "western",
-        name: "Movies & Western TV Shows",
-        icon: "movie",
-        color: "sky",
-        badge: "4K Cinema & TV",
-        desc: "Hollywood theatrical films, Netflix/HBO releases, and high-bitrate TV.",
-        items: [
-          {
-            id: "west-1",
-            rank: 1,
-            name: "Braflix",
-            icon: "🍿",
-            health: "99.7%",
-            safety: "Ad-Free",
-            badges: ["4K", "MULTI-LANG", "AD-FREE"],
-            pros: ["Netflix-style polished UI with episode tracking", "Crisp 4K HDR and high bitrate 1080p servers", "Customizable subtitle styling (color, size, opacity)"],
-            cons: ["4K streaming requires 25+ Mbps connection"],
-            note: "The gold standard for clean, responsive movie and TV series streaming.",
-            mirrors: [
-              { name: "Braflix Video", url: "https://www.braflix.video", ping: "35ms" },
-              { name: "Braflix ST", url: "https://braflix.st", ping: "41ms" }
-            ]
-          },
-          {
-            id: "west-2",
-            rank: 2,
-            name: "CineZone",
-            icon: "🎬",
-            health: "99.2%",
-            safety: "Safe",
-            badges: ["FAST", "1080P", "IMDb"],
-            pros: ["Instant player spin-up", "Deep archive of indie films and prestige TV shows", "IMDb ratings displayed in cards"],
-            cons: ["Domain suffix rotates periodically"],
-            note: "Reliable platform with high bitrate feeds and fast CDN.",
-            mirrors: [
-              { name: "CineZone To", url: "https://cinezone.to", ping: "44ms" },
-              { name: "CineZone Is", url: "https://cinezone.is", ping: "49ms" }
-            ]
-          },
-          {
-            id: "west-3",
-            rank: 3,
-            name: "LookMovie2",
-            icon: "👁️",
-            health: "99.6%",
-            safety: "Safe",
-            badges: ["INTERNAL-CDN", "STABLE"],
-            pros: ["Directly hosted video files instead of flaky third-party iframes", "Minimal buffering interruptions", "Very high uptime over years"],
-            cons: ["Free tier streams capped at standard 720p/1080p"],
-            note: "Consistently online with independent server clusters.",
-            mirrors: [{ name: "LookMovie2 To", url: "https://lookmovie2.to", ping: "38ms" }]
-          },
-          {
-            id: "west-4",
-            rank: 4,
-            name: "SFlix",
-            icon: "⚡",
-            health: "98.9%",
-            safety: "Safe (uBlock)",
-            badges: ["CHROMECAST", "MOBILE"],
-            pros: ["One-tap casting to Smart TVs and Chromecast", "Smooth touch gesture controls on mobile phones"],
-            cons: ["Requires uBlock to stop initial tab popups"],
-            note: "Huge library of modern Hollywood and network releases.",
-            mirrors: [
-              { name: "SFlix To", url: "https://sflix.to", ping: "51ms" },
-              { name: "SFlix Is", url: "https://sflix.is", ping: "57ms" }
-            ]
-          },
-          {
-            id: "west-5",
-            rank: 5,
-            name: "FlixWave",
-            icon: "🌊",
-            health: "98.6%",
-            safety: "Safe",
-            badges: ["1080P", "SERIES"],
-            pros: ["Quick uploads of newly aired TV network episodes", "Smart auto-next episode playlist"],
-            cons: ["Occasional dead embed mirrors on older movies"],
-            note: "Solid standby option when major stream servers are congested.",
-            mirrors: [{ name: "FlixWave To", url: "https://flixwave.to", ping: "48ms" }]
-          },
-          {
-            id: "west-6",
-            rank: 6,
-            name: "FMovies Mirror",
-            icon: "📽️",
-            health: "97.5%",
-            safety: "Adblock Req",
-            badges: ["POPULAR", "1080P"],
-            pros: ["Classic familiar layout", "Multiple audio language tracks supported"],
-            cons: ["Many fake imitators online (use verified link)"],
-            note: "Surviving community mirror of the historic FMovies portal.",
-            mirrors: [{ name: "FMovies PS", url: "https://fmovies.ps", ping: "65ms" }]
-          },
-          {
-            id: "west-7",
-            rank: 7,
-            name: "Soap2Day Standby",
-            icon: "🧼",
-            health: "97.0%",
-            safety: "Adblock Req",
-            badges: ["CLASSIC", "HD"],
-            pros: ["Lightweight classic design", "Comprehensive series catalog"],
-            cons: ["Original operators retired; mirror community maintained"],
-            note: "Surviving UI replica of the original Soap2Day.",
-            mirrors: [{ name: "Soap2Day RS", url: "https://soap2day.rs", ping: "72ms" }]
-          },
-          /* Overflow items (Sites 8+) */
-          {
-            id: "west-8",
-            rank: 8,
-            name: "Binged",
-            icon: "🔍",
-            health: "98.1%",
-            safety: "Ad-Free",
-            badges: ["SEARCH", "INDEX"],
-            pros: ["Aggregated stream locator across multiple providers", "No ads on search interface"],
-            cons: ["Re-routes to external players"],
-            note: "Smart meta-search engine for movies and shows.",
-            mirrors: [{ name: "Binged In", url: "https://binged.in", ping: "46ms" }]
-          },
-          {
-            id: "west-9",
-            rank: 9,
-            name: "WatchSeries",
-            icon: "📺",
-            health: "96.8%",
-            safety: "Adblock Req",
-            badges: ["SERIES", "HD"],
-            pros: ["Specialized in American and British television series", "Fast season batch navigation"],
-            cons: ["Popup tabs on play click"],
-            note: "Great secondary option for TV series.",
-            mirrors: [{ name: "WatchSeries Mx", url: "https://watchseries.mx", ping: "68ms" }]
-          },
-          {
-            id: "west-10",
-            rank: 10,
-            name: "LosMovies",
-            icon: "🎥",
-            health: "96.2%",
-            safety: "Adblock Req",
-            badges: ["SUBTITLES", "720P"],
-            pros: ["Enormous subtitle library in over 30 languages", "Classic movie archives"],
-            cons: ["Standard definition player embeds on older titles"],
-            note: "Historic foreign subtitle hub.",
-            mirrors: [{ name: "LosMovies Official", url: "https://losmovies.today", ping: "80ms" }]
-          }
-        ]
-      },
-      {
+
+      manga: {
         id: "manga",
-        name: "Manga, Manhwa & Comics",
-        icon: "auto_stories",
-        color: "amber",
-        badge: "Scanlations & Readers",
-        desc: "Digital manga readers, vertical manhwa webtoons, and scanlation libraries.",
+        title: "Manga, Manhwa & Comics",
+        icon: "menu_book",
+        badgeColor: "from-purple-500/20 to-pink-500/20 border-purple-500/30 text-purple-400",
+        description: "High-resolution scanlation readers for Japanese Manga, Korean Manhwa, and Webtoons.",
         items: [
           {
-            id: "man-1",
-            rank: 1,
+            id: "mng-1",
             name: "MangaDex",
-            icon: "📖",
-            health: "99.9%",
-            safety: "Ad-Free",
-            badges: ["AD-FREE", "OPEN-SOURCE", "MULTI-LANG"],
-            pros: ["100% ad-free open scanlation platform", "Official API support for Mihon / Tachiyomi mobile apps", "Over 40 languages supported directly by scanlation groups"],
-            cons: ["Licensed titles removed upon copyright holder request"],
-            note: "The undisputed gold standard of online manga reading.",
-            mirrors: [{ name: "MangaDex Org", url: "https://mangadex.org", ping: "32ms" }]
+            rank: 1,
+            badge: "OFFICIAL API",
+            rating: "9.9",
+            primaryUrl: "https://mangadex.org",
+            mirrors: [
+              { name: "mangadex.org", url: "https://mangadex.org", ping: "30ms" }
+            ],
+            pros: ["Completely ad-free non-profit platform", "Community translations in 40+ languages", "Open API for external apps"],
+            cons: ["Does not host official licensed rips from big publishers"],
+            notes: "The undisputed undisputed standard for reading and scanlator releases."
           },
           {
-            id: "man-2",
-            rank: 2,
+            id: "mng-2",
             name: "MangaFire",
-            icon: "🔥",
-            health: "99.4%",
-            safety: "Safe",
-            badges: ["WEBTOON", "FAST", "SYNC"],
-            pros: ["Smooth vertical webtoon infinite scroll mode", "Reading progress synced in cloud", "High-res colored manhwa chapters"],
-            cons: ["Banner ads present without an adblocker"],
-            note: "Built by the development team behind AniWave.",
-            mirrors: [{ name: "MangaFire To", url: "https://mangafire.to", ping: "45ms" }]
+            rank: 2,
+            badge: "READER PRO",
+            rating: "9.7",
+            primaryUrl: "https://mangafire.to",
+            mirrors: [
+              { name: "mangafire.to", url: "https://mangafire.to", ping: "36ms" }
+            ],
+            pros: ["Vertical continuous scroll mode", "Cloud bookmark progress sync", "Huge licensed catalog"],
+            cons: ["Occasional popup tab without adblock"],
+            notes: "Built by the team behind legendary streaming interfaces."
           },
           {
-            id: "man-3",
+            id: "mng-3",
+            name: "Comick",
             rank: 3,
-            name: "Asura Scans",
-            icon: "⚡",
-            health: "99.6%",
-            safety: "Safe",
-            badges: ["MANHWA", "HIGH-RES", "FANTASY"],
-            pros: ["#1 destination for leveling and fantasy Korean Manhwa", "Fastest chapter translations with crisp custom typesetting"],
-            cons: ["Almost exclusively focused on Manhwa rather than black-and-white Manga"],
-            note: "The premier home for Solo Leveling style action manhwa.",
-            mirrors: [{ name: "Asura Comic", url: "https://asuracomic.net", ping: "39ms" }]
+            badge: "PWA APP",
+            rating: "9.6",
+            primaryUrl: "https://comick.io",
+            mirrors: [
+              { name: "comick.io", url: "https://comick.io", ping: "42ms" }
+            ],
+            pros: ["Installable Progressive Web App", "Chapter release notification bell", "Smart chapter filtering"],
+            cons: ["Requires free account to customize certain reader themes"],
+            notes: "Top-tier progressive web app experience on mobile devices."
           },
           {
-            id: "man-4",
+            id: "mng-4",
+            name: "Weeb Central",
             rank: 4,
+            badge: "FAST",
+            rating: "9.4",
+            primaryUrl: "https://weebcentral.com",
+            mirrors: [
+              { name: "weebcentral.com", url: "https://weebcentral.com", ping: "47ms" }
+            ],
+            pros: ["High quality image compression", "Zero dead image links", "Simple reader interface"],
+            cons: ["Fewer community comment features"],
+            notes: "Fast, reliable archive built on resilient infrastructure."
+          },
+          {
+            id: "mng-5",
             name: "MangaKatana",
-            icon: "🗡️",
-            health: "99.1%",
-            safety: "Safe",
-            badges: ["ALL-PAGES", "LIGHTWEIGHT"],
-            pros: ["'All Pages' mode loads complete chapters on a single page", "Lightweight code runs on old laptops and weak connections"],
-            cons: ["Simple retro user interface layout"],
-            note: "Phenomenal loading speeds and bulletproof uptime.",
-            mirrors: [{ name: "MangaKatana Com", url: "https://mangakatana.com", ping: "41ms" }]
+            rank: 5,
+            badge: "CLASSIC",
+            rating: "9.2",
+            primaryUrl: "https://mangakatana.com",
+            mirrors: [
+              { name: "mangakatana.com", url: "https://mangakatana.com", ping: "55ms" }
+            ],
+            pros: ["Extensive archive of completed vintage 90s manga", "Instant all-pages load option"],
+            cons: ["Old-school layout design"],
+            notes: "Best for reading completed series in one single scroll."
           },
           {
-            id: "man-5",
-            rank: 5,
+            id: "mng-6",
+            name: "Asura Scans",
+            rank: 6,
+            badge: "MANHWA #1",
+            rating: "9.1",
+            primaryUrl: "https://asuracomic.net",
+            mirrors: [
+              { name: "asuracomic.net", url: "https://asuracomic.net", ping: "45ms" }
+            ],
+            pros: ["Highest quality Korean Manhwa translations", "Fastest chapter releases"],
+            cons: ["Heavy ad density on mobile (uBlock Origin required)"],
+            notes: "The premier home for Solo Leveling style action manhwa."
+          },
+          {
+            id: "mng-7",
             name: "Flame Comics",
-            icon: "🔥",
-            health: "98.8%",
-            safety: "Safe",
-            badges: ["QUALITY", "MANHWA"],
-            pros: ["High quality typesetting and image reconstruction", "Dedicated scanlation team"],
-            cons: ["Smaller overall title count"],
-            note: "Superb scan quality for martial arts and regression series.",
-            mirrors: [{ name: "Flame Comics Me", url: "https://flamecomics.me", ping: "47ms" }]
-          },
-          {
-            id: "man-6",
-            rank: 6,
-            name: "Tappytoon Free Reader",
-            icon: "✨",
-            health: "99.8%",
-            safety: "Official",
-            badges: ["OFFICIAL", "HD"],
-            pros: ["Official localized translations", "High fidelity artwork"],
-            cons: ["Free chapters rotate on a timed wait model"],
-            note: "Legitimate publisher app with rotating free chapter promotions.",
-            mirrors: [{ name: "Tappytoon Com", url: "https://www.tappytoon.com", ping: "35ms" }]
-          },
-          {
-            id: "man-7",
             rank: 7,
-            name: "Webtoon Canvas",
-            icon: "🟢",
-            health: "99.9%",
-            safety: "Ad-Free",
-            badges: ["OFFICIAL", "INDIE"],
-            pros: ["Massive indie comic and vertical manhwa library", "Mobile friendly app"],
-            cons: ["Requires coins for early fast-pass episodes"],
-            note: "The world's largest webtoon portal.",
-            mirrors: [{ name: "Webtoons Com", url: "https://www.webtoons.com", ping: "28ms" }]
+            badge: "QUALITY",
+            rating: "9.0",
+            primaryUrl: "https://flamecomics.me",
+            mirrors: [
+              { name: "flamecomics.me", url: "https://flamecomics.me", ping: "50ms" }
+            ],
+            pros: ["Exceptional image typesetting and translation quality", "Active community forum"],
+            cons: ["Catalog focused on curated series rather than everything"],
+            notes: "Premier scanlation group with ultra crisp image scans."
           },
-          /* Overflow items (Sites 8+) */
+          // Overflow items (> 7)
           {
-            id: "man-8",
+            id: "mng-8",
+            name: "Reaper Scans",
             rank: 8,
+            badge: "MANHWA",
+            rating: "8.9",
+            primaryUrl: "https://reaperscans.com",
+            mirrors: [{ name: "reaperscans.com", url: "https://reaperscans.com", ping: "58ms" }],
+            pros: ["Great fantasy & leveling manhwa selection"],
+            cons: ["Frequent domain migrations"],
+            notes: "Veteran manhwa scanlation group."
+          },
+          {
+            id: "mng-9",
             name: "Bato.to",
-            icon: "🦆",
-            health: "98.2%",
-            safety: "Safe",
-            badges: ["COMMUNITY", "MULTI-LANG"],
-            pros: ["User-uploaded chapters and obscure indie translations", "Best romance/shoujo selection"],
-            cons: ["Disorganized duplicate chapter releases"],
-            note: "Community-driven manga and manhwa upload platform.",
-            mirrors: [{ name: "Bato To", url: "https://bato.to", ping: "58ms" }]
-          },
-          {
-            id: "man-9",
             rank: 9,
-            name: "MangaSee",
-            icon: "👁️",
-            health: "97.9%",
-            safety: "Adblock Req",
-            badges: ["ARCHIVE", "OFFICIAL-RIP"],
-            pros: ["Hosts official high-resolution volume scans", "Comprehensive search filters"],
-            cons: ["Static banner ads"],
-            note: "Great destination for pristine digital volume rips.",
-            mirrors: [{ name: "MangaSee123", url: "https://mangasee123.com", ping: "53ms" }]
+            badge: "COMMUNITY",
+            rating: "8.8",
+            primaryUrl: "https://bato.to",
+            mirrors: [{ name: "bato.to", url: "https://bato.to", ping: "64ms" }],
+            pros: ["Huge romance, shoujo & indie scanlations", "Thriving comments"],
+            cons: ["Variable translation quality by uploader"],
+            notes: "Open uploader portal with huge back catalog."
+          },
+          {
+            id: "mng-10",
+            name: "MangaClash",
+            rank: 10,
+            badge: "MIRROR",
+            rating: "8.5",
+            primaryUrl: "https://mangaclash.com",
+            mirrors: [{ name: "mangaclash.com", url: "https://mangaclash.com", ping: "78ms" }],
+            pros: ["Aggregates multiple scan sources"],
+            cons: ["Ad-heavy without browser shields"],
+            notes: "Backup manga directory."
           }
         ]
+      }
+    };
+
+    // ==========================================
+    // 2. THE GRAVEYARD (MEMORIAL HALL OF FALLEN SITES)
+    // ==========================================
+    const GRAVEYARD_DATA = [
+      {
+        name: "AniWave (9Anime)",
+        years: "2016 – 2024",
+        category: "Anime",
+        cause: "Alliance for Creativity and Entertainment (ACE) & Industry Enforcement Operations.",
+        reflection: "The undisputed king of anime streaming for nearly a decade. Pioneered the custom auto-skip intro system, multi-server player switching, and organized season folders.",
+        successor: "Miruro / Anikoto / HiAnime"
       },
       {
-        id: "drama",
-        name: "Asian Drama & Shows",
-        icon: "live_tv",
-        color: "pink",
-        badge: "K-Drama & C-Drama",
-        desc: "Korean dramas, Chinese historical epics, Japanese shows, and variety TV.",
-        items: [
-          {
-            id: "dra-1",
-            rank: 1,
-            name: "MyAsianTV",
-            icon: "📺",
-            health: "99.3%",
-            safety: "Safe (uBlock)",
-            badges: ["SUB", "DOWNLOAD", "HD"],
-            pros: ["Direct episode download links available", "Clear broadcast schedule of upcoming airing dates", "Fast English subtitle timing"],
-            cons: ["Requires adblocker to suppress popup redirects"],
-            note: "One of the most trusted and reliable drama indexes online.",
-            mirrors: [{ name: "MyAsianTv To", url: "https://myasiantv.to", ping: "44ms" }]
-          },
-          {
-            id: "dra-2",
-            rank: 2,
-            name: "Dramacool",
-            icon: "✨",
-            health: "99.1%",
-            safety: "Safe",
-            badges: ["FAST", "1080P", "POPULAR"],
-            pros: ["Multiple reliable video servers (Standard & VIP players)", "Includes Korean variety shows (Running Man, Knowing Bros)"],
-            cons: ["Many fake phishing clones online; use verified link"],
-            note: "Massive library of Korean, Chinese, and Taiwanese shows in 1080p.",
-            mirrors: [
-              { name: "Dramacool City", url: "https://dramacool.city", ping: "49ms" },
-              { name: "Dramacool Ca", url: "https://dramacool.ca", ping: "55ms" }
-            ]
-          },
-          {
-            id: "dra-3",
-            rank: 3,
-            name: "KissAsian",
-            icon: "🌸",
-            health: "98.5%",
-            safety: "Adblock Req",
-            badges: ["K-DRAMA", "C-DRAMA", "SUB"],
-            pros: ["Largest historical catalog of Asian television series", "Active episode comments and discussion forums"],
-            cons: ["Aggressive video banner ads without uBlock Origin"],
-            note: "Veteran hub for K-Drama and C-Drama fans.",
-            mirrors: [{ name: "KissAsian Lu", url: "https://kissasian.lu", ping: "61ms" }]
-          },
-          {
-            id: "dra-4",
-            rank: 4,
-            name: "ViewAsian",
-            icon: "🎎",
-            health: "98.8%",
-            safety: "Safe",
-            badges: ["CLEAN", "HD"],
-            pros: ["Cleaner UI than competing drama websites", "Full cast and actor profiles listed on drama info pages"],
-            cons: ["Fewer mirror server options per episode"],
-            note: "Fast and lightweight on mobile browsers.",
-            mirrors: [{ name: "ViewAsian Co", url: "https://viewasian.co", ping: "52ms" }]
-          },
-          {
-            id: "dra-5",
-            rank: 5,
-            name: "AsianCrush Free",
-            icon: "🍿",
-            health: "99.8%",
-            safety: "Official",
-            badges: ["OFFICIAL", "LEGAL", "1080P"],
-            pros: ["Completely legal free streaming with ads", "High definition licensed video"],
-            cons: ["Catalog restricted to licensed titles in Western regions"],
-            note: "Legal streaming channel for East Asian cinema and drama.",
-            mirrors: [{ name: "AsianCrush", url: "https://www.asiancrush.com", ping: "33ms" }]
-          },
-          {
-            id: "dra-6",
-            rank: 6,
-            name: "OnDemandKorea Free",
-            icon: "🇰🇷",
-            health: "99.7%",
-            safety: "Official",
-            badges: ["OFFICIAL", "VARIETY"],
-            pros: ["Same-day Korean television network broadcasts", "Official subtitles"],
-            cons: ["Regional geoblocks apply to select drama titles"],
-            note: "Licensed platform featuring top Korean broadcast networks.",
-            mirrors: [{ name: "OnDemandKorea", url: "https://www.ondemandkorea.com", ping: "38ms" }]
-          },
-          {
-            id: "dra-7",
-            rank: 7,
-            name: "Dramanice",
-            icon: "💫",
-            health: "97.9%",
-            safety: "Adblock Req",
-            badges: ["HD", "SUB"],
-            pros: ["Fast updates on newly aired Korean drama episodes", "Simple navigation tabs"],
-            cons: ["Occasional broken stream embeds"],
-            note: "Reliable fallback drama portal.",
-            mirrors: [{ name: "Dramanice", url: "https://dramanice.la", ping: "68ms" }]
-          },
-          /* Overflow items (Sites 8+) */
-          {
-            id: "dra-8",
-            rank: 8,
-            name: "FastDrama",
-            icon: "⚡",
-            health: "96.7%",
-            safety: "Adblock Req",
-            badges: ["FAST", "MIRROR"],
-            pros: ["Rapid mirror loading", "Simple player layout"],
-            cons: ["Redirect tabs"],
-            note: "Fast secondary mirror for Asian drama episodes.",
-            mirrors: [{ name: "FastDrama Me", url: "https://fastdrama.me", ping: "74ms" }]
-          }
-        ]
+        name: "Fmovies / Bflix",
+        years: "2016 – 2024",
+        category: "Movies & Shows",
+        cause: "Global coordinated DMCA taskforce seizure of server infrastructure in Vietnam.",
+        reflection: "The gold standard for free movie streaming worldwide. Powered dozens of clones and had the fastest 1080p release pipeline on the web.",
+        successor: "Cineby / Vidbox / LookMovie"
       },
       {
-        id: "cartoons",
-        name: "Cartoons & Classic Animation",
-        icon: "animation",
-        color: "cyan",
-        badge: "Western Animation",
-        desc: "90s/2000s Saturday morning classics, Cartoon Network, Disney, and Pixar.",
-        items: [
-          {
-            id: "car-1",
-            rank: 1,
-            name: "WCOFun (WatchCartoonOnline)",
-            icon: "🏰",
-            health: "99.7%",
-            safety: "Safe",
-            badges: ["CLASSIC", "DUB", "VERIFIED"],
-            pros: ["Complete catalog of 90s, 2000s, and modern Western animation", "High speed direct stream servers with zero buffering", "English audio native"],
-            cons: ["Simple retro layout with basic typography"],
-            note: "The oldest, most comprehensive and reliable Western cartoon archive online.",
-            mirrors: [
-              { name: "WCOFun Net", url: "https://www.wcofun.net", ping: "36ms" },
-              { name: "WCO Stream", url: "https://www.wcostream.tv", ping: "42ms" }
-            ]
-          },
-          {
-            id: "car-2",
-            rank: 2,
-            name: "KimCartoon",
-            icon: "🦸",
-            health: "99.1%",
-            safety: "Safe (uBlock)",
-            badges: ["1080P", "POPULAR", "MOVIES"],
-            pros: ["Full library of Western animated films (Pixar, DreamWorks, DC Animated Universe)", "HD 1080p stream embeds"],
-            cons: ["Requires uBlock to suppress redirect popups"],
-            note: "Sister site of KissAnime, tailored specifically for cartoons.",
-            mirrors: [{ name: "KimCartoon Li", url: "https://kimcartoon.li", ping: "48ms" }]
-          },
-          {
-            id: "car-3",
-            rank: 3,
-            name: "KissCartoon Mirror",
-            icon: "🐾",
-            health: "98.2%",
-            safety: "Adblock Req",
-            badges: ["ARCHIVE", "1080P"],
-            pros: ["Rich series archive spanning 4 decades", "Multiple audio channels available"],
-            cons: ["Adblocker mandatory to browse safely"],
-            note: "Long-standing community mirror of the classic KissCartoon brand.",
-            mirrors: [{ name: "KissCartoon Org", url: "https://kisscartoon.org", ping: "56ms" }]
-          },
-          {
-            id: "car-4",
-            rank: 4,
-            name: "SuperCartoons",
-            icon: "🐭",
-            health: "99.5%",
-            safety: "Ad-Free",
-            badges: ["RETRO", "AD-FREE", "SHORTS"],
-            pros: ["Historic vintage cartoons (Looney Tunes, Tom & Jerry, Popeye)", "Family-friendly clean interface"],
-            cons: ["Focused on classic theatrical shorts rather than modern serialized TV"],
-            note: "The best nostalgia destination for vintage golden-age shorts.",
-            mirrors: [{ name: "SuperCartoons", url: "https://www.supercartoons.net", ping: "39ms" }]
-          },
-          {
-            id: "car-5",
-            rank: 5,
-            name: "WatchCartoonOnline TV",
-            icon: "📺",
-            health: "98.9%",
-            safety: "Safe",
-            badges: ["DIRECT", "FAST"],
-            pros: ["Fast indexing of newly broadcasted TV cartoon episodes", "Mobile-friendly touch video player"],
-            cons: ["Frequent alternate domain redirects"],
-            note: "Reliable companion mirror to the WCO network.",
-            mirrors: [{ name: "WCO TV", url: "https://wco.tv", ping: "44ms" }]
-          },
-          {
-            id: "car-6",
-            rank: 6,
-            name: "Toonova",
-            icon: "🚀",
-            health: "98.0%",
-            safety: "Safe",
-            badges: ["FAST", "CLEAN"],
-            pros: ["Fast initial stream startup", "Neat series episode list"],
-            cons: ["Occasional dead third-party video embeds"],
-            note: "Great standby mirror for popular Cartoon Network and Nickelodeon series.",
-            mirrors: [{ name: "Toonova Net", url: "https://toonova.net", ping: "53ms" }]
-          },
-          {
-            id: "car-7",
-            rank: 7,
-            name: "CartoonsOn",
-            icon: "⭐",
-            health: "97.5%",
-            safety: "Adblock Req",
-            badges: ["HD", "SEARCH"],
-            pros: ["Organized by iconic animation studios (Warner Bros, Hanna-Barbera, Disney)", "Character-specific browsing pages"],
-            cons: ["Fewer mirror server options per video"],
-            note: "Clean character-based browsing experience.",
-            mirrors: [{ name: "CartoonsOn Net", url: "https://www.cartoonson.net", ping: "62ms" }]
-          },
-          /* Overflow items (Sites 8+) */
-          {
-            id: "car-8",
-            rank: 8,
-            name: "TheWatchCartoonOnline",
-            icon: "🏰",
-            health: "97.1%",
-            safety: "Safe",
-            badges: ["BACKUP", "DUB"],
-            pros: ["Comprehensive mirror of the main WCO archive", "Simple video playback controls"],
-            cons: ["Basic HTML template"],
-            note: "Auxiliary portal for WatchCartoonOnline.",
-            mirrors: [{ name: "The WCO", url: "https://thewatchcartoononline.tv", ping: "59ms" }]
-          }
-        ]
+        name: "AnimeKai",
+        years: "2023 – 2024",
+        category: "Anime",
+        cause: "Sudden developer retirement & upstream API takedown.",
+        reflection: "Known for its ultra-minimalist UI and swift episode loading before going offline.",
+        successor: "Miruro / Re:Anime"
       },
       {
-        id: "download",
-        name: "Torrents, DDL & NZB",
-        icon: "download_done",
-        color: "purple",
-        badge: "Lossless & P2P",
-        desc: "P2P torrent swarms, high-speed Direct Downloads, lossless Blu-ray remuxes.",
-        items: [
-          {
-            id: "dl-1",
-            rank: 1,
-            name: "Nyaa.si",
-            icon: "🐱",
-            health: "99.9%",
-            safety: "Ad-Free",
-            badges: ["TORRENT", "LOSSLESS", "P2P"],
-            pros: ["World's premier East Asian torrent index", "Untouched 4K Blu-ray remuxes, FLAC audio & raw Japanese scans", "Ad-free community software project with instant magnet links"],
-            cons: ["Requires BitTorrent client (qBittorrent recommended)", "ISP DNS blockades in certain regions (bypass via Cloudflare 1.1.1.1)"],
-            note: "The undisputed gold standard for pristine anime and Asian media preservation.",
-            mirrors: [
-              { name: "Nyaa Si", url: "https://nyaa.si", ping: "29ms" },
-              { name: "Nyaa Iss One", url: "https://nyaa.iss.one", ping: "38ms" }
-            ]
-          },
-          {
-            id: "dl-2",
-            rank: 2,
-            name: "Tokyo Toshokan",
-            icon: "🗼",
-            health: "99.8%",
-            safety: "Ad-Free",
-            badges: ["RAW", "VINTAGE", "P2P"],
-            pros: ["Zero JavaScript required; pure lightweight HTML", "Instant direct magnet link extraction", "Over 20 years of historical archive"],
-            cons: ["No media preview thumbnails or screenshots"],
-            note: "The oldest surviving Otaku torrent library on the web.",
-            mirrors: [{ name: "Tokyo Toshokan", url: "https://www.tokyotosho.info", ping: "33ms" }]
-          },
-          {
-            id: "dl-3",
-            rank: 3,
-            name: "1337x",
-            icon: "⚓",
-            health: "99.4%",
-            safety: "Safe (uBlock)",
-            badges: ["MOVIES", "TORRENT", "4K"],
-            pros: ["Premier tracker for 4K Western Cinema, UHD series packs & software", "Verified uploader color badges provide download safety assurance", "Huge seeder swarms ensure maximum throughput"],
-            cons: ["Requires uBlock Origin to prevent search redirect tabs"],
-            note: "The top general-purpose torrent tracker online.",
-            mirrors: [
-              { name: "1337x To", url: "https://1337x.to", ping: "46ms" },
-              { name: "1337x St", url: "https://1337x.st", ping: "52ms" }
-            ]
-          },
-          {
-            id: "dl-4",
-            rank: 4,
-            name: "FitGirl Repacks",
-            icon: "🎮",
-            health: "99.9%",
-            safety: "Ad-Free",
-            badges: ["GAMES", "DDL", "TORRENT"],
-            pros: ["World's most trusted compressed PC game repacks", "Verified MD5 file integrity hash check", "Both Magnet torrents and Direct Download host links provided"],
-            cons: ["High CPU decompression workload during game installation"],
-            note: "Beware of impersonator clones; only use .site.",
-            mirrors: [{ name: "FitGirl Repacks Site", url: "https://fitgirl-repacks.site", ping: "37ms" }]
-          },
-          {
-            id: "dl-5",
-            rank: 5,
-            name: "AnimeTosho",
-            icon: "📚",
-            health: "99.6%",
-            safety: "Ad-Free",
-            badges: ["DDL", "USENET", "TORRENT"],
-            pros: ["Automatically mirrors all Nyaa torrent releases into Direct Downloads", "Provides Usenet (NZB) and cloud drive mirrors (Mega, Google Drive)", "Direct standalone subtitle file (.ass / .srt) download links"],
-            cons: ["Dense informational table layout"],
-            note: "Essential resource for users whose networks restrict P2P torrent traffic.",
-            mirrors: [{ name: "AnimeTosho Org", url: "https://animetosho.org", ping: "34ms" }]
-          },
-          {
-            id: "dl-6",
-            rank: 6,
-            name: "SubsPlease",
-            icon: "📦",
-            health: "99.8%",
-            safety: "Ad-Free",
-            badges: ["XDCC", "FAST", "TORRENT"],
-            pros: ["Instant simulcast rips directly from official sources", "Offered in 1080p, 720p, and 540p lightweight sizes", "Native RSS feeds for automated Sonarr / Plex downloads"],
-            cons: ["Only stores currently airing or recent season episodes"],
-            note: "The spiritual successor to HorribleSubs.",
-            mirrors: [{ name: "SubsPlease Org", url: "https://subsplease.org", ping: "31ms" }]
-          },
-          {
-            id: "dl-7",
-            rank: 7,
-            name: "SeaDex Releases",
-            icon: "🌊",
-            health: "99.9%",
-            safety: "Ad-Free",
-            badges: ["INDEX", "BEST-RELEASE"],
-            pros: ["Comprehensive community index rating the absolute best release/encode for each anime", "Compares audio tracks, subtitle accuracy, and video bitrates"],
-            cons: ["Informational index rather than direct file host"],
-            note: "Invaluable reference for media server enthusiasts and collectors.",
-            mirrors: [{ name: "SeaDex Releases", url: "https://releases.moe", ping: "28ms" }]
-          },
-          /* Overflow items (Sites 8+) */
-          {
-            id: "dl-8",
-            rank: 8,
-            name: "DLRaws",
-            icon: "📦",
-            health: "97.5%",
-            safety: "Adblock Req",
-            badges: ["RAW", "DDL", "MANGA"],
-            pros: ["Direct downloads of raw Japanese light novels, manga, and Blu-rays", "Rapid cloud drive mirrors"],
-            cons: ["Japanese language primary interface"],
-            note: "Premier portal for raw untranslated Otaku media.",
-            mirrors: [{ name: "DLRaws Com", url: "https://dl-raw.net", ping: "65ms" }]
-          },
-          {
-            id: "dl-9",
-            rank: 9,
-            name: "ErogeVN Media",
-            icon: "🎮",
-            health: "97.0%",
-            safety: "Safe",
-            badges: ["DDL", "NOVELS"],
-            pros: ["Visual novels and Japanese adventure games", "Mega and Google Drive direct links"],
-            cons: ["Registration needed for select mirrors"],
-            note: "Visual novel archive.",
-            mirrors: [{ name: "ErogeVN", url: "https://erogevn.net", ping: "78ms" }]
-          }
-        ]
+        name: "Zoro.to / Aniwatch",
+        years: "2021 – 2024",
+        category: "Anime",
+        cause: "Repeated corporate buyout transitions followed by server takedowns.",
+        reflection: "Redefined community engagement with watch2gether rooms, comment threads, and soft-subs before being dismantled.",
+        successor: "HiAnime (direct database successor)"
+      },
+      {
+        name: "KissAnime",
+        years: "2012 – 2020",
+        category: "Anime",
+        cause: "Japan copyright statutory revisions & server file host seizure.",
+        reflection: "The original giant that introduced millions to online anime streaming in the 2010s. Its green-and-black theme remains iconic.",
+        successor: "AnimePahe / HiAnime"
+      },
+      {
+        name: "Soap2Day",
+        years: "2018 – 2023",
+        category: "Movies & Shows",
+        cause: "Voluntary shutdown by the original developers due to legal pressures.",
+        reflection: "Praised for simplicity and reliable sports/movie feeds without intrusive bloat.",
+        successor: "Braflix / SFlix"
+      },
+      {
+        name: "RARBG",
+        years: "2008 – 2023",
+        category: "Torrents / Releases",
+        cause: "War in Ukraine, European energy price spikes, and COVID health consequences.",
+        reflection: "The premier encoder for scene releases. Millions of streaming sites relied on RARBG's clean 1080p and 4K x264/x265 encodes.",
+        successor: "Nyaa.si / Direct DDLs"
+      },
+      {
+        name: "MangaRock",
+        years: "2014 – 2019",
+        category: "Manga",
+        cause: "Developer transition to legit licensed service (INKR).",
+        reflection: "The most popular mobile reader of its era with beautiful UI and custom server scrapers.",
+        successor: "MangaDex / Comick"
+      },
+      {
+        name: "Tachiyomi (Original Extensions)",
+        years: "2015 – 2024",
+        category: "Manga App",
+        cause: "Kakao legal threats leading to removal of core extension repositories.",
+        reflection: "The open-source Android app that powered modern manga reading. Forked by community successors like Mihon.",
+        successor: "Mihon / MangaDex"
+      },
+      {
+        name: "Vidsrc.to",
+        years: "2020 – 2024",
+        category: "Movies API Provider",
+        cause: "Massive API domain blacklisting and hosting provider disconnection.",
+        reflection: "The backbone embed provider that served movie streams to hundreds of frontend interfaces.",
+        successor: "Cineby Native Players"
+      },
+      {
+        name: "AnimeFlix (Original)",
+        years: "2019 – 2021",
+        category: "Anime",
+        cause: "Cease and desist and developer bankruptcy.",
+        reflection: "One of the first to attempt a 100% ad-free, Netflix-quality UI built entirely on Vue.",
+        successor: "Miruro"
       }
     ];
 
-    let currentSelectedSiteId = null;
-    let openModuleIds = new Set(["anime", "western"]); // Anime and Western open by default
-    let openOverflowModuleIds = new Set(); // Tracks the secondary sub-dropdowns for 8+
-    let activeCategoryPillFilter = "all";
-    let searchQuery = "";
+    // ==========================================
+    // 3. STATE & LOCALSTORAGE HANDLING
+    // ==========================================
+    let currentMode = 'index'; // 'index' | 'graveyard'
+    let expandedSections = {
+      movies: true,
+      anime: true,
+      manga: true
+    };
+    let expandedOverflows = {
+      movies: false,
+      anime: false,
+      manga: false
+    };
+    let activeInspectedSite = null;
+    let savedBookmarks = JSON.parse(localStorage.getItem('omnistream_bookmarks') || '[]');
 
-    /* Persistent Bookmarks handling */
-    function getBookmarks() {
-      try {
-        const raw = localStorage.getItem("omnistream_deck_pins_v7");
-        return raw ? JSON.parse(raw) : [];
-      } catch (e) {
-        return [];
-      }
-    }
+    // ==========================================
+    // 4. RENDERING FUNCTIONS
+    // ==========================================
 
-    function saveBookmarks(pins) {
-      localStorage.setItem("omnistream_deck_pins_v7", JSON.stringify(pins));
-      updateBookmarkCounters();
-    }
+    function init() {
+      renderIndexView();
+      renderGraveyardView();
+      updateBookmarkUI();
 
-    function toggleBookmark(siteId, event) {
-      if (event) event.stopPropagation();
-      let pins = getBookmarks();
-      const idx = pins.indexOf(siteId);
-      if (idx >= 0) {
-        pins.splice(idx, 1);
-        showToast("Removed from bookmarks", "bookmark_remove");
-      } else {
-        pins.push(siteId);
-        showToast("Saved to cockpit bookmarks", "bookmark_added");
-      }
-      saveBookmarks(pins);
-      renderShelfModules();
-      renderInspectorStage();
-      renderBookmarksDrawer();
-    }
+      // Inspect first item by default
+      const defaultSite = DIRECTORY_DATA.anime.items[0];
+      inspectSite(defaultSite);
 
-    function clearAllBookmarks() {
-      saveBookmarks([]);
-      renderShelfModules();
-      renderInspectorStage();
-      renderBookmarksDrawer();
-      showToast("All bookmarks cleared", "delete");
-    }
-
-    function updateBookmarkCounters() {
-      const count = getBookmarks().length;
-      document.getElementById("headerPinnedBadge").innerText = count;
-      document.getElementById("drawerPinnedCount").innerText = count;
-    }
-
-    /* Selection & Cockpit Inspector Logic */
-    function selectSite(siteId) {
-      currentSelectedSiteId = siteId;
-      renderShelfModules();
-      renderInspectorStage();
-      // On small screens, scroll the inspector stage into view smoothly
-      if (window.innerWidth < 768) {
-        document.getElementById("inspectorStage").scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-
-    function findSiteById(siteId) {
-      for (const cat of DIRECTORY_CATEGORIES) {
-        const found = cat.items.find(i => i.id === siteId);
-        if (found) return { site: found, category: cat };
-      }
-      return null;
-    }
-
-    /* Accordion Toggle Logic */
-    function toggleModule(categoryId) {
-      if (openModuleIds.has(categoryId)) {
-        openModuleIds.delete(categoryId);
-      } else {
-        openModuleIds.add(categoryId);
-      }
-      renderShelfModules();
-    }
-
-    function toggleOverflow(categoryId, event) {
-      if (event) event.stopPropagation();
-      if (openOverflowModuleIds.has(categoryId)) {
-        openOverflowModuleIds.delete(categoryId);
-      } else {
-        openOverflowModuleIds.add(categoryId);
-      }
-      renderShelfModules();
-    }
-
-    function toggleAllModules(expand) {
-      if (expand) {
-        DIRECTORY_CATEGORIES.forEach(c => openModuleIds.add(c.id));
-        showToast("All directory modules expanded", "unfold_more");
-      } else {
-        openModuleIds.clear();
-        showToast("All directory modules collapsed", "unfold_less");
-      }
-      renderShelfModules();
-    }
-
-    function filterCategoryPill(catId) {
-      activeCategoryPillFilter = catId;
-      document.querySelectorAll(".cat-pill").forEach(p => {
-        p.classList.remove("active", "bg-cyan-500/20", "text-cyan-300", "border-cyan-500/40");
-        p.classList.add("bg-white/5", "text-neutral-400", "border-white/5");
+      // Keyboard hotkeys
+      document.addEventListener('keydown', (e) => {
+        if ((e.key === '/' || e.key === 'f' || e.key === 'F') && document.activeElement.tagName !== 'INPUT') {
+          e.preventDefault();
+          document.getElementById('global-search').focus();
+        }
       });
-      event.target.classList.add("active", "bg-cyan-500/20", "text-cyan-300", "border-cyan-500/40");
-      event.target.classList.remove("bg-white/5", "text-neutral-400", "border-white/5");
 
-      if (catId !== "all") {
-        openModuleIds.add(catId);
-      }
-      renderShelfModules();
+      // Search event
+      document.getElementById('global-search').addEventListener('input', (e) => {
+        handleSearch(e.target.value.trim().toLowerCase());
+      });
     }
 
-    /* Search & Universal Commands */
-    function handleSearch(val) {
-      searchQuery = val.trim().toLowerCase();
-      const clearBtn = document.getElementById("clearSearchBtn");
-      if (searchQuery.length > 0) {
-        clearBtn.classList.remove("hidden");
-        // Auto-expand all modules during active query
-        DIRECTORY_CATEGORIES.forEach(c => openModuleIds.add(c.id));
+    // Switch between Live Index and Graveyard
+    function setViewMode(mode) {
+      currentMode = mode;
+      const indexBtn = document.getElementById('view-index-btn');
+      const graveBtn = document.getElementById('view-graveyard-btn');
+      const indexContainer = document.getElementById('index-container');
+      const graveyardContainer = document.getElementById('graveyard-container');
+
+      if (mode === 'index') {
+        indexContainer.classList.remove('hidden');
+        indexContainer.classList.add('flex');
+        graveyardContainer.classList.add('hidden');
+        graveyardContainer.classList.remove('flex');
+
+        indexBtn.className = "flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/30 transition-all";
+        graveBtn.className = "flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all";
       } else {
-        clearBtn.classList.add("hidden");
+        indexContainer.classList.add('hidden');
+        indexContainer.classList.remove('flex');
+        graveyardContainer.classList.remove('hidden');
+        graveyardContainer.classList.add('flex');
+
+        graveBtn.className = "flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-rose-500/20 to-amber-500/20 text-rose-300 border border-rose-500/30 transition-all";
+        indexBtn.className = "flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all";
       }
-      renderShelfModules();
     }
 
-    function clearSearch() {
-      const inp = document.getElementById("commandSearchInput");
-      inp.value = "";
-      handleSearch("");
-      inp.focus();
-    }
+    // Render the 3 Main Categories (Movies, Anime, Manga) with Top 7 Dropdown logic
+    function renderIndexView() {
+      const container = document.getElementById('index-container');
+      container.innerHTML = '';
 
-    function renderShelfModules() {
-      const container = document.getElementById("shelfModulesContainer");
-      const bookmarks = getBookmarks();
-      let html = "";
+      Object.values(DIRECTORY_DATA).forEach(cat => {
+        const isExpanded = expandedSections[cat.id];
+        const isOverflowExpanded = expandedOverflows[cat.id];
+        const top7 = cat.items.slice(0, 7);
+        const overflow = cat.items.slice(7);
 
-      DIRECTORY_CATEGORIES.forEach(category => {
-        // Pill filter check
-        if (activeCategoryPillFilter !== "all" && activeCategoryPillFilter !== category.id) {
-          return;
-        }
+        const card = document.createElement('div');
+        card.id = `section-${cat.id}`;
+        card.className = "rounded-2xl bg-deck-surface border border-deck-border overflow-hidden transition-all duration-200";
 
-        // Search filtering check
-        let visibleItems = category.items;
-        if (searchQuery) {
-          visibleItems = visibleItems.filter(item => {
-            const inName = item.name.toLowerCase().includes(searchQuery);
-            const inBadges = item.badges.some(b => b.toLowerCase().includes(searchQuery));
-            const inMirrors = item.mirrors.some(m => m.name.toLowerCase().includes(searchQuery) || m.url.toLowerCase().includes(searchQuery));
-            const inPros = item.pros.some(p => p.toLowerCase().includes(searchQuery));
-            return inName || inBadges || inMirrors || inPros;
-          });
-        }
-
-        if (searchQuery && visibleItems.length === 0) {
-          return; // Hide empty search sections
-        }
-
-        const isModuleOpen = openModuleIds.has(category.id);
-        const top7Items = visibleItems.slice(0, 7);
-        const overflowItems = visibleItems.slice(7);
-        const isOverflowOpen = openOverflowModuleIds.has(category.id);
-
-        // Category accent styling
-        let colorClasses = {
-          badge: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-          iconBg: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-          borderHover: "hover:border-emerald-500/40"
-        };
-        if (category.color === "sky") {
-          colorClasses = { badge: "bg-sky-500/15 text-sky-400 border-sky-500/30", iconBg: "text-sky-400 bg-sky-500/10 border-sky-500/20", borderHover: "hover:border-sky-500/40" };
-        } else if (category.color === "amber") {
-          colorClasses = { badge: "bg-amber-500/15 text-amber-400 border-amber-500/30", iconBg: "text-amber-400 bg-amber-500/10 border-amber-500/20", borderHover: "hover:border-amber-500/40" };
-        } else if (category.color === "pink") {
-          colorClasses = { badge: "bg-pink-500/15 text-pink-400 border-pink-500/30", iconBg: "text-pink-400 bg-pink-500/10 border-pink-500/20", borderHover: "hover:border-pink-500/40" };
-        } else if (category.color === "cyan") {
-          colorClasses = { badge: "bg-cyan-500/15 text-cyan-400 border-cyan-500/30", iconBg: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20", borderHover: "hover:border-cyan-500/40" };
-        } else if (category.color === "purple") {
-          colorClasses = { badge: "bg-purple-500/15 text-purple-400 border-purple-500/30", iconBg: "text-purple-400 bg-purple-500/10 border-purple-500/20", borderHover: "hover:border-purple-500/40" };
-        }
-
-        html += `
-          <!-- Category Accordion Module Container -->
-          <div class="rounded-2xl bg-[#0e111a] border border-[#1f2438] ${colorClasses.borderHover} transition overflow-hidden shadow-sm">
-            
-            <!-- Accordion Header -->
-            <div
-              onclick="toggleModule('${category.id}')"
-              class="px-3.5 py-3 flex items-center justify-between cursor-pointer select-none bg-[#111420] hover:bg-[#151928] transition group"
-            >
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="w-8 h-8 rounded-xl border flex items-center justify-center shrink-0 ${colorClasses.iconBg}">
-                  <span class="material-symbols-outlined text-lg">${category.icon}</span>
-                </div>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2">
-                    <span class="font-bold text-xs sm:text-sm text-white tracking-tight group-hover:text-cyan-300 transition truncate">${category.name}</span>
-                    <span class="text-[9px] font-mono px-2 py-0.5 rounded-md border font-semibold ${colorClasses.badge} hidden sm:inline-block">${category.badge}</span>
-                  </div>
-                  <div class="text-[10px] text-neutral-400 font-mono flex items-center gap-2">
-                    <span>${visibleItems.length} verified links</span>
-                    <span class="text-neutral-600">&bull;</span>
-                    <span class="text-emerald-400 font-semibold">${isModuleOpen ? 'Expanded' : 'Collapsed'}</span>
-                  </div>
-                </div>
+        card.innerHTML = `
+          <!-- Category Header Accordion Trigger -->
+          <div 
+            onclick="toggleCategorySection('${cat.id}')"
+            class="px-5 py-4 cursor-pointer flex items-center justify-between hover:bg-deck-card/60 transition-all select-none border-b ${isExpanded ? 'border-deck-border' : 'border-transparent'}"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-gradient-to-br ${cat.badgeColor} flex items-center justify-center border shadow-sm">
+                <span class="material-symbols-outlined text-lg">${cat.icon}</span>
               </div>
-
-              <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-neutral-400 group-hover:text-white transition shrink-0 ml-2">
-                <span class="material-symbols-outlined text-base transition-transform duration-300 ${isModuleOpen ? 'rotate-180 text-cyan-400' : ''}">
-                  expand_more
-                </span>
+              <div>
+                <h3 class="text-sm font-bold text-white tracking-wide flex items-center gap-2">
+                  ${cat.title}
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-deck-card text-slate-400 border border-deck-border">
+                    ${cat.items.length} verified
+                  </span>
+                </h3>
+                <p class="text-[11px] text-slate-400 line-clamp-1">${cat.description}</p>
               </div>
             </div>
-
-            <!-- Accordion Body: Exactly 7 Top Sites Shown -->
-            ${isModuleOpen ? `
-              <div class="p-2.5 space-y-1.5 bg-[#090b12] border-t border-[#1a1e2e]">
-                
-                ${top7Items.map(item => renderSiteRow(item, bookmarks.includes(item.id))).join('')}
-
-                <!-- Sub-Dropdown Accordion for Overflow (Sites 8+) -->
-                ${overflowItems.length > 0 ? `
-                  <div class="pt-1.5">
-                    <button
-                      onclick="toggleOverflow('${category.id}', event)"
-                      class="w-full py-2 px-3 rounded-xl bg-[#121522] hover:bg-[#181c2d] border border-white/10 hover:border-cyan-500/30 text-xs font-semibold text-neutral-300 hover:text-cyan-300 flex items-center justify-between transition group shadow-sm"
-                    >
-                      <div class="flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center justify-center font-mono text-[10px] font-bold">
-                          +${overflowItems.length}
-                        </span>
-                        <span class="text-[11px]">${isOverflowOpen ? 'Hide Additional Mirrors' : `View ${overflowItems.length} More Mirrors & Alternates`}</span>
-                      </div>
-                      <span class="material-symbols-outlined text-sm transition-transform duration-200 ${isOverflowOpen ? 'rotate-180 text-cyan-400' : 'text-neutral-500'}">
-                        expand_more
-                      </span>
-                    </button>
-
-                    <div class="${isOverflowOpen ? 'mt-1.5 space-y-1.5 block' : 'hidden'}">
-                      ${overflowItems.map(item => renderSiteRow(item, bookmarks.includes(item.id))).join('')}
-                    </div>
-                  </div>
-                ` : ''}
-
-              </div>
-            ` : ''}
-
-          </div>
-        `;
-      });
-
-      container.innerHTML = html || `
-        <div class="p-8 text-center text-xs text-neutral-500 bg-[#0d0f16] rounded-2xl border border-white/5">
-          No streaming services match the query "${searchQuery}".
-        </div>
-      `;
-    }
-
-    /* Single Site Entry on the Left Shelf */
-    function renderSiteRow(item, isBookmarked) {
-      const isSelected = (currentSelectedSiteId === item.id);
-      return `
-        <div
-          onclick="selectSite('${item.id}')"
-          class="group px-3 py-2 rounded-xl border border-white/5 hover:border-white/20 bg-[#121520] hover:bg-[#181d2c] transition duration-150 flex items-center justify-between cursor-pointer gap-2 ${isSelected ? 'active-deck-item' : ''}"
-        >
-          <div class="flex items-center gap-2.5 min-w-0">
-            <span class="w-5 h-5 rounded-md bg-white/5 border border-white/10 flex items-center justify-center font-mono font-bold text-[10px] text-neutral-400 group-hover:text-cyan-300 transition shrink-0">
-              ${item.rank}
-            </span>
-            <span class="text-sm shrink-0 select-none">${item.icon}</span>
-            <div class="truncate">
-              <span class="font-bold text-xs text-white group-hover:text-cyan-300 transition block truncate">
-                ${item.name}
+            
+            <div class="flex items-center gap-3">
+              <span class="text-[11px] font-mono text-cyan-400/80 bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-800/40 hidden sm:inline">
+                Top 7 Curated
+              </span>
+              <span class="material-symbols-outlined text-slate-400 transform transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}">
+                expand_more
               </span>
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 shrink-0">
-            ${item.badges.slice(0, 1).map(b => `
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-white/5 text-neutral-400 border border-white/10 hidden sm:inline-block">${b}</span>
-            `).join('')}
-
-            <button
-              onclick="toggleBookmark('${item.id}', event)"
-              class="w-6 h-6 rounded-md hover:bg-white/10 flex items-center justify-center text-neutral-500 hover:text-amber-400 transition ${isBookmarked ? 'text-amber-400 fill-1' : ''}"
-              title="${isBookmarked ? 'Remove Bookmark' : 'Bookmark'}"
-            >
-              <span class="material-symbols-outlined text-xs ${isBookmarked ? 'fill-1' : ''}">bookmark</span>
-            </button>
-
-            <span class="material-symbols-outlined text-xs text-neutral-600 group-hover:text-cyan-400 transition">chevron_right</span>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderInspectorStage() {
-      const stage = document.getElementById("inspectorStage");
-      const bookmarks = getBookmarks();
-
-      if (!currentSelectedSiteId) {
-        // Render Idle / Welcome Control Deck with Quick Actions
-        stage.innerHTML = `
-          <div class="h-full flex flex-col justify-between p-6 sm:p-8 overflow-y-auto">
-            <div class="max-w-2xl space-y-6">
-              
-              <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold font-mono">
-                <span class="material-symbols-outlined text-sm">dashboard</span>
-                <span>INSPECTOR DECK READY</span>
-              </div>
-
-              <div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                  OmniStream Command Deck & Inspector
-                </h2>
-                <p class="text-neutral-400 text-xs sm:text-sm mt-2 leading-relaxed">
-                  Select any streaming service from the left directory shelf to inspect its live status, verified working mirrors, safety ratings, and pros & cons.
-                </p>
-              </div>
-
-              <!-- Quick Launch Spotlight Tiles -->
-              <div class="space-y-3">
-                <h4 class="text-xs font-mono font-bold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-cyan-400">stars</span>
-                  <span>Top Ranked Verified Portals</span>
-                </h4>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div onclick="selectSite('ani-1')" class="p-3.5 rounded-xl bg-[#0e111a] border border-emerald-500/20 hover:border-emerald-500/50 cursor-pointer transition group">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2 font-bold text-sm text-white group-hover:text-emerald-300">
-                        <span>⚡</span><span>HiAnime</span>
-                      </div>
-                      <span class="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Anime #1</span>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 mt-1">Multi-dub, rich backups, and AniList progress syncing.</p>
-                  </div>
-
-                  <div onclick="selectSite('west-1')" class="p-3.5 rounded-xl bg-[#0e111a] border border-sky-500/20 hover:border-sky-500/50 cursor-pointer transition group">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2 font-bold text-sm text-white group-hover:text-sky-300">
-                        <span>🍿</span><span>Braflix</span>
-                      </div>
-                      <span class="text-[10px] font-mono text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">Movies #1</span>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 mt-1">Netflix-style 4K HDR player with customizable subs.</p>
-                  </div>
-
-                  <div onclick="selectSite('man-1')" class="p-3.5 rounded-xl bg-[#0e111a] border border-amber-500/20 hover:border-amber-500/50 cursor-pointer transition group">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2 font-bold text-sm text-white group-hover:text-amber-300">
-                        <span>📖</span><span>MangaDex</span>
-                      </div>
-                      <span class="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Manga #1</span>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 mt-1">Ad-free open scanlation database with Mihon API support.</p>
-                  </div>
-
-                  <div onclick="selectSite('dl-1')" class="p-3.5 rounded-xl bg-[#0e111a] border border-purple-500/20 hover:border-purple-500/50 cursor-pointer transition group">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center gap-2 font-bold text-sm text-white group-hover:text-purple-300">
-                        <span>🐱</span><span>Nyaa.si</span>
-                      </div>
-                      <span class="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">Torrents #1</span>
-                    </div>
-                    <p class="text-[11px] text-neutral-400 mt-1">Lossless East Asian P2P swarm with raw Blu-ray remuxes.</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Safe Browsing Advice Card -->
-              <div class="p-4 rounded-xl bg-[#0d1017] border border-[#1f2438] flex items-start gap-3.5">
-                <span class="material-symbols-outlined text-cyan-400 text-2xl shrink-0 mt-0.5">verified_user</span>
-                <div class="text-xs text-neutral-300 leading-relaxed">
-                  <span class="font-bold text-white block mb-0.5">Cockpit Operational Recommendation:</span>
-                  Always activate <strong>uBlock Origin</strong> and configure your system DNS to <strong>1.1.1.1</strong> (Cloudflare) to prevent fake ads, crypto miner scripts, and bypass arbitrary ISP domain blockades.
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Cockpit Footer -->
-            <div class="pt-6 border-t border-[#1c2030] flex flex-wrap items-center justify-between text-[11px] text-neutral-500 font-mono gap-2">
-              <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                <span>Keyboard Navigation: Press 'F' or '/' to Search</span>
-              </div>
-              <div>EverythingMoe &bull; FMHY Community Curated</div>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      // Render Active Inspected Site Deck
-      const match = findSiteById(currentSelectedSiteId);
-      if (!match) return;
-      const { site, category } = match;
-      const isBookmarked = bookmarks.includes(site.id);
-
-      stage.innerHTML = `
-        <div class="h-full flex flex-col justify-between p-5 sm:p-7 overflow-y-auto">
-          
-          <div class="space-y-5 max-w-3xl">
+          <!-- Category Content Body -->
+          <div class="${isExpanded ? 'block' : 'hidden'} p-3 space-y-2">
             
-            <!-- Deck Header Bar -->
-            <div class="flex items-start justify-between gap-3 pb-4 border-b border-[#1f2438]">
-              <div class="flex items-center gap-3.5 min-w-0">
-                <span class="text-3xl sm:text-4xl p-2 rounded-2xl bg-[#141724] border border-white/10 select-none shadow-sm">${site.icon}</span>
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2.5 flex-wrap">
-                    <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">${site.name}</h2>
-                    <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">Rank #${site.rank}</span>
-                    <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-white/5 text-neutral-300 border border-white/10">${category.name}</span>
-                  </div>
-                  <div class="flex items-center gap-3 mt-1.5 text-xs text-neutral-400 font-mono">
-                    <span class="flex items-center gap-1.5">
-                      <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                      <span>Uptime: ${site.health}</span>
-                    </span>
-                    <span class="text-neutral-600">&bull;</span>
-                    <span class="text-neutral-300">Safety: ${site.safety}</span>
-                  </div>
-                </div>
-              </div>
+            <!-- Top 7 Items Container -->
+            <div class="space-y-1.5" id="items-top-${cat.id}">
+              ${top7.map(item => renderItemRow(item, cat.id)).join('')}
+            </div>
 
-              <!-- Deck Header Controls (Pin & Close) -->
-              <div class="flex items-center gap-2 shrink-0">
-                <button
-                  onclick="toggleBookmark('${site.id}', event)"
-                  class="px-3 py-1.5 rounded-xl border text-xs font-medium flex items-center gap-1.5 transition ${isBookmarked ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-white/5 text-neutral-300 border-white/10 hover:border-amber-500/40'}"
-                  title="${isBookmarked ? 'Remove Bookmark' : 'Bookmark Site'}"
+            <!-- Overflow Drawer Button (Rank 8 and Beyond) -->
+            ${overflow.length > 0 ? `
+              <div class="pt-2 border-t border-deck-border/70">
+                <button 
+                  onclick="toggleOverflowDrawer('${cat.id}')"
+                  class="w-full py-2.5 px-3 rounded-xl bg-deck-card hover:bg-deck-border/50 text-slate-400 hover:text-cyan-300 font-mono text-xs flex items-center justify-between border border-dashed border-deck-border transition-all"
                 >
-                  <span class="material-symbols-outlined text-sm ${isBookmarked ? 'fill-1 text-amber-400' : ''}">bookmark</span>
-                  <span class="hidden sm:inline">${isBookmarked ? 'Pinned' : 'Pin'}</span>
+                  <span class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sm text-cyan-400">alt_route</span>
+                    <span>${isOverflowExpanded ? 'Hide Alternates' : `View ${overflow.length} More Working Mirrors & Alternates`}</span>
+                  </span>
+                  <span class="text-[11px] px-1.5 py-0.5 rounded bg-deck-surface border border-deck-border">
+                    ${isOverflowExpanded ? 'Collapse' : `+${overflow.length} Sites`}
+                  </span>
                 </button>
 
-                <button
-                  onclick="currentSelectedSiteId = null; renderShelfModules(); renderInspectorStage();"
-                  class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-neutral-400 hover:text-white transition"
-                  title="Close Inspector"
-                >
-                  <span class="material-symbols-outlined text-base">close</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Tags / Capabilities -->
-            <div class="flex items-center gap-1.5 flex-wrap">
-              ${site.badges.map(b => {
-                let badgeStyle = "bg-white/5 text-neutral-300 border-white/10";
-                if (b === "AD-FREE" || b === "VERIFIED" || b === "OPEN-SOURCE") badgeStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-                if (b === "4K" || b === "1080P" || b === "SOFTSUB") badgeStyle = "bg-cyan-500/10 text-cyan-300 border-cyan-500/30";
-                if (b === "TORRENT" || b === "DDL" || b === "USENET") badgeStyle = "bg-purple-500/10 text-purple-300 border-purple-500/30";
-                return `<span class="text-[10px] font-mono font-bold px-2.5 py-0.8 rounded-md border ${badgeStyle}">${b}</span>`;
-              }).join('')}
-            </div>
-
-            <!-- Working Mirror Launchers -->
-            <div class="space-y-2">
-              <div class="flex items-center justify-between text-xs font-mono text-neutral-400 uppercase tracking-wider font-semibold">
-                <span>Working Alternate Domains & Mirrors</span>
-                <span class="text-[11px] text-emerald-400 lowercase">live endpoints</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                ${site.mirrors.map(m => `
-                  <a
-                    href="${m.url}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="p-3 rounded-xl bg-[#10131d] hover:bg-[#161a28] border border-white/10 hover:border-cyan-500/50 flex items-center justify-between group transition shadow-sm"
-                  >
-                    <div class="min-w-0 pr-2">
-                      <div class="font-bold text-xs text-white group-hover:text-cyan-300 transition truncate">${m.name}</div>
-                      <div class="font-mono text-[10px] text-neutral-500 truncate">${m.url.replace(/^https?:\/\//, '')}</div>
-                    </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                      <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-neutral-400 border border-white/5">${m.ping}</span>
-                      <span class="material-symbols-outlined text-neutral-500 group-hover:text-cyan-400 text-sm">open_in_new</span>
-                    </div>
-                  </a>
-                `).join('')}
-              </div>
-            </div>
-
-            <!-- Evaluation: Pros & Cons -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-              
-              <!-- Pros -->
-              <div class="p-3.5 rounded-xl bg-[#0b0e16] border border-emerald-500/20 space-y-2">
-                <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
-                  <span class="material-symbols-outlined text-sm">add_circle</span>
-                  <span>Advantages</span>
+                <!-- Overflow Content -->
+                <div class="${isOverflowExpanded ? 'block' : 'hidden'} pt-2 space-y-1.5 animate-fadeIn">
+                  ${overflow.map(item => renderItemRow(item, cat.id)).join('')}
                 </div>
-                <div class="space-y-1.5 text-xs">
-                  ${site.pros.map(p => `
-                    <div class="flex items-start gap-2 text-neutral-200">
-                      <span class="font-mono font-bold text-emerald-400 select-none">+</span>
-                      <span class="leading-snug">${p}</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Cons -->
-              <div class="p-3.5 rounded-xl bg-[#0b0e16] border border-rose-500/20 space-y-2">
-                <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">
-                  <span class="material-symbols-outlined text-sm">remove_circle</span>
-                  <span>Drawbacks / Notice</span>
-                </div>
-                <div class="space-y-1.5 text-xs">
-                  ${site.cons.map(c => `
-                    <div class="flex items-start gap-2 text-neutral-300">
-                      <span class="font-mono font-bold text-rose-400 select-none">-</span>
-                      <span class="leading-snug">${c}</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Curator / Community Note -->
-            ${site.note ? `
-              <div class="p-3.5 rounded-xl bg-[#0f121d] border border-white/10 flex items-start gap-2.5 text-xs text-neutral-300 italic">
-                <span class="material-symbols-outlined text-cyan-400 text-base shrink-0 mt-0.5">info</span>
-                <span>${site.note}</span>
               </div>
             ` : ''}
 
           </div>
+        `;
 
-          <!-- Bottom Action Deck Bar -->
-          <div class="pt-6 mt-6 border-t border-[#1c2030] flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div class="flex items-center gap-2">
-              <button onclick="copySiteLink('${site.mirrors[0].url}')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-300 flex items-center gap-1.5 transition">
-                <span class="material-symbols-outlined text-sm">content_copy</span>
-                <span>Copy Primary Link</span>
-              </button>
+        container.appendChild(card);
+      });
+    }
+
+    // Single item row HTML
+    function renderItemRow(item, catId) {
+      const isSaved = savedBookmarks.includes(item.id);
+      const isSelected = activeInspectedSite && activeInspectedSite.id === item.id;
+
+      return `
+        <div 
+          onclick="selectSiteById('${item.id}', '${catId}')"
+          class="group p-2.5 rounded-xl border ${isSelected ? 'bg-cyan-500/10 border-cyan-500/40 neon-glow-cyan' : 'bg-deck-card/70 hover:bg-deck-card border-deck-border/60'} flex items-center justify-between gap-3 cursor-pointer transition-all"
+        >
+          <!-- Left: Rank & Title -->
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="font-mono text-xs font-bold ${item.rank <= 3 ? 'text-amber-400' : 'text-slate-500'} w-5 text-right">
+              ${item.rank}.
+            </span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors truncate">
+                  ${item.name}
+                </span>
+                <span class="text-[9px] font-mono uppercase px-1.5 py-0.2 rounded bg-deck-surface text-slate-400 border border-deck-border">
+                  ${item.badge}
+                </span>
+              </div>
+              <p class="text-[11px] text-slate-500 truncate max-w-xs sm:max-w-md">${item.notes}</p>
             </div>
-
-            <a
-              href="${site.mirrors[0].url}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 hover:brightness-110 text-white font-bold flex items-center gap-2 shadow-glow-cyan transition"
-            >
-              <span>Launch Site</span>
-              <span class="material-symbols-outlined text-sm">launch</span>
-            </a>
           </div>
 
+          <!-- Right: Rating & Direct Launch Button -->
+          <div class="flex items-center gap-2 flex-shrink-0" onclick="event.stopPropagation()">
+            <button 
+              onclick="toggleBookmark('${item.id}')"
+              title="Bookmark site"
+              class="p-1 rounded-lg text-slate-500 hover:text-cyan-400 hover:bg-deck-surface transition-all"
+            >
+              <span class="material-symbols-outlined text-[16px] ${isSaved ? 'text-cyan-400' : ''}">
+                ${isSaved ? 'bookmark' : 'bookmark_border'}
+              </span>
+            </button>
+            <a 
+              href="${item.primaryUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="px-2.5 py-1 rounded-lg bg-deck-surface hover:bg-cyan-500 hover:text-black text-slate-300 font-mono text-[11px] flex items-center gap-1 border border-deck-border transition-all"
+            >
+              <span>Launch</span>
+              <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+            </a>
+          </div>
         </div>
       `;
     }
 
-    function renderBookmarksDrawer() {
-      const container = document.getElementById("bookmarksList");
-      const bookmarks = getBookmarks();
+    // Render Graveyard memorial
+    function renderGraveyardView() {
+      const container = document.getElementById('graveyard-container');
+      container.innerHTML = `
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-deck-surface to-rose-950/20 border border-deck-border space-y-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+              <span class="material-symbols-outlined text-2xl">tombstone</span>
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-white">The Media Graveyard (Hall of Remembrance)</h2>
+              <p class="text-xs text-slate-400">Honoring the pioneers, encoders, and stream hosts that shaped the web before legal takedowns and shutdowns.</p>
+            </div>
+          </div>
 
-      if (bookmarks.length === 0) {
-        container.innerHTML = `
-          <div class="py-12 text-center text-xs text-neutral-500 space-y-2">
-            <span class="material-symbols-outlined text-3xl text-neutral-600 block">bookmark_border</span>
-            <span>You haven't bookmarked any streaming sites yet. Click the bookmark icon next to any portal to pin it here.</span>
+          <!-- Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            ${GRAVEYARD_DATA.map(tomb => `
+              <div class="p-4 rounded-xl bg-deck-card border border-deck-border space-y-2 hover:border-rose-500/30 transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm text-white">${tomb.name}</span>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20">${tomb.years}</span>
+                </div>
+                <div class="text-[11px] font-mono text-slate-500">${tomb.category} • Cause: ${tomb.cause}</div>
+                <p class="text-xs text-slate-400 leading-relaxed italic">"${tomb.reflection}"</p>
+                <div class="pt-2 text-[11px] flex items-center gap-1.5 text-cyan-400 font-mono">
+                  <span class="text-slate-500">Working alternative:</span>
+                  <span>${tomb.successor}</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Right-Hand Inspector Deck
+    function inspectSite(site) {
+      activeInspectedSite = site;
+      const panel = document.getElementById('inspector-panel');
+      const isSaved = savedBookmarks.includes(site.id);
+
+      panel.innerHTML = `
+        <div class="space-y-4">
+          <!-- Top Row: Badge, Rating & Actions -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                Rank #${site.rank}
+              </span>
+              <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-deck-card text-emerald-400 border border-deck-border flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified Online
+              </span>
+            </div>
+            <button 
+              onclick="toggleBookmark('${site.id}')"
+              class="flex items-center gap-1 text-xs font-mono px-2.5 py-1 rounded-lg border transition-all ${isSaved ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300' : 'bg-deck-card border-deck-border text-slate-400 hover:text-white'}"
+            >
+              <span class="material-symbols-outlined text-[14px]">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
+              <span>${isSaved ? 'Saved' : 'Save'}</span>
+            </button>
+          </div>
+
+          <!-- Title & Quality Rating -->
+          <div>
+            <h2 class="text-xl font-bold text-white tracking-tight">${site.name}</h2>
+            <p class="text-xs text-slate-400 mt-1">${site.notes}</p>
+          </div>
+
+          <!-- Pros and Cons Section -->
+          <div class="grid grid-cols-1 gap-2 pt-2 border-t border-deck-border text-xs">
+            <div class="space-y-1">
+              <span class="font-mono text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Pros</span>
+              ${site.pros.map(pro => `
+                <div class="flex items-start gap-1.5 text-slate-300">
+                  <span class="text-emerald-400 font-bold font-mono">+</span>
+                  <span>${pro}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="space-y-1 pt-1">
+              <span class="font-mono text-[10px] text-rose-400 font-bold uppercase tracking-wider">Cons</span>
+              ${site.cons.map(con => `
+                <div class="flex items-start gap-1.5 text-slate-400">
+                  <span class="text-rose-400 font-bold font-mono">-</span>
+                  <span>${con}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Working Alternate Mirrors -->
+          <div class="space-y-2 pt-2 border-t border-deck-border">
+            <span class="font-mono text-[10px] text-slate-400 font-bold uppercase tracking-wider">Available Mirror Gateways</span>
+            <div class="space-y-1.5">
+              ${site.mirrors.map(m => `
+                <a 
+                  href="${m.url}" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="flex items-center justify-between p-2 rounded-xl bg-deck-card hover:bg-deck-border/60 border border-deck-border group transition-all"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[14px] text-slate-500 group-hover:text-cyan-400 transition-colors">link</span>
+                    <span class="text-xs font-mono text-slate-300 group-hover:text-white font-medium">${m.name}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-mono text-emerald-400">${m.ping}</span>
+                    <span class="material-symbols-outlined text-[14px] text-slate-500 group-hover:translate-x-0.5 transition-transform">arrow_outward</span>
+                  </div>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Primary Launch Big Button -->
+          <a 
+            href="${site.primaryUrl}" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition-all"
+          >
+            <span>Open Verified Portal</span>
+            <span class="material-symbols-outlined text-sm">open_in_new</span>
+          </a>
+        </div>
+      `;
+    }
+
+    // Toggle category accordion
+    function toggleCategorySection(catId) {
+      expandedSections[catId] = !expandedSections[catId];
+      renderIndexView();
+    }
+
+    // Toggle overflow drawer (items 8+)
+    function toggleOverflowDrawer(catId) {
+      expandedOverflows[catId] = !expandedOverflows[catId];
+      renderIndexView();
+    }
+
+    function expandAllSections(state) {
+      Object.keys(expandedSections).forEach(k => expandedSections[k] = state);
+      renderIndexView();
+    }
+
+    // Find and select site
+    function selectSiteById(id, catId) {
+      const cat = DIRECTORY_DATA[catId];
+      if (!cat) return;
+      const found = cat.items.find(i => i.id === id);
+      if (found) {
+        inspectSite(found);
+        renderIndexView();
+      }
+    }
+
+    // Bookmarks handling
+    function toggleBookmark(siteId) {
+      if (savedBookmarks.includes(siteId)) {
+        savedBookmarks = savedBookmarks.filter(id => id !== siteId);
+      } else {
+        savedBookmarks.push(siteId);
+      }
+      localStorage.setItem('omnistream_bookmarks', JSON.stringify(savedBookmarks));
+      updateBookmarkUI();
+      renderIndexView();
+      if (activeInspectedSite && activeInspectedSite.id === siteId) {
+        inspectSite(activeInspectedSite);
+      }
+    }
+
+    function updateBookmarkUI() {
+      const badge = document.getElementById('bookmark-badge');
+      badge.textContent = savedBookmarks.length;
+
+      const listContainer = document.getElementById('bookmarks-list');
+      if (savedBookmarks.length === 0) {
+        listContainer.innerHTML = `
+          <div class="text-center py-12 text-slate-500 text-xs">
+            <span class="material-symbols-outlined text-3xl mb-2 text-slate-600">bookmark_remove</span>
+            <p>No portals bookmarked yet.</p>
+            <p class="text-[11px] text-slate-600 mt-1">Click the bookmark icon on any card to save it here.</p>
           </div>
         `;
         return;
       }
 
-      let html = "";
-      bookmarks.forEach(siteId => {
-        const match = findSiteById(siteId);
-        if (!match) return;
-        const { site, category } = match;
-
-        html += `
-          <div class="p-3 rounded-xl bg-[#121520] border border-white/10 hover:border-cyan-500/40 flex items-center justify-between gap-2 group transition">
-            <div onclick="selectSite('${site.id}'); toggleBookmarksDrawer(false);" class="flex items-center gap-2.5 min-w-0 cursor-pointer flex-1">
-              <span class="text-base select-none">${site.icon}</span>
-              <div class="min-w-0">
-                <div class="font-bold text-xs text-white group-hover:text-cyan-300 truncate">${site.name}</div>
-                <div class="text-[10px] text-neutral-500 font-mono">${category.name}</div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-1">
-              <a
-                href="${site.mirrors[0].url}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="w-7 h-7 rounded-lg bg-white/5 hover:bg-cyan-500/20 text-neutral-400 hover:text-cyan-300 flex items-center justify-center transition"
-                title="Launch Site"
-              >
-                <span class="material-symbols-outlined text-xs">launch</span>
-              </a>
-              <button
-                onclick="toggleBookmark('${site.id}', event)"
-                class="w-7 h-7 rounded-lg bg-white/5 hover:bg-rose-500/20 text-neutral-400 hover:text-rose-400 flex items-center justify-center transition"
-                title="Remove Bookmark"
-              >
-                <span class="material-symbols-outlined text-xs">delete</span>
-              </button>
-            </div>
-          </div>
-        `;
+      // Find all bookmarked objects
+      let allItems = [];
+      Object.values(DIRECTORY_DATA).forEach(cat => {
+        allItems = allItems.concat(cat.items);
       });
 
-      container.innerHTML = html;
+      const bookmarkedItems = allItems.filter(item => savedBookmarks.includes(item.id));
+
+      listContainer.innerHTML = bookmarkedItems.map(item => `
+        <div class="p-3 rounded-xl bg-deck-card border border-deck-border flex items-center justify-between gap-3">
+          <div>
+            <div class="text-xs font-bold text-white">${item.name}</div>
+            <div class="text-[10px] font-mono text-cyan-400">${item.badge}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="${item.primaryUrl}" target="_blank" class="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-xs font-mono">Launch ↗</a>
+            <button onclick="toggleBookmark('${item.id}')" class="text-slate-500 hover:text-rose-400">
+              <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function toggleBookmarksDrawer(open) {
-      const drawer = document.getElementById("bookmarksDrawer");
-      const backdrop = document.getElementById("bookmarksDrawerBackdrop");
+    function toggleBookmarksDrawer() {
+      const drawer = document.getElementById('bookmarks-drawer');
+      const backdrop = document.getElementById('bookmarks-backdrop');
+      const isOpen = !drawer.classList.contains('translate-x-full');
 
-      if (open) {
-        renderBookmarksDrawer();
-        drawer.classList.remove("translate-x-full");
-        backdrop.classList.remove("hidden");
+      if (isOpen) {
+        drawer.classList.add('translate-x-full');
+        backdrop.classList.add('hidden');
       } else {
-        drawer.classList.add("translate-x-full");
-        backdrop.classList.add("hidden");
+        drawer.classList.remove('translate-x-full');
+        backdrop.classList.remove('hidden');
       }
     }
 
-    /* Surprise Me Randomizer */
+    function toggleSafetyModal() {
+      const modal = document.getElementById('safety-modal');
+      modal.classList.toggle('hidden');
+      modal.classList.toggle('flex');
+    }
+
+    // Surprise Me Roulette
     function triggerSurpriseMe() {
-      const allSites = [];
-      DIRECTORY_CATEGORIES.forEach(c => allSites.push(...c.items));
-      if (allSites.length === 0) return;
-      const pick = allSites[Math.floor(Math.random() * allSites.length)];
-      selectSite(pick.id);
-      showToast(`Selected Random Portal: ${pick.name}`, "casino");
+      let pool = [];
+      Object.values(DIRECTORY_DATA).forEach(c => pool = pool.concat(c.items));
+      const randomSite = pool[Math.floor(Math.random() * pool.length)];
+      inspectSite(randomSite);
+      // Auto expand target category
+      Object.keys(DIRECTORY_DATA).forEach(k => {
+        if (DIRECTORY_DATA[k].items.some(i => i.id === randomSite.id)) {
+          expandedSections[k] = true;
+        }
+      });
+      renderIndexView();
     }
 
-    /* Link copy helper */
-    function copySiteLink(url) {
-      try {
-        const dummy = document.createElement("input");
-        document.body.appendChild(dummy);
-        dummy.value = url;
-        dummy.select();
-        document.execCommand("copy");
-        document.body.removeChild(dummy);
-        showToast("Direct mirror URL copied to clipboard", "content_copy");
-      } catch (e) {
-        showToast(url, "link");
+    // Universal live search
+    function handleSearch(query) {
+      if (!query) {
+        renderIndexView();
+        return;
       }
+
+      // If user is searching, force all categories to open
+      Object.keys(expandedSections).forEach(k => expandedSections[k] = true);
+      Object.keys(expandedOverflows).forEach(k => expandedOverflows[k] = true);
+      renderIndexView();
+
+      // Filter DOM
+      Object.values(DIRECTORY_DATA).forEach(cat => {
+        const topContainer = document.getElementById(`items-top-${cat.id}`);
+        if (!topContainer) return;
+
+        cat.items.forEach(item => {
+          const match = item.name.toLowerCase().includes(query) ||
+                        item.badge.toLowerCase().includes(query) ||
+                        item.notes.toLowerCase().includes(query) ||
+                        item.mirrors.some(m => m.name.toLowerCase().includes(query));
+
+          // Highlight first match in inspector
+          if (match && (!activeInspectedSite || !activeInspectedSite.name.toLowerCase().includes(query))) {
+            inspectSite(item);
+          }
+        });
+      });
     }
 
-    /* Modal Handlers */
-    function openSafetyModal() { document.getElementById("safetyModal").classList.remove("hidden"); }
-    function closeSafetyModal() { document.getElementById("safetyModal").classList.add("hidden"); }
-
-    /* Toast Notification Controller */
-    let toastTimeout;
-    function showToast(msg, icon = "check_circle") {
-      const toast = document.getElementById("hubToast");
-      const msgEl = document.getElementById("toastMsg");
-      const iconEl = document.getElementById("toastIcon");
-
-      msgEl.innerText = msg;
-      iconEl.innerText = icon;
-      clearTimeout(toastTimeout);
-
-      toast.classList.remove("translate-y-20", "opacity-0");
-      toast.classList.add("translate-y-0", "opacity-100");
-
-      toastTimeout = setTimeout(() => {
-        toast.classList.add("translate-y-20", "opacity-0");
-        toast.classList.remove("translate-y-0", "opacity-100");
-      }, 2400);
-    }
-
-    /* Keyboard Shortcuts (F or / or Ctrl+K to Search, Esc to Dismiss) */
-    window.addEventListener("keydown", (e) => {
-      if ((e.key === "f" || e.key === "F" || e.key === "/" || (e.ctrlKey && e.key === "k") || (e.metaKey && e.key === "k")) && document.activeElement.tagName !== "INPUT") {
-        e.preventDefault();
-        const inp = document.getElementById("commandSearchInput");
-        inp.focus();
-        inp.select();
-      } else if (e.key === "Escape") {
-        closeSafetyModal();
-        toggleBookmarksDrawer(false);
-      }
-    });
-
-    /* Initialize Application on Page Load */
-    window.onload = function() {
-      updateBookmarkCounters();
-      renderShelfModules();
-      renderInspectorStage();
-    };
+    // Initialize on window load
+    window.addEventListener('DOMContentLoaded', init);
   </script>
-
 </body>
 </html>
